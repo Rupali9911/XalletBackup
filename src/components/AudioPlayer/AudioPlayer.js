@@ -2,19 +2,13 @@ import Slider from '@react-native-community/slider';
 import React, {useEffect, useRef, useState} from 'react';
 import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
 import Sound from 'react-native-sound';
 import {
   default as PlayPause,
   default as PlaySpeed,
 } from 'react-native-vector-icons/MaterialCommunityIcons';
 import IconMute from 'react-native-vector-icons/Octicons';
-
 import {SIZE, SVGS} from 'src/constants';
 import Colors from '../../constants/Colors';
 import {wp} from '../../constants/responsiveFunct';
@@ -183,79 +177,54 @@ const AudioPlayer = ({mediaUrl}) => {
         <IconMute name={mute ? 'mute' : 'unmute'} size={wp('4.5%')} />
       </TouchableOpacity>
       <View>
-        <Menu
+        <PopupMenu
+          customRenderItem={true}
+          items={[
+            {
+              label: (
+                <View style={styles.playbackSpeedView}>
+                  <PlaySpeed size={wp('5%')} name={'play-speed'} />
+                  <Text style={styles.playbackSpeedTitle}>
+                    {translate('common.playbackSpeed')}
+                  </Text>
+                </View>
+              ),
+              style: styles.menuOption,
+            },
+          ]}
           onSelect={() => {
             setOpenPlaySpeed(true);
-          }}>
-          <MenuTrigger
-            style={styles.optionView}
-            children={<ThreeDotsVerticalIcon />}
-          />
-          <MenuOptions>
-            <MenuOption style={styles.menuOption}>
-              <PlaySpeed size={wp('5%')} name={'play-speed'} />
-              <Text>{translate('common.playbackSpeed')}</Text>
-            </MenuOption>
-          </MenuOptions>
-        </Menu>
+          }}
+          triggerStyle={styles.optionView}
+          children={<ThreeDotsVerticalIcon />}
+        />
       </View>
       <View>
-        <Menu
-          key={openPlaySpeed}
+        <PopupMenu
           opened={openPlaySpeed}
           onBackdropPress={() => setOpenPlaySpeed(false)}
-          style={
+          key={openPlaySpeed}
+          items={[
+            {label: '0.25', onSelect: () => setAudioSpeed(0.25)},
+            {label: '0.5', onSelect: () => setAudioSpeed(0.5)},
+            {label: '0.75', onSelect: () => setAudioSpeed(0.75)},
+            {label: 'Normal', onSelect: () => setAudioSpeed(1)},
+            {label: '1.25', onSelect: () => setAudioSpeed(1.25)},
+            {label: '1.5', onSelect: () => setAudioSpeed(1.5)},
+            {label: '1.75', onSelect: () => setAudioSpeed(1.75)},
+            {label: '2', onSelect: () => setAudioSpeed(2)},
+          ]}
+          textStyle={styles.speedMenuOption}
+           menuStyle={
             Platform.OS === 'android'
               ? {
-                  position: 'absolute',
-                  left: 50,
+                  flex: 1,
+                  justifyContent: 'flex-end',
+                  marginBottom: 36,
                 }
               : {}
-          }>
-          <MenuTrigger />
-          <MenuOptions>
-            <MenuOption
-              onSelect={() => setAudioSpeed(0.25)}
-              style={styles.speedMenuOption}
-              text="0.25"
-            />
-            <MenuOption
-              onSelect={() => setAudioSpeed(0.5)}
-              style={styles.speedMenuOption}
-              text="0.5"
-            />
-            <MenuOption
-              onSelect={() => setAudioSpeed(0.75)}
-              style={styles.speedMenuOption}
-              text="0.75"
-            />
-            <MenuOption
-              onSelect={() => setAudioSpeed(1)}
-              style={styles.speedMenuOption}
-              text="Normal"
-            />
-            <MenuOption
-              onSelect={() => setAudioSpeed(1.25)}
-              style={styles.speedMenuOption}
-              text="1.25"
-            />
-            <MenuOption
-              onSelect={() => setAudioSpeed(1.5)}
-              style={styles.speedMenuOption}
-              text="1.5"
-            />
-            <MenuOption
-              onSelect={() => setAudioSpeed(1.75)}
-              style={styles.speedMenuOption}
-              text="1.75"
-            />
-            <MenuOption
-              onSelect={() => setAudioSpeed(2)}
-              style={styles.speedMenuOption}
-              text="2"
-            />
-          </MenuOptions>
-        </Menu>
+          }
+        />
       </View>
     </View>
   );

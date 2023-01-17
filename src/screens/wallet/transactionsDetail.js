@@ -13,12 +13,7 @@ import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import { environment, translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
 
 export default function transactionsDetail({ route }) {
   const transactionInfo = route?.params?.data;
@@ -30,9 +25,8 @@ export default function transactionsDetail({ route }) {
   let displayTime =
     selectedLanguageItem.language_name !== regionLanguage ? UTCTime : localTime;
   const coin = route?.params?.coin;
-
-  const [transactionAddress, setTransactionAddress] = useState(false);
-  const [transactionId, setTransactionId] = useState(false);
+  const [showTxAddress, setShowTxAddress] = useState(false);
+  const [showTxId, setShowTxId] = useState(false);
   
   const copyAddress = () => {
     Clipboard.setString(
@@ -40,41 +34,20 @@ export default function transactionsDetail({ route }) {
         ? transactionInfo?.from
         : transactionInfo?.to,
     );
-    setTransactionAddress(true);
+    setShowTxAddress(true);
     setTimeout(() => {
-      setTransactionAddress(false);
+      setShowTxAddress(false);
     }, 700);
   };
 
   const copyTransactionHash = () => {
     Clipboard.setString(transactionInfo?.hash);
-    setTransactionId(true);
+    setShowTxId(true);
     setTimeout(() => {
-      setTransactionId(false);
+      setShowTxId(false);
     }, 700);
   };
 
-  const copyBoardAlert = id => {
-    return (
-      <>
-        <Menu opened={id}>
-          <MenuTrigger />
-          <MenuOptions
-            optionsContainerStyle={{
-              width: 'auto',
-              backgroundColor: Colors.BLACK1,
-            }}>
-            <MenuOption>
-              <Text style={{color: '#FFFFFF'}}>
-                {`${translate('wallet.common.copied')}!`}
-              </Text>
-            </MenuOption>
-          </MenuOptions>
-        </Menu>
-        <Image style={styles.copyImage} source={copy} />
-      </>
-    );
-  };
   const openURL = () => {
     if (coin?.network == 'BSC') {
       Linking.openURL(`${environment.bscScanURL}tx/${transactionInfo?.hash}`);
@@ -147,7 +120,15 @@ export default function transactionsDetail({ route }) {
                 ? transactionInfo?.from
                 : transactionInfo?.to}
             </TextView>
-            <TouchableOpacity onPress={() => copyAddress()}>{copyBoardAlert(transactionAddress)}</TouchableOpacity>
+            <TouchableOpacity onPress={() => copyAddress()}>
+              <Image style={styles.copyImage} source={copy} />
+              <PopupMenu
+                opened={showTxAddress}
+                items={[{label: `${translate('wallet.common.copied')}!`}]}
+                containerStyle={{...CommonStyles.containerStyle}}
+                textStyle={{...CommonStyles.textStyle}}
+              />
+            </TouchableOpacity>
           </View>
         </View>
         <View style={styles.rowContainer}>
@@ -162,7 +143,13 @@ export default function transactionsDetail({ route }) {
               {transactionInfo?.hash}
             </TextView>
             <TouchableOpacity onPress={copyTransactionHash}>
-              {copyBoardAlert(transactionId)}
+              <Image style={styles.copyImage} source={copy} />
+              <PopupMenu
+                opened={showTxId}
+                items={[{label: `${translate('wallet.common.copied')}!`}]}
+                containerStyle={{...CommonStyles.containerStyle}}
+                textStyle={{...CommonStyles.textStyle}}
+              />
             </TouchableOpacity>
           </View>
         </View>

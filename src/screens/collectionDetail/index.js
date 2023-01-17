@@ -21,13 +21,6 @@ import {fonts} from '../../res';
 import {getHotCollectionDetail} from '../../store/actions/hotCollectionAction';
 import {translate} from '../../walletUtils';
 import styles from './styles';
-
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
 import {NEW_BASE_URL} from '../../common/constants';
 import {modalAlert} from '../../common/function';
 import {wp} from '../../constants/responsiveFunct';
@@ -42,6 +35,8 @@ import {networkType} from '../../common/networkType';
 import TabViewScreen from '../../components/TabView/TabViewScreen';
 import {useDispatch, useSelector} from 'react-redux';
 import {ImagekitType} from '../../common/ImageConstant';
+import CommonStyles from '../../constants/styles';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
 
 const {height} = Dimensions.get('window');
 
@@ -442,40 +437,30 @@ function CollectionDetail(props) {
           <Image style={styles.backIcon} source={ImageSrc.backArrow} />
         </TouchableOpacity>
         <View style={styles.headerContent}>
-          <Menu
+          <PopupMenu
+            items={[
+              {label: `${translate('common.reportCollection')}`},
+              {label: `${translate('common.blockUser')}`},
+            ]}
+            textStyle={{...CommonStyles.titleStyle}}
             onSelect={value => {
               modalAlert(
                 translate('common.Confirm'),
                 value === 1
-                  ? translate('common.collectionReported')
-                  : translate('common.userBlocked'),
+                  ? translate('common.userBlocked')
+                  : translate('common.collectionReported'),
               );
-            }}>
-            <MenuTrigger children={<ThreeDotsVerticalIcon />} />
-            <MenuOptions>
-              <MenuOption value={1}>
-                <Text style={{marginVertical: 10}}>
-                  {translate('common.reportCollection')}
-                </Text>
-              </MenuOption>
-              <MenuOption value={2}>
-                <Text style={{marginVertical: 10}}>
-                  {translate('common.blockUser')}
-                </Text>
-              </MenuOption>
-            </MenuOptions>
-          </Menu>
+            }}
+            children={<ThreeDotsVerticalIcon />}
+          />
         </View>
         {renderBanner()}
         {renderSocialLinks()}
         {renderSubBanner()}
-
         {renderTitle()}
         {renderDetailList()}
-
         {/* {renderChainList()} */}
         {renderDescription()}
-
         <View style={{height: height / 1.5}}>
           {!loading && !isLaunchPad ? (
             renderTabView(true)

@@ -18,12 +18,6 @@ import {C_Image} from '../../components';
 //import Video from 'react-native-fast-video';
 import Video from 'react-native-video';
 import {styles} from './styled';
-import {
-  Menu,
-  MenuOptions,
-  MenuOption,
-  MenuTrigger,
-} from 'react-native-popup-menu';
 import {numberWithCommas} from '../../utils';
 import { modalAlert } from '../../common/function';
 import {useNavigation} from '@react-navigation/native';
@@ -32,6 +26,8 @@ import {useSelector} from 'react-redux';
 import {networkType} from '../../common/networkType';
 import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
 import {ImagekitType} from '../../common/ImageConstant';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import CommonStyles from '../../constants/styles';
 
 const {width} = Dimensions.get('window');
 
@@ -268,29 +264,22 @@ function discoverItem({item}) {
             {Number(nftItem?.isLike) ? <HeartActiveIcon /> : <HeartWhiteIcon />}
           </TouchableOpacity>
           <View style={{flexDirection: 'row', alignItems: 'center'}}>
-            <Menu
+            <PopupMenu
+              items={[
+                {label: `${translate('common.reportNft')}`},
+                {label: `${translate('common.blockUser')}`},
+              ]}
+              textStyle={{...CommonStyles.titleStyle}}
               onSelect={value => {
                 modalAlert(
                   translate('common.Confirm'),
                   value === 1
-                    ? translate('common.nftReported')
-                    : translate('common.userBlocked'),
+                    ? translate('common.userBlocked')
+                    : translate('common.nftReported'),
                 );
-              }}>
-              <MenuTrigger children={<ThreeDotsVerticalIcon />} />
-              <MenuOptions>
-                <MenuOption value={1}>
-                  <Text style={{marginVertical: 10}}>
-                    {translate('common.reportNft')}
-                  </Text>
-                </MenuOption>
-                <MenuOption value={2}>
-                  <Text style={{marginVertical: 10}}>
-                    {translate('common.blockUser')}
-                  </Text>
-                </MenuOption>
-              </MenuOptions>
-            </Menu>
+              }}
+              children={<ThreeDotsVerticalIcon />}
+            />
           </View>
         </HStack>
         <Text

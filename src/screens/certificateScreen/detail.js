@@ -20,12 +20,7 @@ import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Modal from 'react-native-modal';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
@@ -530,35 +525,25 @@ const DetailScreen = ({ navigation, route }) => {
         title={translate('wallet.common.detail')}
         showRightComponent={
           <View style={{ paddingRight: 10 }}>
-            <Menu
+           <PopupMenu
+              items={[
+                {label: `${translate('common.reportNft')}`},
+                {label: `${translate('common.blockUser')}`},
+              ]}
+              textStyle={{...CommonStyles.titleStyle}}
               onSelect={value => {
                 modalAlert(
                   translate('common.Confirm'),
                   value === 1
-                    ? translate('common.nftReported')
-                    : translate('common.userBlocked'),
+                    ? translate('common.userBlocked') 
+                    : translate('common.nftReported'),
                 );
-              }}>
-              <MenuTrigger children={<ThreeDotsVerticalIcon />} />
-              <MenuOptions>
-                {renderMenuOption(1)}
-                {renderMenuOption(2)}
-              </MenuOptions>
-            </Menu>
+              }}
+              children={<ThreeDotsVerticalIcon />}
+               />
           </View>
         }
       />
-    );
-  };
-
-  const renderMenuOption = value => {
-    return (
-      <MenuOption value={value}>
-        <Text style={{ marginVertical: 10 }}>
-          {value === 1 && translate('common.reportNft')}
-          {value === 2 && translate('common.blockUser')}
-        </Text>
-      </MenuOption>
     );
   };
 

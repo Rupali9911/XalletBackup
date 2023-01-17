@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import Share from 'react-native-share';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { BlurView } from "@react-native-community/blur";
-
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
@@ -112,7 +111,7 @@ const QRScreen = () => {
                         bgColor={Colors.headerIconBg2}
                         labelStyle={styles.btnLabel}
                         onPress={() => copyToClipboard()}
-                        address={copyAddress}
+                        copyAddress={copyAddress}
                     />
                     <HeaderBtns
                         image={ImagesSrc.receive}
