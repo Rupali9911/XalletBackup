@@ -69,9 +69,8 @@ const TabComponent = () => {
         },
         activeTintColor: Colors.themeColor,
       }}
-      detachInactiveScreens={false}
+      detachInactiveScreens={true}
       lazy={true}
-      optimizationsEnabled={true}
       screenOptions={({route}) => ({
         tabBarVisible: isBottomTabVisible,
         tabBarIcon: ({focused, color}) => {
