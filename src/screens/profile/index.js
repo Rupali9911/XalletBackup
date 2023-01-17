@@ -461,7 +461,7 @@ function Profile({navigation, connector, route}) {
     return (
       <View style={styles.profileInfo}>
         <View style={styles.userNameView}>
-          <Text style={styles.userNameText}>
+          <Text style={styles.userNameText} numberOfLines={1}>
             {userDetails?.userName ? userDetails?.userName : 'Unnamed'}
           </Text>
         </View>
@@ -763,6 +763,7 @@ const styles = StyleSheet.create({
   userNameText: {
     fontSize: SIZE(22),
     fontWeight: '700',
+    paddingHorizontal: SIZE(38),
   },
   userIdText: {
     fontFamily: 'Arial',

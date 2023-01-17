@@ -36,6 +36,10 @@ import {
 
   //===========Remain Count==============
   CHAT_REMAIN_COUNT,
+  GET_AI_BG_IMAGE_START,
+  GET_AI_BG_IMAGE_SUCCESS,
+  GET_AI_BG_IMAGE_FAIL,
+  GET_AI_BG_IMAGE_RESET,
 } from '../types';
 
 const initialState = {
@@ -85,6 +89,10 @@ const initialState = {
 
   //======================== Remain Words ======================
   remainCount: '',
+
+  //======================== AI Data ======================
+  aiBgImageData: null,
+  aiBgImageLoading: false,
 };
 
 export default function chatReducer(state = initialState, action) {
@@ -211,6 +219,26 @@ export default function chatReducer(state = initialState, action) {
     //======================== Remain Words====================
     case CHAT_REMAIN_COUNT:
       return {...state, remainCount: action.payload};
+
+    //======================== AI Bg Image ====================
+    case GET_AI_BG_IMAGE_START:
+      return {
+        ...state,
+        aiBgImageLoading: true,
+      };
+
+    case GET_AI_BG_IMAGE_SUCCESS:
+      return {
+        ...state,
+        aiBgImageData: action.payload,
+        aiBgImageLoading: false,
+      };
+
+    case GET_AI_BG_IMAGE_FAIL:
+      return {...state, aiBgImageLoading: false};
+
+    case GET_AI_BG_IMAGE_RESET:
+      return {...state, aiBgImageData: null, aiBgImageLoading: false};
 
     default:
       return state;
