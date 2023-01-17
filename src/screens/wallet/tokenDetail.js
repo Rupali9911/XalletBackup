@@ -227,6 +227,10 @@ const TokenDetail = ({ route, navigation }) => {
           address: address
         };
       } else {
+        if (coin === 'XETA' && environment === 'testnet') {
+          setLoading(false);
+          return;
+        }
         apiRequest.url = `${NEW_BASE_URL}/mobile/history`;
         apiRequest.method = 'GET';
         apiRequest.params = params;
