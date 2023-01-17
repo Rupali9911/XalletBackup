@@ -18,7 +18,7 @@ import {translate} from '../../walletUtils';
 
 const Tab = createBottomTabNavigator();
 
-const TabComponent = props => {
+const TabComponent = () => {
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
   const {userData} = useSelector(state => state.UserReducer);
   const {showSuccess, isCreate, connectModalState} = useSelector(
@@ -143,4 +143,4 @@ const TabComponent = props => {
   );
 };
 
-export default React.memo(TabComponent);
+export default TabComponent;

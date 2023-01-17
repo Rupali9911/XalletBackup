@@ -1,14 +1,45 @@
 import React from 'react';
 
 import {createStackNavigator} from '@react-navigation/stack';
+import {useSelector} from 'react-redux';
+import {screenWidth} from '../../constants/responsiveFunct';
+import TabComponent from './BottomTabNavigator';
+import PasscodeScreen from '../security/passcode';
+import DetailItemScreen from '../detailScreen';
+import CertificateDetailScreen from '../certificateScreen/detail';
+import PayScreen from '../payScreen';
+import MakeBidScreen from '../makeBidScreen';
+import EditProfileScreen from '../edit_profile';
+import ProfileScreen from '../profile';
+import TokenDetail from '../wallet/tokenDetail';
+import Receive from '../wallet/receive';
+import transactionsDetail from '../wallet/transactionsDetail';
+import Send from '../wallet/send';
+import ScanToConnect from '../connect/scanToConnect';
+import CreateNFTScreen from '../createNFTScreen';
+import CertificateScreen from '../certificateScreen';
+import ArtistDetail from '../ArtistDetail';
+import AddCard from '../PaymentScreen/addCard';
+import Cards from '../PaymentScreen/cards';
+import Setting from '../setting';
+import ChangePassword from '../changePassword';
+import SecurityScreen from '../security';
+import WalletPay from '../PaymentScreen/walletPay';
+import RecoveryPhrase from '../AuthScreens/recoveryPhrase';
+import VerifyPhrase from '../AuthScreens/verifyPhrase';
+import SellNFT from '../sellNft/index';
+import CollectionDetail from '../collectionDetail';
+import ChatDetail from '../AiChat/ChatDetail';
+import WebView from '../../components/WebView';
+import AuthStack from '../../navigations/authStack';
 
 const Stack = createStackNavigator();
 
 const RootStackScreen = props => {
-  const {passcode, mainLoader, showSplash, userData} = useSelector(
-    state => state.UserReducer,
-  );
+  const {passcode, userData} = useSelector(state => state.UserReducer);
+
   let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
+
   return (
     <>
       {userData ? (
