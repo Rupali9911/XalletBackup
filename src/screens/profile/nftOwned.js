@@ -22,17 +22,8 @@ const NFTOwned = props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  let pageNum = 1;
-  let limit = 10;
-  let tab = 1;
-
   useEffect(() => {
     // dispatch(myNftOwnedListingReset());
-
-    console.log(
-      'Useeffect Owned List Loading : ',
-      MyNFTReducer.myNftOwnedListLoading,
-    );
 
     if (props.isFocused) {
       if (!MyNFTReducer?.myNftOwnedList?.length) {
@@ -93,60 +84,49 @@ const NFTOwned = props => {
           <View style={styles.sorryMessageCont}>
             <Loader />
           </View>
-        ) : MyNFTReducer.myNftOwnedList.length ? null : (
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        )}
+        ) : null}
       </View>
     );
   };
 
-  // console.log('Created Loading : ', MyNFTReducer.myNftOwnedList);
+  const EmptyListMessage = () => {
+    return (
+      <View style={styles.trendCont}>
+        <View style={styles.sorryMessageCont}>
+          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+        </View>
+      </View>
+    );
+  };
 
   return (
-    <View style={styles.trendCont}>
-      {MyNFTReducer.myNftOwnedListLoading &&
-      MyNFTReducer.myNftOwnedListPage == 1 ? (
-        <Tabs.ScrollView>
-          <View style={styles.sorryMessageCont}>
-            <Loader />
-          </View>
-        </Tabs.ScrollView>
-      ) : MyNFTReducer.myNftOwnedList.length > 0 ? (
-        <Tabs.FlatList
-          key={2}
-          data={MyNFTReducer?.myNftOwnedList}
-          renderItem={renderItem}
-          numColumns={2}
-          keyExtractor={(v, i) => 'item_' + i}
-          initialNumToRender={10}
-          onEndReached={() => {
-            if (
-              !MyNFTReducer.myNftOwnedListLoading &&
-              MyNFTReducer.myNftOwnedList.length !=
-                MyNFTReducer.myNftOwnedTotalCount
-            ) {
-              let num = MyNFTReducer.myNftOwnedListPage + 1;
-              getNFTlist(num, 10, props.id, 1);
-              dispatch(myNftOwnedPageChange(num));
-            }
-          }}
-          onEndReachedThreshold={0.4}
-          ListFooterComponent={renderFooter}
-          onRefresh={handlePullRefresh}
-          refreshing={
-            MyNFTReducer.myNftOwnedListPage === 1 &&
-            MyNFTReducer.myNftOwnedListLoading
-          }></Tabs.FlatList>
-      ) : (
-        <Tabs.ScrollView>
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        </Tabs.ScrollView>
-      )}
-    </View>
+    <Tabs.FlatList
+      key={2}
+      data={MyNFTReducer?.myNftCreatedList}
+      renderItem={renderItem}
+      numColumns={2}
+      keyExtractor={(v, i) => 'item_' + i}
+      onEndReached={() => {
+        if (
+          !MyNFTReducer.myNftOwnedListLoading &&
+          MyNFTReducer.myNftOwnedList.length !==
+            MyNFTReducer.myNftOwnedTotalCount
+        ) {
+          let num = MyNFTReducer.myNftOwnedListPage + 1;
+          getNFTlist(num, 10, props.id, 2);
+          dispatch(myNftOwnedPageChange(num));
+        }
+      }}
+      ListHeaderComponent={renderHeader}
+      ListFooterComponent={renderFooter}
+      ListEmptyComponent={EmptyListMessage}
+      onEndReachedThreshold={0.4}
+      onRefresh={handlePullRefresh}
+      refreshing={
+        MyNFTReducer.myNftOwnedListPage === 1 &&
+        MyNFTReducer.myNftOwnedListLoading
+      }
+    />
   );
 };
 

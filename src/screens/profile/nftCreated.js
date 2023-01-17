@@ -13,7 +13,7 @@ import {
   myNftLoadFail,
 } from '../../store/actions/myNFTaction';
 import styles from './styles';
-import {Tabs} from 'react-native-collapsible-tab-view';
+import {Tab, Tabs} from 'react-native-collapsible-tab-view';
 import AppBackground from '../../components/appBackground';
 
 const NFTCreated = props => {
@@ -62,34 +62,6 @@ const NFTCreated = props => {
 
   const renderItem = ({item, index}) => {
     return (
-      // <View style={styles.trendCont}>
-      //   {MyNFTReducer.myNftCreatedListLoading &&
-      //   MyNFTReducer.myNftCreatedListPage == 1 ? (
-      //     <View style={styles.sorryMessageCont}>
-      //       <Loader />
-      //     </View>
-      //   ) : MyNFTReducer.myNftCreatedList.length ? (
-      //     <NFTItem
-      //       screenName="movieNFT"
-      //       item={item}
-      //       // image={imageUri}
-      //       profile={true}
-      //       onPress={() => {
-      //         // dispatch(changeScreenName('movieNFT'));
-      //         navigation.push('CertificateDetail', {
-      //           networkName: item?.network?.networkName,
-      //           collectionAddress: item?.collection?.address,
-      //           nftTokenId: item?.tokenId,
-      //         });
-      //       }}
-      //     />
-      //   ) : (
-      //     <View style={styles.sorryMessageCont}>
-      //       <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-      //     </View>
-      //   )}
-      // </View>
-
       <NFTItem
         screenName="movieNFT"
         item={item}
@@ -112,66 +84,39 @@ const NFTCreated = props => {
 
   return (
     <View style={styles.trendCont}>
-      {isFirstRender ? (
-        isFirstRender
-      ) : MyNFTReducer.myNftCreatedListPage === 1 &&
-        MyNFTReducer.myNftListLoading ? (
-        <View style={styles.sorryMessageCont}>
-          <Loader />
-        </View>
-      ) : MyNFTReducer?.myNftCreatedList?.length ? (
-        <View>
-          <Tabs.FlatList
-            key={1}
-            // scrollEnabled={scrollEnabled}
-            data={MyNFTReducer?.myNftCreatedList}
-            horizontal={false}
-            // numColumns={2}
-            initialNumToRender={15}
-            // nestedScrollEnabled={true}
-            onRefresh={handlePullRefresh}
-            refreshing={
-              MyNFTReducer.myNftCreatedListPage === 1 &&
-              MyNFTReducer.myNftListLoading
+      {MyNFTReducer.myNftCreatedListLoading &&
+      MyNFTReducer.myNftCreatedListPage == 1 ? (
+        <Tabs.ScrollView>
+          <View style={styles.sorryMessageCont}>
+            <Loader />
+          </View>
+        </Tabs.ScrollView>
+      ) : MyNFTReducer.myNftCreatedList.length > 0 ? (
+        <Tabs.FlatList
+          key={1}
+          data={MyNFTReducer?.myNftCreatedList}
+          renderItem={renderItem}
+          numColumns={2}
+          keyExtractor={(v, i) => 'item_' + i}
+          initialNumToRender={10}
+          onEndReached={() => {
+            if (
+              !MyNFTReducer.myNftCreatedListLoading &&
+              MyNFTReducer.myNftCreatedList.length !=
+                MyNFTReducer.myNftCreatedTotalCount
+            ) {
+              let num = MyNFTReducer.myNftCreatedListPage + 1;
+              getNFTlist(num, 10, props.id, 1);
+              dispatch(myNftCreatedPageChange(num));
             }
-            renderItem={memoizedValue}
-            onEndReached={() => {
-              if (
-                !MyNFTReducer.myNftListLoading &&
-                MyNFTReducer.myNftCreatedList.length !==
-                  MyNFTReducer.myNftTotalCount
-              ) {
-                let num = MyNFTReducer.myNftCreatedListPage + 1;
-                getNFTlist(num, limit, id, tab);
-                dispatch(myNftCreatedPageChange(num));
-              }
-            }}
-            // onScrollBeginDrag={s => {
-            //   // console.log(
-            //   //   '🚀 ~ ~ onScrollBeginDrag ~ ~',
-            //   //   s?.nativeEvent?.contentOffset,
-            //   // );
-            //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-            // }}
-            // onScroll={s => {
-            //   // console.log(
-            //   //   '🚀 ~ c ~ onScroll ~ ~',
-            //   //   s?.nativeEvent?.contentOffset,
-            //   // );
-            //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-            // }}
-            // onScrollEndDrag={s => {
-            //   // console.log(
-            //   //   '🚀 ~ ~ onScrollEndDrag ~ ~',
-            //   //   s?.nativeEvent?.contentOffset,
-            //   // );
-            //   setChildScroll(s?.nativeEvent?.contentOffset?.y);
-            // }}
-            ListFooterComponent={renderFooter}
-            onEndReachedThreshold={0.4}
-            keyExtractor={(v, i) => 'item_' + i}
-          />
-        </View>
+          }}
+          onEndReachedThreshold={0.4}
+          ListFooterComponent={renderFooter}
+          onRefresh={handlePullRefresh}
+          refreshing={
+            MyNFTReducer.myNftCreatedListPage === 1 &&
+            MyNFTReducer.myNftCreatedListLoading
+          }></Tabs.FlatList>
       ) : (
         <Tabs.ScrollView>
           <View style={styles.sorryMessageCont}>

@@ -601,7 +601,6 @@ function Profile({navigation, connector, route}) {
     [],
   );
 
-  // console.log('This is ID : ', id);
   return (
     <AppBackground>
       {/* <ScrollView
