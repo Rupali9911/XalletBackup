@@ -37,7 +37,6 @@ export const ApiCalls = async (url, method, body, headers) => {
                 //     translate("wallet.common.alert"),
                 //     translate("wallet.common.error.networkFailed"),
                 //     () => {
-                //         console.log(e);
                 //     }
                 // );
             });

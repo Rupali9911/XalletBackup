@@ -65,7 +65,6 @@ const LaunchPadItem = () => {
                 creatorInfo={item.creatorInfo}
                 blind={item.blind}
                 onPress={() => {
-                    // console.log('LaunchPadItem ========', item);
                     navigation.push('CollectionDetail', { isBlind: true, collectionId: "61c9adbfa8a0114d059c89c3", isHotCollection: false });
 
                     //     if (item.redirect) {
@@ -77,7 +76,6 @@ const LaunchPadItem = () => {
                     //                 isStore: item.redirect,
                     //             });
                     //     } else if (item.blind) {
-                    //         console.log('LaunchPadItem ========collection tab => blind1', item.blind, item.collectionId)
                     //         navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: false });
                     //     } else {
                     //        navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: true });
