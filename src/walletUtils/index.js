@@ -8809,7 +8809,6 @@ export function setI18nConfig(tag) {
   const {languageTag} = fallback;
   translate.cache.clear();
   i18n.translations = {[languageTag]: translationGetters[languageTag]()};
-  // console.log('translations',i18n.translations);
   i18n.locale = languageTag;
 }
 

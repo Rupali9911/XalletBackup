@@ -106,7 +106,6 @@ export const buyNFTApi = (
         );
       })
       .catch(error => {
-        console.log('🚀 ~ file: .js ~ line 37 ~ buyAPI ~ error', error);
         dispatch(buyNFTFail(error));
         handleTransactionError(error);
       });

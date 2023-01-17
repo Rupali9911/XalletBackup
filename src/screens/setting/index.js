@@ -14,8 +14,8 @@ import EncryptedStorage from 'react-native-encrypted-storage';
 import Modal from 'react-native-modal';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from 'react-redux';
-import {confirmationAlert,modalAlert } from '../../common/function';
- import {alertWithSingleBtn} from '../../utils';
+import { confirmationAlert, modalAlert } from '../../common/function';
+import { alertWithSingleBtn } from '../../utils';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
@@ -159,7 +159,7 @@ function Setting({ route, navigation }) {
         '@apps',
         '@CURRENT_NETWORK_CHAIN_ID',
       ],
-      err => console.log(err),
+      err => { },
     ).then(() => {
       requestDisconnectDApp();
       dispatch(_logout());

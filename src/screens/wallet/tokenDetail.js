@@ -207,6 +207,7 @@ const TokenDetail = ({ route, navigation }) => {
 
   const getTransactionsByType = (address, type, coin) => {
     return new Promise((resolve, reject) => {
+      let apiRequest = {}
       let params = {
         address,
         networkId: networkType?.id,
@@ -215,12 +216,26 @@ const TokenDetail = ({ route, navigation }) => {
       if (coin !== 'BNB' && coin !== 'ETH' && coin !== 'Matic' && coin !== 'XETA') {
         params.tokenName = coin;
         params.contractAddress = config.ContractAddress
+        //=================== API Request object ======================
+        apiRequest.url = `${NEW_BASE_URL}/mobile/history`;
+        apiRequest.method = 'GET';
+        apiRequest.params = params;
+      } else if (coin === 'XETA' && environment !== 'testnet') {
+        apiRequest.url = `https://api.xanalia.com/xanachain/xanaChainHistory`;
+        apiRequest.method = 'POST';
+        apiRequest.data = {
+          address: address
+        };
+      } else {
+        if (coin === 'XETA' && environment === 'testnet') {
+          setLoading(false);
+          return;
+        }
+        apiRequest.url = `${NEW_BASE_URL}/mobile/history`;
+        apiRequest.method = 'GET';
+        apiRequest.params = params;
       }
-      sendRequest({
-        url: `${NEW_BASE_URL}/mobile/history`,
-        method: 'GET',
-        params,
-      })
+      sendRequest(apiRequest)
         .then(res => {
           setLoading(false);
           if (res.success) {

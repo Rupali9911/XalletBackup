@@ -16,7 +16,6 @@ const DetailModal = ({
   closeCancelModal,
   handleCancelSell,
 }) => {
-  console.log('@@@ Detail Modal components ======>');
   return (
     <>
       <TransactionPending

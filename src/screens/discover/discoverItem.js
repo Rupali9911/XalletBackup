@@ -20,7 +20,6 @@ import {styles} from './styled';
 const {ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon} = SVGS;
 //========================== Discover Item Component =============================
 function discoverItem({item}) {
-  console.log('@@@ Discover Item =======>');
   const navigation = useNavigation();
 
   //========================== Component's Level States =============================

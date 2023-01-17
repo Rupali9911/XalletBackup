@@ -40,13 +40,9 @@ export const setupNetwork = async (
         return true;
       } else return false;
     } catch (error) {
-      console.error("Failed to setup the network in Metamask:", error);
       return false;
     }
   } else {
-    console.error(
-      "Can't setup the BSC network on metamask because window.ethereum is undefined"
-    );
     return false;
   }
 };
@@ -72,7 +68,6 @@ export const setupNetwork = async (
 //         break;
 //       }
 //     }
-//     console.log("chainIdNFT", chainIdNFT);
 //     if (ethereum.networkVersion.toString() !== chainIdNFT) {
 //       condition = true;
 //     }
@@ -81,7 +76,6 @@ export const setupNetwork = async (
 //       condition = true;
 //     }
 //   }
-//   console.log(condition);
 //   if (condition && !localStorage.getItem("userAuth")) {
 //     if (
 //       ethereum &&
@@ -108,7 +102,6 @@ export const setupNetwork = async (
 //           }
 //         }
 //         if (chainIdNFT === parseInt(_chainId, 16).toString()) {
-//           console.log("_chainId", parseInt(_chainId, 16));
 //           localStorage.setItem("selectedBlockChain", chainIndex);
 //           window.location.reload();
 //           return true;
@@ -118,7 +111,6 @@ export const setupNetwork = async (
 //       });
 //       return false;
 //     } else {
-//       console.log("here")
 //       toast.info(formatMessage({ id: "NFTBlockchain." }), {
 //         position: "bottom-right",
 //         autoClose: 3000,

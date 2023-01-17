@@ -1,20 +1,20 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
-import Backup from '../screens/AuthScreens/backup';
-import chooseWallet from '../screens/AuthScreens/chooseWallet';
-import ImportWallet from '../screens/AuthScreens/importWallet';
-import Legal from '../screens/AuthScreens/legal';
-import Policy from '../screens/AuthScreens/policy';
-import RecoveryPhrase from '../screens/AuthScreens/recoveryPhrase';
-import VerifyPhrase from '../screens/AuthScreens/verifyPhrase';
-import Welcome from '../screens/AuthScreens/welcome';
+import Backup from '../AuthScreens/backup';
+import chooseWallet from '../AuthScreens/chooseWallet';
+import ImportWallet from '../AuthScreens/importWallet';
+import Legal from '../AuthScreens/legal';
+import Policy from '../AuthScreens/policy';
+import RecoveryPhrase from '../AuthScreens/recoveryPhrase';
+import VerifyPhrase from '../AuthScreens/verifyPhrase';
+import Welcome from '../AuthScreens/welcome';
 import {
   SignupCrypto,
   LoginCrypto,
   ForgetCrypto,
   Verify,
-} from '../screens/AuthScreens/nonCryptoAuth';
-import WalletBTNS from '../screens/AuthScreens/walletBTNS';
+} from '../AuthScreens/nonCryptoAuth';
+import WalletBTNS from '../AuthScreens/walletBTNS';
 
 const Auth = createStackNavigator();
 
