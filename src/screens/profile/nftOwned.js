@@ -22,17 +22,8 @@ const NFTOwned = props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  let pageNum = 1;
-  let limit = 10;
-  let tab = 1;
-
   useEffect(() => {
     // dispatch(myNftOwnedListingReset());
-
-    console.log(
-      'Useeffect Owned List Loading : ',
-      MyNFTReducer.myNftOwnedListLoading,
-    );
 
     if (props.isFocused) {
       if (!MyNFTReducer?.myNftOwnedList?.length) {
@@ -93,16 +84,20 @@ const NFTOwned = props => {
           <View style={styles.sorryMessageCont}>
             <Loader />
           </View>
-        ) : MyNFTReducer.myNftOwnedList.length ? null : (
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        )}
+        ) : null}
       </View>
     );
   };
 
-  // console.log('Created Loading : ', MyNFTReducer.myNftOwnedList);
+  const EmptyListMessage = () => {
+    return (
+      <View style={styles.trendCont}>
+        <View style={styles.sorryMessageCont}>
+          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+        </View>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.trendCont}>

@@ -6,10 +6,13 @@ const {height} = Dimensions.get('window');
 const styles = StyleSheet.create({
   sorryMessageCont: {
     // flex: 1,
-    marginTop: height / 6.5,
+    // marginTop: height / 6.5,
+
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    alignContent: 'center',
     justifyContent: 'center',
     alignItems: 'center',
- 
   },
   sorryMessage: {
     fontSize: 15,
@@ -18,6 +21,8 @@ const styles = StyleSheet.create({
   trendCont: {
     backgroundColor: colors.white,
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   leftToggle: {
     width: '30%',
