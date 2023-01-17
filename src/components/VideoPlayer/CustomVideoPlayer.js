@@ -20,7 +20,6 @@ const { PlayButtonIcon } = SVGS;
 let updateModalTime = 0
 
 const CustomVideoPlayer = ({ thumbnailUrl, mediaUrl }) => {
-    console.log("@@@ Custom Video Player screen rendering ======>")
     const refVideo = useRef(null);
 
     const [showThumb, toggleThumb] = useState(true);
@@ -95,7 +94,6 @@ const CustomVideoPlayer = ({ thumbnailUrl, mediaUrl }) => {
                             paused={showVideoModal ? true : !playVideo}
                             resizeMode={'cover'}
                             onError={error => {
-                                console.log(error);
                                 setVideoLoadErr(true);
                                 toggleThumb(false);
                                 setVideoError(translate('common.VIDEO_FORMAT_ERROR'));

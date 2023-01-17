@@ -34,7 +34,6 @@ class AppPermission {
       if (result === RESULTS.BLOCKED) return false;
       return false;
     } catch (error) {
-      console.log('AppPermission checkPermission error:', error);
       return false;
     }
   };
@@ -45,8 +44,6 @@ class AppPermission {
       const result = await request(permissions);
       return result === RESULTS.GRANTED;
     } catch (error) {
-      console.log('AppPermission requestPermission error:', error);
-
       return false;
     }
   };

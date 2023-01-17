@@ -53,9 +53,7 @@ const appSplash = () => {
         }
         dispatch(loadFromAsync());
       }
-    } catch (error) {
-      console.log('@@@ Token in appSplash =========>', error);
-    }
+    } catch (error) {}
   };
 
   return (

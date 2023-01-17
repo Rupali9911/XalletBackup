@@ -82,7 +82,7 @@ export const myNFTList = (pageIndex, pageSize, address, category) => {
     fetch(url)
       .then(response => response.json())
       .then(data => dispatch(myNftLoadSuccess({...data, tabTitle: category})))
-      .catch(error => dispatch(myNftLoadFail()))
+      .catch(error => dispatch(myNftLoadFail()));
   };
 };
 
@@ -106,7 +106,6 @@ export const removeBanner = () => {};
 
 // export const myNFTList = (page, ownerId) => {
 
-//   console.log('myNFTList, ownerId', ownerId)
 //   return (dispatch, getState) => {
 
 //     const { data, wallet } = getState().UserReducer;
@@ -150,7 +149,6 @@ export const removeBanner = () => {};
 //     fetch(url, fetch_data_body)
 //       .then(response => response.json()) // promise
 //       .then(json => {
-//         console.log(json, "get my created nft", !json.count)
 //         let nftData = [];
 //         if (!json.count) {
 //           json.data = [];

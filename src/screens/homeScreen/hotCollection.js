@@ -150,9 +150,7 @@ const HotCollection = () => {
           } else {
             Linking.openURL(
               'https://www.xanalia.com/xanalia_nftart_award_2021',
-            ).catch(err => {
-              console.error('Failed opening page because: ', err);
-            });
+            ).catch(err => {});
           }
         }}
       />

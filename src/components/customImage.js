@@ -39,7 +39,6 @@ const C_Image = props => {
             uri={props?.uri}
             onLoad={o => setLoadImage(false)}
             onError={({nativeEvent}) => {
-              console.log(nativeEvent, 'svg errror => 60', props?.uri);
               setLoadImage(false);
               setIsBroken(true);
             }}
@@ -51,7 +50,6 @@ const C_Image = props => {
           onLoadStart={() => setLoadImage(true)}
           onLoadEnd={() => setLoadImage(false)}
           onError={({nativeEvent}) => {
-            console.log(nativeEvent, 'errror => 74', imageUri);
             setIsBroken(true);
           }}
           source={

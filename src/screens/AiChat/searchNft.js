@@ -41,7 +41,6 @@ const SearchInput = () => {
             dispatch(searchLoadingSuccess(res));
           })
           .catch(err => {
-            console.log('search response error', err);
             dispatch(searchLoadingSuccess([]));
           });
       }, 1000)

@@ -104,7 +104,6 @@ const OnSaleTab = props => {
   const memoizedValue = useMemo(() => renderItem, [collectionList]);
 
   const handleFlatlistRefresh = () => {
-    // console.log("@@@ On sale tab refresh function =====>", page === 1 && isLoading)
     dispatch(nftDataCollectionLoadStart());
     refreshFunc();
   };
@@ -133,7 +132,6 @@ const OnSaleTab = props => {
           refreshing={page === 1 && isLoading}
           renderItem={memoizedValue}
           onEndReached={() => {
-            // console.log("@@@ On sale tab onEndReached ======>", isLoading, collectionList.length, totalCount)
             if (!isLoading && collectionList.length !== totalCount) {
               let num = page + 1;
 
