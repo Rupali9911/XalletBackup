@@ -69,8 +69,6 @@ function Profile({navigation, connector, route}) {
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-  const ref = React.useRef();
-  const isFocused = useIsFocused();
 
   // =============== Getting data from reducer ========================
   const {
