@@ -47,7 +47,6 @@ import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
 import SocialMediaLinks from '../../components/SocialMediaLinks';
 import * as Tabs from 'react-native-collapsible-tab-view';
-import Contacts from '../DummyProfile/arrays';
 
 const {
   ConnectSmIcon,
@@ -178,16 +177,35 @@ function Profile({navigation, connector, route}) {
     }, 500);
   };
 
-  const handleIndexChange = index => {
-    setIndex(index);
+  // const handleIndexChange = index => {
+  //   console.log('Index', index);
+  //   setIndex(index);
+  // };
+
+  const LinkingUrl = type => {
+    let url;
+    if (type === 'discordSite') {
+      url = /(http(s?)):\/\//i.test(userDetails?.discordSite)
+        ? userDetails?.discordSite
+        : 'https://' + userDetails?.discordSite;
+    } else if (type === 'webSite') {
+      url = /(http(s?)):\/\//i.test(userDetails?.website)
+        ? userDetails?.website
+        : 'https://' + userDetails?.website;
+    } else if (type === 'twitterSite') {
+      url = 'https://twitter.com/' + userDetails?.twitterSite;
+    } else if (type === 'instagramSite') {
+      url = 'https://www.instagram.com/' + userDetails?.instagramSite;
+    }
+    return Linking.openURL(url);
   };
 
-  const renderScene = ({route}) => {
-    let scrollEnabled =
-      Number(profilePScroll).toFixed(0) < Number(layout).toFixed(0)
-        ? false
-        : true;
-    setProfileScroll(scrollEnabled);
+  // const renderScene = ({route}) => {
+  //   let scrollEnabled =
+  //     Number(profilePScroll).toFixed(0) < Number(layout).toFixed(0)
+  //       ? false
+  //       : true;
+  //   setProfileScroll(scrollEnabled);
 
   //   switch (route.key) {
   //     case 'profileCreated':
