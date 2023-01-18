@@ -36,8 +36,14 @@ import {
 
   //=============Reamin Count==============
   CHAT_REMAIN_COUNT,
+  GET_AI_BG_IMAGE_START,
+  GET_AI_BG_IMAGE_SUCCESS,
+  GET_AI_BG_IMAGE_FAIL,
+  GET_AI_BG_IMAGE_RESET,
 } from '../types';
-import sendRequest from '../../helpers/AxiosApiRequest';
+import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
+import RNFetchBlob from 'rn-fetch-blob';
+import {convertImageToArrayBuffer} from '../../utils/uploadMediaS3';
 
 //=====================Chat=====================
 export const chatLoadingStart = data => ({
@@ -157,6 +163,25 @@ export const ChatHistoryPageChange = page => ({
 export const chatHistoryNextPage = nextPage => ({
   type: CHAT_BOT_HISTORY_NEXT_PAGE,
   payload: nextPage,
+});
+
+//=========================CHAT BOT BG IMAGE====================
+export const getAIBackgroundImageStart = () => ({
+  type: GET_AI_BG_IMAGE_START,
+});
+
+export const getAIBackgroundImageSuccess = data => ({
+  type: GET_AI_BG_IMAGE_SUCCESS,
+  payload: data,
+});
+
+export const getAIBackgroundImageFail = error => ({
+  type: GET_AI_BG_IMAGE_FAIL,
+  payload: error,
+});
+
+export const getAIBackgroundImageReset = () => ({
+  type: GET_AI_BG_IMAGE_RESET,
 });
 
 //===================Set Remaining Words============================
@@ -323,3 +348,165 @@ export const getChatBotHistory =
         });
     });
   };
+
+//==================================Owned-Other==============================
+// export const uploadBgImage =
+export const uploadAIBgImage =
+  (file, address, collections_address, token_id) => async dispatch => {
+    // console.log(
+    //   '🚀 ~ file: chatAction.js:355 ~ ',
+    //   file,
+    //   address,
+    //   collections_address,
+    //   token_id,
+    // );
+    let url = `https://prod-backend.xanalia.com/xana-genesis-chat/upload-s3`;
+    const token = await getAccessToken('ACCESS_TOKEN');
+    // const token =
+    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjExNDEwMiwicm9sZSI6MSwidXNlcm5hbWUiOiIweDIzOGZkRkJiYkEwMjUwY0ExOTQzNDMyMTg5NUYwZGQ4MjA1RDYwQjYiLCJ3YWxsZXRUeXBlIjoxLCJub25jZSI6MCwiaWF0IjoxNjczODcyMjI1LCJleHAiOjE2NzM4NzU4MjV9.xOO7xWhP4MpQ0Th6DFtQOoCu-WQAflzt75BZclBII8Y';
+    RNFetchBlob.fs.readFile(file.path, 'base64').then(async data => {
+      var Buffer = require('buffer/').Buffer;
+      const imageData = await Buffer.from(data, 'base64');
+      console.log(
+        '🚀 ~ file: chatAction.js:367 ~ RNFetchBlob.fs.readFile ~ imageData',
+        imageData,
+      );
+
+      // let newPath = file.path.replace('file://', '');
+      // const imageData = await convertImageToArrayBuffer(newPath);
+      // formData.append('file', imageData);
+      // formData.append('file', {
+      //   uri: file.path,
+      //   type: file.type,
+      //   name: file.fileName,
+      // });
+
+      // const file = e.target.files[0];
+      // if (file?.name?.match(/\.(jpg|jpeg|png)$/)) {
+      //   const data = ownedData;
+      //   const CollectionAddress = data?.filter(data => {
+      //     return data.tokenId === chatUserData.token_id;
+      //   });
+      //   const formDataFileImg = new FormData();
+      //   formDataFileImg.append('file', file);
+      //   formDataFileImg.append('address', addresses);
+      //   formDataFileImg.append('token_id', CollectionAddress[0].tokenId);
+      //   formDataFileImg.append(
+      //     'collections_address',
+      //     CollectionAddress[0].collection.address,
+      //   );
+      // }
+
+      let formData = new FormData();
+      formData.append('file', file.image);
+      formData.append('address', address);
+      formData.append('token_id', token_id);
+      formData.append('collections_address', collections_address);
+
+      // const path = file.uri.replace('file://', '');
+      // const Data1 = new FormData();
+      // Data1.append('file', RNFetchBlob.wrap(path));
+      // Data1.append('address', address);
+      // Data1.append('token_id', token_id);
+      // Data1.append('collections_address', collections_address);
+
+      console.log('🚀 ~ file: chatAction.js:388 ~ ', file);
+
+      try {
+        const userProfileResponse = await sendRequest({
+          url: url,
+          method: 'POST',
+          data: formData,
+          headers: {
+            // Accept: 'application/json',
+            'Content-Type': 'multipart/form-data',
+            Authorization: 'Bearer ' + token,
+          },
+        });
+        console.log(
+          '🚀 ~ file: chatAction.js:403 ~ RNFetchBlob.fs.readFile ~ userProfileResponse',
+          userProfileResponse,
+        );
+        // var requestOptions = {
+        //   method: 'POST',
+        //   headers: {
+        //     Authorization: 'Bearer ' + token,
+        //     'Content-Type': 'multipart/form-data',
+        //   },
+        //   body: formData,
+        // };
+        // fetch(
+        //   'https://prod-backend.xanalia.com/xana-genesis-chat/upload-s3',
+        //   requestOptions,
+        // )
+        //   .then(response => response.text())
+        //   .then(result => console.log(result))
+        //   .catch(error => console.log('error', error));
+      } catch (error) {
+        // dispatch(endLoadingImage());
+        console.log('@@@ error ', error);
+      }
+    });
+  };
+
+// export const uploadAIBgImage = (
+//   file,
+//   address,
+//   collections_address,
+//   token_id,
+// ) => {
+//   return async (dispatch, getState) => {
+//     // const image_url = await uploadBgImage(
+//     //   file,
+//     //   address,
+//     //   collections_address,
+//     //   token_id,
+//     // );
+//     const token = await getAccessToken('ACCESS_TOKEN');
+//     console.log('🚀 ~ file: chatAction.js:491 ~ Start', token, image_url);
+//     dispatch(getAIBackgroundImageStart());
+//     let url = `https://prod-backend.xanalia.com/xana-genesis-chat/upload-background-image`;
+//     sendRequest({
+//       url,
+//       method: 'POST',
+//       data: {
+//         address,
+//         image_url:
+//           'https://xana-genesis.s3.ap-southeast-1.amazonaws.com/1991-0x5b5cf41d9EC08D101ffEEeeBdA411677582c9448',
+//         collections_address,
+//         token_id,
+//       },
+//     })
+//       .then(data => {
+//         dispatch(getAIBackgroundImageSuccess(data));
+//         console.log('🚀 ~ file: chatAction.js:510 ~ ~ data', data);
+//       })
+//       .catch(err => {
+//         console.log('🚀 ~ file: chatAction.js:513 ~ return ~ err', err);
+//         dispatch(getAIBackgroundImageFail());
+//       });
+//   };
+// };
+
+export const getAIBgImage = (address, collections_address, token_id) => {
+  return (dispatch, getState) => {
+    dispatch(getAIBackgroundImageStart());
+    let url = `https://prod-backend.xanalia.com/xana-genesis-chat/get-background-image`;
+    sendRequest({
+      url,
+      method: 'POST',
+      data: {
+        address,
+        collections_address,
+        token_id,
+      },
+    })
+      .then(data => {
+        dispatch(getAIBackgroundImageSuccess(data));
+      })
+      .catch(err => {
+        console.log('🚀 ~ file: chatAction.js:538 ~ return ~ err', err);
+        dispatch(getAIBackgroundImageFail());
+      });
+  };
+};

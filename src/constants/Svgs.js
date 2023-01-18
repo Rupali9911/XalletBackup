@@ -93,6 +93,7 @@ import DiscordIcon from 'src/assets/svgs/icon-discord.svg';
 import ChatDefaultProfile from 'src/assets/svgs/ChatDefaultProfile.svg';
 import InfoIcon from 'src/assets/svgs/icon-info.svg';
 import ComingSoonInfoIcon from 'src/assets/svgs/info.svg';
+import ChangeBackground from 'src/assets/svgs/change-bg.svg';
 
 export default {
   GirlIcon,
@@ -188,4 +189,5 @@ export default {
   ChatDefaultProfile,
   InfoIcon,
   ComingSoonInfoIcon,
+  ChangeBackground
 };

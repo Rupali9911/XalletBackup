@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  ImageBackground,
 } from 'react-native';
 import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,6 +15,9 @@ import {
   getChatBotHistory,
   ChatHistoryPageChange,
   chatHistoryLoading,
+  getAIBgImage,
+  getAIBackgroundImageReset,
+  uploadAIBgImage,
 } from '../../store/actions/chatAction';
 import {translate} from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
@@ -26,8 +30,15 @@ import moment from 'moment';
 import Toast from 'react-native-toast-message';
 import {Platform} from 'expo-modules-core';
 import {ImagekitType} from '../../common/ImageConstant';
+import ImagePicker from 'react-native-image-crop-picker';
+import {confirmationAlert} from '../../common/function';
+import {openSettings} from 'react-native-permissions';
+import axios from 'axios';
+import AppBackground from '../../components/appBackground';
+import BackIcon from 'react-native-vector-icons/MaterialIcons';
+import {colors} from '../../res';
 
-const {ChatDefaultProfile} = SVGS;
+const {ChatDefaultProfile, ChangeBackground} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
   const {nftDetail, nftImage} = route.params;
@@ -49,17 +60,36 @@ const ChatDetail = ({route, navigation}) => {
     isHistoryLoading,
     isHistoryNextPage,
     remainCount,
+    aiBgImageData,
+    aiBgImageLoading,
   } = useSelector(state => state.chatReducer);
   const {userData} = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const {reducerTabTitle} = useSelector(state => state.chatReducer);
 
   //====================== UseEffect Call ===============================
   useEffect(() => {
     dispatch(chatHistoryLoading());
     getHistoryData(1);
     dispatch(ChatHistoryPageChange(1));
+
+    return () => {
+      dispatch(getAIBackgroundImageReset());
+    };
   }, []);
+
+  useEffect(() => {
+    if (reducerTabTitle === 'Owned') {
+      dispatch(
+        getAIBgImage(
+          userAdd,
+          nftDetail?.collection?.address,
+          nftDetail?.tokenId,
+        ),
+      );
+    }
+  }, [reducerTabTitle]);
 
   //================== Get History Data =================================
   const getHistoryData = page => {
@@ -122,13 +152,14 @@ const ChatDetail = ({route, navigation}) => {
   //======================== Show Bubbles =============================
   const ShowBubble = props => {
     const {item} = props;
+    const senderName = item?.senderName?.slice(0, 8);
     return (
       <View style={{marginVertical: 8}}>
         {item?.type == 'sender' ? (
           <View style={styles.rightBubbleContainer}>
             <View style={styles.talkBubble}>
               <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}>{item?.senderName}</Text>
+                <Text style={styles.msgHolderName}>{senderName}</Text>
                 <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>
@@ -158,6 +189,50 @@ const ChatDetail = ({route, navigation}) => {
         )}
       </View>
     );
+  };
+
+  const openImagePicker = async () => {
+    ImagePicker.openPicker({
+      mediaType: 'photo',
+    })
+      .then(image => {
+        let filename =
+          Platform.OS === 'android'
+            ? image.path.substring(image.path.lastIndexOf('/') + 1)
+            : image.filename;
+
+        let uri = Platform.OS === 'android' ? image.path : image.sourceURL;
+        let temp = {
+          path: image.path,
+          uri: uri,
+          type: image.mime,
+          fileName: filename,
+          image: image,
+        };
+        dispatch(
+          uploadAIBgImage(
+            temp,
+            userAdd,
+            nftDetail?.collection?.address,
+            nftDetail?.tokenId,
+          ),
+        );
+      })
+      .catch(async e => {
+        if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
+          // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
+          // if (isGranted === false) {
+          confirmationAlert(
+            translate('wallet.common.storagePermissionHeader'),
+            translate('wallet.common.storagePermissionMessage'),
+            translate('common.Cancel'),
+            translate('wallet.common.settings'),
+            () => openSettings(),
+            () => null,
+          );
+          // }
+        }
+      });
   };
 
   //=========================Toast Message=================================
@@ -280,14 +355,14 @@ const ChatDetail = ({route, navigation}) => {
   //=====================(Main return Function)=============================
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <TouchableOpacity
+      {/* <TouchableOpacity
         onPress={() => {
           navigation.goBack();
           dispatch(chatLoadingSuccess(''));
         }}
         style={styles.backButtonWrap}>
         <Image style={styles.backIcon} source={ImageSrc.backArrow} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <KeyboardAwareScrollView
         contentContainerStyle={{
@@ -312,14 +387,44 @@ const ChatDetail = ({route, navigation}) => {
               </View>
             ) : null}
           </View>
-          <View style={styles.bannerImgContainer}>
+
+          <ImageBackground
+            style={styles.bannerImgContainer}
+            source={{uri: aiBgImageData?.background_image}}>
             <C_Image
               uri={nftDetail?.smallImage}
               size={ImagekitType.FULLIMAGE}
               imageStyle={styles.bannerImage}
             />
+          </ImageBackground>
+
+          <View style={styles.backBtnContainer}>
+            <TouchableOpacity
+              style={styles.backButtonWrap}
+              onPress={() => {
+                navigation.goBack();
+                dispatch(chatLoadingSuccess(''));
+              }}>
+              {/* <Image style={styles.backIcon} source={ImageSrc.backArrow} /> */}
+              <BackIcon
+                name={'keyboard-backspace'}
+                color={colors.white}
+                size={SIZE(22)}
+              />
+            </TouchableOpacity>
+
+            {/* {reducerTabTitle === 'Owned' ? (
+              <TouchableOpacity
+                style={styles.imageViewWrap}
+                onPress={() => {
+                  openImagePicker();
+                }}>
+                <ChangeBackground width={SIZE(24)} height={SIZE(24)} />
+              </TouchableOpacity>
+            ) : null} */}
           </View>
         </View>
+
         <View style={{flex: 0.6}}>
           <ListHeader />
           <View style={styles.chatContainer}>
