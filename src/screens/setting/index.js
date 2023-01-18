@@ -268,11 +268,6 @@ function Setting({route, navigation}) {
           />
           <View style={{...styles.separator, width: wp('81%')}} />
           <ListItem
-            onPress={() => navigation.navigate('DummyProfile')}
-            label={'Profile'}
-          />
-          <View style={{...styles.separator, width: wp('81%')}} />
-          <ListItem
             onPress={() =>
               alertWithSingleBtn(
                 translate('wallet.common.alert'),
