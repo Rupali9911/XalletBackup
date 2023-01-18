@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 import {
   Linking,
@@ -17,7 +17,6 @@ import PopupMenu from '../../components/PopupMenu/PopupMenu';
 import {useDispatch, useSelector} from 'react-redux';
 import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
-import {Container} from 'src/styles/common.styles';
 import {confirmationAlert} from '../../common/function';
 import {
   heightPercentageToDP as hp,
@@ -47,7 +46,6 @@ import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
 import * as Tabs from 'react-native-collapsible-tab-view';
-import Contacts from '../DummyProfile/arrays';
 
 const {
   ConnectSmIcon,
@@ -72,7 +70,6 @@ function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
-  const ref = React.useRef();
   const isFocused = useIsFocused();
 
   // =============== Getting data from reducer ========================
@@ -185,10 +182,10 @@ function Profile({navigation, connector, route}) {
     }, 500);
   };
 
-  const handleIndexChange = index => {
-    console.log('Index', index);
-    setIndex(index);
-  };
+  // const handleIndexChange = index => {
+  //   console.log('Index', index);
+  //   setIndex(index);
+  // };
 
   const LinkingUrl = type => {
     let url;
@@ -208,54 +205,54 @@ function Profile({navigation, connector, route}) {
     return Linking.openURL(url);
   };
 
-  const renderScene = ({route}) => {
-    let scrollEnabled =
-      Number(profilePScroll).toFixed(0) < Number(layout).toFixed(0)
-        ? false
-        : true;
-    setProfileScroll(scrollEnabled);
+  // const renderScene = ({route}) => {
+  //   let scrollEnabled =
+  //     Number(profilePScroll).toFixed(0) < Number(layout).toFixed(0)
+  //       ? false
+  //       : true;
+  //   setProfileScroll(scrollEnabled);
 
-    switch (route.key) {
-      case 'profileCreated':
-        return (
-          <NFTCreated
-            key={id}
-            id={id}
-            navigation={navigation}
-            scrollEnabled={scrollEnabled}
-            setChildScroll={setChildScroll}
-          />
-        );
-      case 'nftOwned':
-        return (
-          <NFTOwned
-            key={id}
-            id={id}
-            navigation={navigation}
-            scrollEnabled={scrollEnabled}
-            setChildScroll={setChildScroll}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  //   switch (route.key) {
+  //     case 'profileCreated':
+  //       return (
+  //         <NFTCreated
+  //           key={id}
+  //           id={id}
+  //           navigation={navigation}
+  //           scrollEnabled={scrollEnabled}
+  //           setChildScroll={setChildScroll}
+  //         />
+  //       );
+  //     case 'nftOwned':
+  //       return (
+  //         <NFTOwned
+  //           key={id}
+  //           id={id}
+  //           navigation={navigation}
+  //           scrollEnabled={scrollEnabled}
+  //           setChildScroll={setChildScroll}
+  //         />
+  //       );
+  //     default:
+  //       return null;
+  //   }
+  // };
 
-  const renderTabView = id => {
-    return (
-      <TabViewScreen
-        index={index}
-        routes={routes}
-        switchRoutes={r => renderScene(r)}
-        indexChange={i => handleIndexChange(i)}
-        tabBarStyle={{
-          width: wp('50%'),
-          paddingHorizontal: wp('1%'),
-          justifyContent: 'center',
-        }}
-      />
-    );
-  };
+  // const renderTabView = id => {
+  //   return (
+  //     <TabViewScreen
+  //       index={index}
+  //       routes={routes}
+  //       switchRoutes={r => renderScene(r)}
+  //       indexChange={i => handleIndexChange(i)}
+  //       tabBarStyle={{
+  //         width: wp('50%'),
+  //         paddingHorizontal: wp('1%'),
+  //         justifyContent: 'center',
+  //       }}
+  //     />
+  //   );
+  // };
 
   const onSelect = from => {
     setSelectedImage(from);
@@ -519,14 +516,10 @@ function Profile({navigation, connector, route}) {
         style={
           {
             // flex: socialSite ? 0.6 : 0.55,
-            // position: 'relative',
-            // paddingBottom: SIZE(10),
+            position: 'relative',
+            paddingBottom: SIZE(10),
           }
         }
-        // hitSlop={{top: 10, bottom: 10, left: 0, right: 0}}
-        // pointerEvents={'box-none'}
-        // pointerEvents={{}}
-        // onPointerCancelCapture
         // onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}
       >
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
