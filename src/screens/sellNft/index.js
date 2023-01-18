@@ -107,9 +107,7 @@ const SellNFT = ({ route, navigation }) => {
         approvalCheckContract.methods
             .isApprovedForAll(wallet?.address, MarketContractAddress)
             .call((err, res) => {
-                console.log("res", res, "err", err);
                 if (!err) {
-                    // console.log(parseInt(res) / Math.pow(10, 18));
                     if (!res) {
                         setApprovalForAll(wallet?.address, wallet.privateKey, providerUrl, chainType, approvalCheckContract, MarketContractAddress, collectionAddress, 10, 600000)
                             .then((_) => {
@@ -119,7 +117,6 @@ const SellNFT = ({ route, navigation }) => {
                                     sellNFTItem(id, price);
                                 }
                             }).catch((err) => {
-                                console.log(err)
                                 setLoading(false);
                             });
                     } else {
@@ -130,14 +127,12 @@ const SellNFT = ({ route, navigation }) => {
                         }
                     }
                 } else {
-                    console.log("err in balanceOf", err);
                     setLoading(false);
                 }
             });
     }
 
     const sellNFTItem = async (id, price) => {
-        // console.log(this.state.allowedCurrency);
         //validation of input
         // if (
         //   this.props.metaMaskAddress &&
@@ -188,11 +183,9 @@ const SellNFT = ({ route, navigation }) => {
                 .then((res) => {
                     setLoading(false);
                     if (res.success) {
-                        console.log('sold');
                         navigation.goBack();
                     }
                 }).catch((err) => {
-                    console.log('sellNFT error', err);
                     setLoading(false);
                 });
         } else {
@@ -328,7 +321,6 @@ const SellNFT = ({ route, navigation }) => {
                         <Text style={[styles.summaryTxt, { fontSize: RF(2) }]}>{translate("common.listing")}</Text>
 
                         <TouchableOpacity style={styles.saleButton} onPress={() => {
-                            console.log(baseCurrency, price);
                             if (baseCurrency == null) {
                                 modalAlert('', 'Please select Token');
                             } else if (price == '' || parseFloat(`${price}`) <= 0) {

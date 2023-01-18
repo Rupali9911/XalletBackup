@@ -30,7 +30,6 @@ export default class SingleSocket extends Component {
         `ws://54.255.221.170:9898/`,
       );
       this.webSocketBridge.onopen = (e) => {
-        console.log('socket opened');
         onOpen && onOpen();
         resolve();
       };
@@ -38,17 +37,14 @@ export default class SingleSocket extends Component {
         this.onNewMessage(e);
       };
       this.webSocketBridge.onerror = (e) => {
-        console.log('Socket error', e);
       };
       this.webSocketBridge.onclose = (e) => {
-        console.log('socket closed');
         onClose && onClose();
       }
     });
   }
 
   onNewMessage(e) {
-    //console.log('socket_new_message',e);
     // eventService.sendMessage(JSON.parse(e.data));
     Events.next(e.data);
   }

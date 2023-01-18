@@ -197,19 +197,15 @@ const WalletPay = ({ route, navigation }) => {
   }, []);
 
   // useEffect(() => {
-  //   console.log('202 update Total', network);
   //   if (balances) {
   //     if (network.name == 'Ethereum') {
   //       let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
-  //       console.log('value', value);
   //       setTotalValue(value);
   //     } else if (network.name == 'BSC') {
   //       let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-  //       console.log('value', value);
   //       setTotalValue(value);
   //     } else if (network.name == 'Polygon') {
   //       let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
-  //       console.log('value', value);
   //       setTotalValue(value);
   //     }
   //   }
@@ -257,7 +253,6 @@ const WalletPay = ({ route, navigation }) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
           setLoading(false);
           reject();
         });
@@ -416,7 +411,6 @@ const WalletPay = ({ route, navigation }) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
           setLoading(false);
           reject();
         });
@@ -458,7 +452,6 @@ const WalletPay = ({ route, navigation }) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
           setLoading(false);
           reject();
         });
@@ -506,7 +499,6 @@ const WalletPay = ({ route, navigation }) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
           setLoading(false);
           reject();
         });
@@ -578,7 +570,6 @@ const WalletPay = ({ route, navigation }) => {
             resolve();
           })
           .catch(err => {
-            console.log('err', err);
             setLoading(false);
             reject();
           });

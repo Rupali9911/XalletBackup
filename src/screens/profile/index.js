@@ -166,7 +166,6 @@ function Profile({navigation, connector, route}) {
   };
 
   const handleIndexChange = index => {
-    console.log('Index', index);
     setIndex(index);
   };
 
@@ -638,8 +637,6 @@ function Profile({navigation, connector, route}) {
         style={styles.scrollView}
         onScroll={s => {
           const currentScrollPos = s?.nativeEvent?.contentOffset?.y;
-
-          console.log('🚀 ~ p ~ onScroll ~ ~', currentScrollPos, childScroll);
           setProfilePScroll(currentScrollPos);
         }}>
         {renderHeader()}

@@ -47,8 +47,6 @@ const ListItems = (props) => {
 const SelectToken = (props) => {
     //===================== Props Destructuring ===============================
     const { visible, onRequestClose, network, isSend } = props;
-    // console.log("@@@ On select token .js props ========>", props);
-    // console.log("@@@ On select token .js token ========>", tokens);
 
     //===================== States Initiliazation ===============================
     const [balance_Data, setBalanceData] = useState([]);
@@ -68,7 +66,6 @@ const SelectToken = (props) => {
             // array[4].tokenValue = `${props.values.USDC}`;
             // array[5].tokenValue = `${props.values.USDT}`;
             // array[6].tokenValue = `${props.values.ALIA}`;
-            // console.log("@@@ On select token .js array in useEffect ========>", array);
             setBalanceData(array);
         }
     }, [props.values]);
@@ -99,7 +96,6 @@ const SelectToken = (props) => {
                             contentContainerStyle={{ paddingVertical: hp("1.8%") }}
                             data={balance_Data.filter((_) => {
                                 if (searchTxt !== '') {
-                                    // console.log("@@@ searching on select token.js =========>?", searchTxt?.toLowerCase(), _.tokenName?.toLowerCase());
                                     // return (_.network == network.name && _.tokenName.includes(searchTxt))
                                     return (_?.network == network?.name && _?.tokenName.toLowerCase() == searchTxt?.toLowerCase())
                                 } else {

@@ -24,7 +24,6 @@ import LoadingView from './LoadingView';
 import {Verifiedcollections} from './verifiedCollection';
 
 function AppSearch() {
-  console.log('@@@ App Search bar (Tab) =======>');
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -41,7 +40,6 @@ function AppSearch() {
     if (searchTxt !== '') {
       setloading(true);
       const delayDebounceFn = setTimeout(() => {
-        console.log(searchTxt);
         dispatch(searchNFT(searchTxt))
           .then(response => {
             setloading(false);
@@ -56,7 +54,6 @@ function AppSearch() {
             }
           })
           .catch(err => {
-            console.log('search response error', err);
             setloading(false);
             setSearchData([]);
           });
@@ -166,7 +163,6 @@ function AppSearch() {
 export default React.memo(AppSearch);
 
 const ResultItem = React.memo(({item, index, withTag, onPress}) => {
-  console.log('@@@ Result Item screen (Tab) =======>');
   const [loading, setLoading] = useState(false);
   return (
     <View style={[styles.resultItemContainer]}>
