@@ -87,13 +87,11 @@ export const favoriteNftSuccess = data => ({
 export const myNFTList = (pageIndex, pageSize, address, category) => {
   return dispatch => {
     // dispatch(myNftLoadStart());
-    dispatch(myNftCreatedLoadStart());
-    dispatch(myNftOwnedLoadStart());
-    // if (category == 1) {
-    //   dispatch(myNftCreatedLoadStart());
-    // } else {
-    //   dispatch(myNftOwnedLoadStart());
-    // }
+    if (category == 1) {
+      dispatch(myNftCreatedLoadStart());
+    } else {
+      dispatch(myNftOwnedLoadStart());
+    }
 
     const url = `${NEW_BASE_URL}/nfts/nft-by-address-user?pageIndex=${pageIndex}&pageSize=${pageSize}&address=${address}&categoryFilter=${category}`;
     fetch(url)

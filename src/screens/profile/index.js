@@ -47,7 +47,6 @@ import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
 import * as Tabs from 'react-native-collapsible-tab-view';
-import Contacts from '../DummyProfile/arrays';
 
 const {
   ConnectSmIcon,
@@ -72,8 +71,6 @@ function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
-  const isFocused = useIsFocused();
-  const ref = React.useRef();
   const isFocused = useIsFocused();
 
   // =============== Getting data from reducer ========================
@@ -517,17 +514,11 @@ function Profile({navigation, connector, route}) {
   const RenderHeader = () => {
     return (
       <View
-        style={
-          {
-            // flex: socialSite ? 0.6 : 0.55,
-            // position: 'relative',
-            // paddingBottom: SIZE(10),
-          }
-        }
-        // hitSlop={{top: 10, bottom: 10, left: 0, right: 0}}
-        // pointerEvents={'box-none'}
-        // pointerEvents={{}}
-        // onPointerCancelCapture
+        style={{
+          // flex: socialSite ? 0.6 : 0.55,
+          position: 'relative',
+          paddingBottom: SIZE(10),
+        }}
         // onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}
       >
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
