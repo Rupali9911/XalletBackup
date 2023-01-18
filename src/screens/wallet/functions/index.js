@@ -208,7 +208,6 @@ export const currencyInDollar = async (pubkey, type) => {
             var bnbLpReserve = info[0].toString();
             var busdLpReserve = info[1].toString();
             var bnbPriceInner = busdLpReserve / bnbLpReserve;
-
             resolve(bnbPriceInner);
           });
       } else if (type === 'ALIA') {
@@ -229,15 +228,17 @@ export const currencyInDollar = async (pubkey, type) => {
             ids: 'xana',
             vs_currencies: 'usd',
           },
-        }).then(function (info) {
-          resolve(info.xana.usd);
-        }).catch((e) => {
-          console.log('@@@ xana chain dollar price error=====>', e);
-          reject({
-            success: false,
-            data: 'Smart contract not deployed to detected network.',
-          });
         })
+          .then(function (info) {
+            resolve(info.xana.usd);
+          })
+          .catch(e => {
+            console.log('@@@ xana chain dollar price error=====>', e);
+            reject({
+              success: false,
+              data: 'Smart contract not deployed to detected network.',
+            });
+          });
       } else {
         await contract.methods
           .getReserves()

@@ -32,7 +32,6 @@ const disable = async () => {
     if (proxy === undefined) return undefined;
     await proxy.user.logout();
   } catch (error) {
-    console.error(error);
     return false;
   }
 };

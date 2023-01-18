@@ -1,4 +1,4 @@
-import {batch} from 'react-redux';
+import { batch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
@@ -10,7 +10,7 @@ import {
   SET_TAIWAN_LANGUAGE,
   UPDATE_ALL_LANGUAGES,
 } from '../types';
-import {setI18nConfig} from '../../walletUtils';
+import { setI18nConfig } from '../../walletUtils';
 
 const initialState = {
   loading: false,
@@ -109,7 +109,6 @@ export const getAllLanguages = () => dispatch =>
       dispatch(updateAllLanguages(languages));
     })
     .catch(error => {
-      console.log(error);
     });
 
 //Set Selected Language

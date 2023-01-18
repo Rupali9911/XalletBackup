@@ -10,7 +10,7 @@ import ImagesSrc from "../../constants/Images";
 import Fonts from "../../constants/Fonts";
 import CommonStyles from "../../constants/styles";
 import { RF, wp, hp } from '../../constants/responsiveFunct';
-import {translate, CARD_MASK} from '../../walletUtils';
+import { translate, CARD_MASK } from '../../walletUtils';
 import Checkbox from '../../components/checkbox';
 import AppInput from '../../components/appInput';
 import ButtonInputContainer from '../../components/buttonInputContainer';
@@ -35,7 +35,7 @@ export const ScanBottomView = (props) => {
                 style={props.leftIconStyle}
                 activeColor={props.activeColor}
                 inactiveColor={props.inactiveColor}
-                />
+            />
             <View style={[styles.vwDivider, props.dividerStyle]} />
             <ScanButtons
                 onPress={props.onRightPress}
@@ -64,7 +64,7 @@ export const ProfileImage = (props) => {
 
 export const PaymentField = (props) => {
 
-    const {data} = useSelector((state) => state.AuthReducer);
+    const { data } = useSelector((state) => state.AuthReducer);
     const dispatch = useDispatch();
 
     useEffect(
@@ -75,10 +75,9 @@ export const PaymentField = (props) => {
     )
 
     const getBalance = () => {
-        if(!data) return;
+        if (!data) return;
 
         // dispatch(GetBalance(data.token)).then((res)=>{
-        //     console.log('getUserBalance res',res);
         //     if(res.success){
         //         let user_data = data;
         //         user_data.balance = res.totalBalance;
@@ -86,7 +85,6 @@ export const PaymentField = (props) => {
         //         AsyncStorage.setItem('@userData', userData)
         //     }
         // }).catch(err=>{
-        //     err && console.log(err);
         // })
     }
 
@@ -113,7 +111,7 @@ export const PaymentField = (props) => {
                 displayType={'text'}
                 thousandSeparator={true}
                 decimalScale={2}
-                renderText={formattedValue => <Text numberOfLines={1} style={[styles.inputBottom]} >{!props.isFromApplyToken ? translate("common.yourCurrentBalance",{balance: "¥"+formattedValue}) : 'Max Supply / 400,000 Token'}</Text>} // <--- Don't forget this!
+                renderText={formattedValue => <Text numberOfLines={1} style={[styles.inputBottom]} >{!props.isFromApplyToken ? translate("common.yourCurrentBalance", { balance: "¥" + formattedValue }) : 'Max Supply / 400,000 Token'}</Text>} // <--- Don't forget this!
             />
             <Text style={styles.inputBottom} ></Text>
         </View>
@@ -159,7 +157,7 @@ export const ZipcodeInput = (props) => {
                     onChangeText={(masked, unmasked, obfuscated) => {
                         props.onChangeText && props.onChangeText(unmasked);
                     }}
-                    mask={[/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,/\d/,/\d/]}
+                    mask={[/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/]}
                     placeholder={""}
                     keyboardType={'numeric'}
                     underlineColorAndroid={Colors.transparent}
@@ -181,13 +179,13 @@ export const Heading = (props) => {
 }
 
 export const CardItem = (props) => {
-    const {details, isCheck, onSelect, onDelete} = props;
+    const { details, isCheck, onSelect, onDelete } = props;
     return (
         <View style={styles.cardItemContainer}>
             <View style={styles.cardItem} removeClippedSubviews={true}>
-                <Checkbox isCheck={isCheck} onChecked={onSelect} iconSize={wp("5%")}/>
+                <Checkbox isCheck={isCheck} onChecked={onSelect} iconSize={wp("5%")} />
                 <View style={styles.itemCardType}>
-                    <Image source={ImagesSrc.cardTypeIcon[details.brand.replace(' ', '-').toLowerCase()]} resizeMode={'contain'}/>
+                    <Image source={ImagesSrc.cardTypeIcon[details.brand.replace(' ', '-').toLowerCase()]} resizeMode={'contain'} />
                 </View>
                 <Text style={styles.number}>
                     {formatWithMask({
@@ -200,8 +198,8 @@ export const CardItem = (props) => {
                 ?
                 <TouchableOpacity
                     style={styles.deleteIconContainer}
-                    onPress={()=>onDelete(details)}>
-                    <Image style={styles.deleteIcon} source={ImagesSrc.itemDelete} resizeMode={'contain'}/>
+                    onPress={() => onDelete(details)}>
+                    <Image style={styles.deleteIcon} source={ImagesSrc.itemDelete} resizeMode={'contain'} />
                 </TouchableOpacity>
                 :
                 null}
@@ -353,8 +351,8 @@ const styles = StyleSheet.create({
         // elevation: 1,
     },
     deleteIcon: {
-        width: Platform.select({ios: wp("3.5%"), android: wp("3.5%")}),
-        height: Platform.select({ios: wp("3.5%"), android: wp("3.5%")}),
+        width: Platform.select({ ios: wp("3.5%"), android: wp("3.5%") }),
+        height: Platform.select({ ios: wp("3.5%"), android: wp("3.5%") }),
     },
     input: {
         color: Colors.black

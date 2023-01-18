@@ -50,7 +50,7 @@ const TabViewScreen = ({
   return <SafeAreaView style={styles.flex}>{renderTabViews()}</SafeAreaView>;
 };
 
-export default TabViewScreen;
+export default React.memo(TabViewScreen);
 
 const styles = StyleSheet.create({
   flexGrow: {

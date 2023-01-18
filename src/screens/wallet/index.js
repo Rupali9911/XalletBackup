@@ -966,4 +966,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Wallet;
+export default React.memo(Wallet);

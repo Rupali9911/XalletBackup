@@ -209,9 +209,7 @@ const ChatDetail = ({route, navigation}) => {
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
           }
         })
-        .catch(err => {
-          console.log('Error Chat : ', err);
-        });
+        .catch(err => {});
     }
   };
 
