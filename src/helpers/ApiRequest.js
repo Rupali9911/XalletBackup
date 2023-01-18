@@ -2,7 +2,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { Alert } from 'react-native';
 import base64 from 'base-64';
 import { translate, environment } from '../walletUtils';
-import {modalAlert} from '../common/function';
+import { modalAlert } from '../common/function';
 
 var isAlert = false;
 export const STRIPE_API_URL = "https://api.stripe.com/v1/";
@@ -34,16 +34,13 @@ export const ApiRequest = async (url, method, body, headers) => {
                         } else {
                             switch (statusCode) {
                                 case 404:
-                                    console.log('Object not found');
                                     throw Error(`${statusCode} Object not found`);
                                 case 500:
-                                    console.log('Internal server error');
                                     if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
                                         throw Error(`Try again !!!`);
                                     }
                                     throw Error(`${statusCode} Internal server error`);
                                 default:
-                                    console.log('Some error occured');
                                     throw Error(`${statusCode} Some error occured`);
                             }
                         }
@@ -66,7 +63,6 @@ export const ApiRequest = async (url, method, body, headers) => {
                         //     translate("wallet.common.alert"),
                         //     translate("wallet.common.error.apiFailed"),
                         //     (e) => {
-                        //         console.log(e);
                         //     }
                         // );
                         // alert(error)
@@ -92,7 +88,6 @@ export const ApiRequest = async (url, method, body, headers) => {
             //     translate("wallet.common.alert"),
             //     translate("wallet.common.error.apiFailed"),
             //     (e) => {
-            //         console.log(e);
             //     }
             // );
         });
@@ -130,7 +125,6 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                             if (statusCode == 500 && (url.includes('receiveToken') || url.includes('sendToken'))) {
                                 throw `Try again !!!`;
                             } else if (err?.code) {
-                                console.log('err?.code', err?.code)
                             }
                         };
                         return response.json();
@@ -144,7 +138,6 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                         //     translate("wallet.common.alert"),
                         //     translate("wallet.common.error.networkFailed"),
                         //     (e) => {
-                        //         console.log(e);
                         //     }
                         // );
                     });
@@ -169,7 +162,6 @@ export const StripeApiRequest = (url, body, method = "POST") => {
             //     translate("wallet.common.alert"),
             //     translate("wallet.common.error.apiFailed"),
             //     (e) => {
-            //         console.log(e);
             //     }
             // );
         });

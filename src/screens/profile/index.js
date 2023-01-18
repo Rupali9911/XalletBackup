@@ -70,7 +70,6 @@ const {
 const {height} = Dimensions.get('window');
 
 function Profile({navigation, connector, route}) {
-  console.log('@@@ Profile Screen (Tab) =========>');
   const actionSheetRef = useRef(null);
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
@@ -166,7 +165,6 @@ function Profile({navigation, connector, route}) {
   };
 
   const handleIndexChange = index => {
-    console.log('Index', index);
     setIndex(index);
   };
 
@@ -638,8 +636,6 @@ function Profile({navigation, connector, route}) {
         style={styles.scrollView}
         onScroll={s => {
           const currentScrollPos = s?.nativeEvent?.contentOffset?.y;
-
-          console.log('🚀 ~ p ~ onScroll ~ ~', currentScrollPos, childScroll);
           setProfilePScroll(currentScrollPos);
         }}>
         {renderHeader()}

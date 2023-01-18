@@ -52,7 +52,6 @@ export const watchBnBBalance = () => {
 async function getBlockheaders(web3) {
   await web3.eth
     .subscribe('newBlockHeaders', async function (error, event) {
-      console.log(error);
     })
     .on('data', async log => { })
     .on('changed', async log => { })
@@ -77,7 +76,7 @@ export const watchBalanceUpdate = (updateBalance, type) => {
   var web3 = new Web3(new Web3.providers.WebsocketProvider(webSocketLink));
   const subscribe = web3.eth
     .subscribe('newBlockHeaders', (error, result) => {
-      if (error) console.log('watchBalanceUpdate', error);
+      if (error);
     })
     .on('connected', function (subscriptionId) { })
     .on('data', function (log) {
@@ -98,7 +97,7 @@ export const watchAllTransactions = pubKey => {
   );
   const subscribe = web3.eth
     .subscribe('logs', { fromBlock: 0, address: pubKey }, (error, result) => {
-      if (error) console.log('watchAllTransactions', error);
+      if (error);
     })
     .on('connected', function (subscriptionId) { })
     .on('data', function (log) { })
@@ -132,7 +131,7 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
   // Subscribe to pending transactions
   subscription
     .subscribe((error, result) => {
-      if (error) console.log('subscription', error);
+      if (error);
     })
     .on('data', async txHash => {
       try {
@@ -156,9 +155,7 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
 
         // Unsubscribe from pending transactions.
         // subscription.unsubscribe()
-      } catch (error) {
-        console.log(error);
-      }
+      } catch (error) { }
     });
   return subscription;
 };
@@ -233,7 +230,6 @@ export const currencyInDollar = async (pubkey, type) => {
             resolve(info.xana.usd);
           })
           .catch(e => {
-            console.log('@@@ xana chain dollar price error=====>', e);
             reject({
               success: false,
               data: 'Smart contract not deployed to detected network.',
@@ -292,12 +288,10 @@ export const currencyInDollar = async (pubkey, type) => {
 //                   resolve(web3.utils.fromWei(result.toString(), 'ether'));
 //               }
 //           }).catch(function (error) {
-//               console.log(error + ' is the error');
 //               reject(error);
 //           })
 //       } else {
 //           await web3.eth.getBalance(pubKey, function (error, ethbalance) {
-//               console.log('ETH BALANCE', ethbalance)
 //               if (error) {
 //                   reject(error);
 // //>>>>>>> ce88bf819e0785f28bfcaf86baf49f7f4ff833c4
@@ -320,7 +314,6 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
           .balanceOf(pubKey)
           .call()
           .then(function (result) {
-            // console.log('Results from balance of ERC-20', type, result);
             if (type == 'usdc') {
               // resolve(web3.utils.fromWei(result.toString(), "ether"));
               resolve(web3.utils.fromWei(result.toString(), 'mwei'));
@@ -335,12 +328,10 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
             }
           })
           .catch(function (error) {
-            console.log(error + ' is the error');
             reject(error);
           });
       } else {
         await web3.eth.getBalance(pubKey, function (error, ethbalance) {
-          // console.log('Results from balance of Self', type, ethbalance);
           if (error) {
             reject(error);
           } else {
@@ -350,7 +341,6 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
       }
     });
   } catch (error) {
-    console.log('@@@ Balance load error=========>', error);
     return null;
   }
 };
@@ -371,10 +361,6 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
 //             }
 //             var amountToSend = web3.utils.toWei(amount.toString(), 'ether');
 //             // HERE
-//             // console.log("Custom gas price===>", customGasPrice)
-//             // console.log("Custom gas price===>", web3.utils.toHex(customGasPrice))
-//             // console.log(" gas lmt price===>", web3.utils.toHex(gasLmt))
-
 //             const txObject = {
 //                 //nonce: web3.utils.toHex(txCount),
 //                 from: pubkey,
@@ -489,7 +475,6 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
 //                         networkId: getNetworkId(chainType),
 //                         chainId: getChainId(chainType)
 //                     }, 'petersburg');
-//                     console.log("ETHEREUM ETH CAllED")
 //                 }
 //                 if (chainType === "polygon") {
 //                     common = Common.forCustomChain('mainnet', {
@@ -516,14 +501,12 @@ export const balance = async (pubKey, contractAddr, contractAbi, rpc, type) => {
 
 //                     return;
 //                 } else if (err && err.message) {
-//                     console.log(err);
 //                     reject({ success: false, msg: translate("wallet.common.failed") });
 //                 } else {
 //                     reject({ success: false, msg: translate("wallet.common.errorCode754"), error_code: 754 });
 //                 }
 //             })
 //         } catch (err) {
-//             console.log(err);
 //             reject({ success: false, msg: err.message });
 //         }
 //     })
@@ -556,7 +539,6 @@ export const buyNft = async (
       abiArray = blockChainConfig[2].marketConConfig.abi;
       contractAddress = blockChainConfig[2].marketConConfig.add;
     } else {
-      console.log('invalid chainType');
       reject('invalid chainType');
       return;
     }
@@ -570,7 +552,6 @@ export const buyNft = async (
     var contract = new web3.eth.Contract(abiArray, contractAddress, {
       from: publicKey,
     });
-    // console.log('contract',contract);
     let txObject;
     // HERE
     txObject = {
@@ -587,7 +568,6 @@ export const buyNft = async (
     };
 
     let common = null;
-    console.log('line 427 ~ buyNFT ~ common');
     if (chainType === 'binance') {
       common = Common.forCustomChain(
         'mainnet',
@@ -631,23 +611,18 @@ export const buyNft = async (
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
-          console.log('461 resp crypto function', new Date().getTime());
           // resolve({ success: true, status: 200, data: txHash });
         } else if (err) {
-          console.log(err);
           reject(err.message);
         }
       })
       .once('receipt', receipt => {
         resolve({ success: true, status: 200, data: receipt });
-        console.log('470 - resolve');
       })
       .catch(e => {
-        console.log('Catch 472', e);
         reject(e);
       });
 
-    // console.log(result);
     // return result
   });
 };
@@ -679,7 +654,6 @@ export const buyNftBnb = async (
       abiArray = blockChainConfig[2].marketConConfig.abi;
       contractAddress = blockChainConfig[2].marketConConfig.add;
     } else {
-      console.log('invalid chainType');
       reject('invalid chainType');
       return;
     }
@@ -695,7 +669,6 @@ export const buyNftBnb = async (
     var contract = new web3.eth.Contract(abiArray, contractAddress, {
       from: publicKey,
     });
-    // console.log('contract',contract);
     let txObject;
     // HERE
     txObject = {
@@ -760,10 +733,8 @@ export const buyNftBnb = async (
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
-          console.log('resp noncrypto function 576', new Date().getTime());
           // resolve({ success: true, status: 200, data: txHash });
         } else if (err) {
-          console.log('res else noncrypto function 580', err);
           reject(err.message);
         }
       })
@@ -774,7 +745,6 @@ export const buyNftBnb = async (
         reject(e);
       });
 
-    // console.log(result);
     // return result
   });
 };
@@ -831,7 +801,6 @@ export const checkAllowance = async (publicAddr, chainType, approvalAdd) => {
     }
   });
   // } catch (err) {
-  //     console.log(err)
   // }
 };
 
@@ -868,9 +837,7 @@ export const approvebnb = async (
 
       // var andVal = await web3.utils.toWei("10000000000000000000000000000000000000000000000000000000", 'ether');
       var andVal = await web3.utils.toWei(appprovalValue, 'ether');
-      // console.log("andVal", andVal)
       amount = web3.utils.toHex(andVal);
-      // console.log("amount")
 
       try {
         const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
@@ -887,8 +854,6 @@ export const approvebnb = async (
             from: publicKey,
           });
         }
-        //console.log("ethtoAddress", ethtoAddress.length)
-        //console.log("amount", amount.length)
         // HERE
         const txObject = {
           from: publicKey,
@@ -948,7 +913,6 @@ export const approvebnb = async (
             resolve({ success: true, data: txHash });
             return;
           } else if (err && err.message) {
-            console.log(err);
             reject({ success: false, msg: 'failed' });
           } else {
             reject({
@@ -959,7 +923,6 @@ export const approvebnb = async (
           }
         });
       } catch (err) {
-        console.log(err);
         reject({ success: false, msg: err.message });
       }
     } else {
@@ -998,16 +961,12 @@ export const createCollection = async (
 
     let txCount = '';
     try {
-      console.log('txCount 770', txCount);
       txCount = await web3.eth.getTransactionCount(publicKey, 'pending');
-      console.log('txCount 772', txCount);
     } catch (e) {
-      console.log(e, 'reject tx count create collection 773');
       return reject(e);
     }
 
     var customGasLimit = gasLmt;
-    console.log('🚀 ~ file: index.js ~ line 769 ~ customGasLimit');
     var customGasPrice = gasPr * 1000000000;
     var contract = new web3.eth.Contract(abiArray, contractAddress, {
       from: publicKey,
@@ -1066,10 +1025,7 @@ export const createCollection = async (
     const raw = '0x' + serializedTx.toString('hex');
 
     await web3.eth.sendSignedTransaction(raw, async (err, txHash) => {
-      console.log(txHash, 'tx hash count create collection 823', err);
-
       if (txHash) {
-        // console.log("🚀 ~ file: index.js ~ line 819 ~ awaitweb3.eth.sendSignedTransaction ~ txHash", txHash)
         const interval = setInterval(
           () => checkingProgressTransaction(),
           10000,
@@ -1103,12 +1059,10 @@ export const createCollection = async (
               }
             }
           } catch (error) {
-            console.log(error, ' create nft sendSignedTransaction error 846');
             reject(error);
           }
         };
       } else if (err) {
-        console.log(err, 'transactionReceipt sendSignedTransaction error 852');
         reject(err);
       }
     });
@@ -1200,20 +1154,15 @@ export const setApprovalForAll = async (
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
-          // console.log(txHash)
-          // console.log("resp noncrypto function", new Date().getTime());
           // resolve({ success: true, status: 200, data: txHash });
         } else if (err) {
-          console.log(err);
           reject(err.message);
         }
       })
       .once('receipt', (receipt, err) => {
-        console.log(err, '///////');
         resolve({ success: true, status: 200, data: receipt });
       });
 
-    // console.log(result);
     // return result
   });
 };
@@ -1235,7 +1184,6 @@ export const nftMakingMethods = async data => {
 
     var customGasLimit = data.gasLimit;
     customGasPrice = data.gasFee * 1000000000;
-    // console.log('contract',contract);
     let txObject;
     // HERE
     txObject = {
@@ -1294,11 +1242,8 @@ export const nftMakingMethods = async data => {
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
-          // console.log(txHash)
-          // console.log("resp noncrypto function", new Date().getTime());
           // resolve({ success: true, status: 200, data: txHash });
         } else if (err) {
-          console.log(err, 'testing txHash error');
           reject(err.message);
         }
       })
@@ -1333,7 +1278,6 @@ export const sellNFT = async (
     if (txCount.error) reject(txCount.error);
     var customGasLimit = gasLmt;
     customGasPrice = gasPr * 1000000000;
-    // console.log('contract',contract);
     let txObject;
     // HERE
     txObject = {
@@ -1401,11 +1345,8 @@ export const sellNFT = async (
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
-          console.log(txHash);
-          console.log('resp noncrypto function', new Date().getTime());
           // resolve({ success: true, status: 200, data: txHash });
         } else if (err) {
-          console.log(err);
           reject(err.message);
         }
       })

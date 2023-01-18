@@ -123,7 +123,7 @@ function CollectionDetail(props) {
             setCollection(res);
             setLoading(false);
           })
-          .catch(err => console.log('err : ', err));
+          .catch(err => {});
       } else {
         const collectionArray = await getHotCollectionDetail(
           networkName,
@@ -133,7 +133,6 @@ function CollectionDetail(props) {
         setLoading(false);
       }
     } catch (err) {
-      console.error(err.message);
       setCollection([]);
       setLoading(false);
     }
@@ -321,10 +320,6 @@ function CollectionDetail(props) {
   };
 
   const renderTitle = () => {
-    // console.log(
-    //   'route?.params?.isLaunchPad === true || collection?.isOfficial === 1',
-    //   route?.params?.isLaunchPad === true || collection?.isOfficial === 1,
-    // );
     return (
       <View style={styles.mainNftText}>
         <Text numberOfLines={1} style={styles.collectionName}>

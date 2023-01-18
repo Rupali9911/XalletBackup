@@ -143,7 +143,6 @@ export const newNFTData = (category, sort, limit, pageNum) => {
         // dispatch(newNftLoadSuccess(data))
       })
       .catch(() => {
-        console.log('err');
         dispatch(newNftLoadFail());
         // dispatch(artNftLoadFail());
       });
@@ -174,7 +173,6 @@ export const newNFTData = (category, sort, limit, pageNum) => {
 //     if (user) {
 //       body_data.owner = wallet?.address || user?._id;
 //     }
-//     // console.log('body_data',body_data);
 //     let fetch_data_body = {
 //       method: 'POST',
 //       body: JSON.stringify(body_data),
@@ -187,7 +185,6 @@ export const newNFTData = (category, sort, limit, pageNum) => {
 //     fetch(`${BASE_URL}/xanalia/getDemuxData`, fetch_data_body)
 //       .then(response => response.json())
 //       .then(json => {
-//         //console.log('json', json)
 //         let nftData = [];
 //         if (!json.count) {
 //           json.data = [];
@@ -250,7 +247,6 @@ export const favoriteNFTList = (page, limit, sort) => {
       .then(response => response.json())
       .then(json => {
         let nftData = [];
-        // console.log(json)
         if (!json.count) {
           json.data = [];
         } else {

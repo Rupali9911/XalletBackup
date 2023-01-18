@@ -60,7 +60,6 @@ const TokenDetail = ({ route, navigation }) => {
     // getData()
     //     .then(() => setLoading(false))
     //     .catch((err) => {
-    //         console.log('err', err);
     //         setLoading(false);
     //     });
     getTransactionsByType(
@@ -135,14 +134,12 @@ const TokenDetail = ({ route, navigation }) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
           reject();
         });
 
       // const requests = [getBalance()];
       // Promise.all(requests)
       //     .then(responses => {
-      //         console.log('responses ###############', responses);
       //         const balance = responses[0];
       //         let _item = item;
       //         _item.tokenValue = balance;
@@ -150,7 +147,6 @@ const TokenDetail = ({ route, navigation }) => {
       //         resolve();
       //     })
       //     .catch(err => {
-      //         console.log('err', err);
       //         reject();
       //     });
     });
@@ -159,7 +155,6 @@ const TokenDetail = ({ route, navigation }) => {
   const getTokenValue = () => {
     let totalValue = 0;
     if (item.type == 'ETH' && item.network !== 'Polygon') {
-      // console.log("Item network", item.network)
       let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
       totalValue = value;
     } else if (item.type == 'BNB') {
@@ -169,26 +164,21 @@ const TokenDetail = ({ route, navigation }) => {
       let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.type === 'TNFT') {
-      // console.log("Item network", item.network)
       let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.type == 'TAL') {
-      // console.log("Item network", item.network)
       let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.type == 'USDC') {
       let value = parseFloat(usdcBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.type === 'WETH' && item.network === 'Polygon') {
-      // console.log("Item network", item.network)
       let value = parseFloat(wethBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.network === 'BSC' && item.type == 'ALIA') {
-      // console.log("Item network", item.network)
       let value = parseFloat(tnftBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.network === 'Polygon' && item.type == 'ALIA') {
-      // console.log("Item network", item.network)
       let value = parseFloat(talBalance); //+ parseFloat(balances.USDC)
       totalValue = value;
     } else if (item.type == 'BUSD') {
@@ -252,7 +242,6 @@ const TokenDetail = ({ route, navigation }) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
           setLoading(false);
           reject();
         });

@@ -460,7 +460,6 @@ export const loginExternalWallet = (wallet, isCreate, isLater) => dispatch =>
         }
       })
       .catch(err => {
-        console.log('Error from login', err);
         dispatch(endLoading());
         reject(err);
       });
@@ -522,9 +521,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
         modalAlert(
           translate('wallet.common.alert'),
           translate('common.sessionexpired'),
-          () => {
-            console.log(err);
-          },
+          () => {},
         );
         dispatch(signOut());
       }
@@ -532,7 +529,6 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
       //   translate('wallet.common.alert'),
       //   translate('wallet.common.error.networkFailed'),
       //   () => {
-      //     console.log(err);
       //   },
       // );
     });
@@ -553,7 +549,6 @@ export const getUserData = (id, profile = false) => {
       })
       .catch(error => {
         dispatch(endLoading());
-        console.log('Error from login', error);
       });
   };
 };
@@ -586,7 +581,6 @@ export const updateProfile =
         dispatch(endLoading());
         let key = UserErrorMessage[error.data.messageCode].key;
         dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
-        console.log('@@@ error ', error.data.messageCode);
       });
   };
 
@@ -647,7 +641,6 @@ export const updateAvtar = (address, userId, file) => async dispatch => {
       }
     } catch (error) {
       dispatch(endLoadingImage());
-      console.log('@@@ error ', error);
     }
   });
 };
@@ -680,9 +673,7 @@ export const updateBanner = (address, userId, file) => async dispatch => {
         }, 5000);
       }
     } catch (error) {
-      console.log('@@@ Update banner image error =======>', error);
       dispatch(endLoadingBanner());
-      console.log('@@@ update banner error ', error);
     }
   });
 };

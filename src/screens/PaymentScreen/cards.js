@@ -76,7 +76,6 @@ const Cards = ({ route, navigation }) => {
         setLoading(false);
       })
       .catch(err => {
-        console.log('err', err);
         setLoading(false);
       });
   };
@@ -103,7 +102,6 @@ const Cards = ({ route, navigation }) => {
         }
       })
       .catch(err => {
-        console.log(err);
         setLoading(false);
       });
   };
@@ -150,7 +148,6 @@ const Cards = ({ route, navigation }) => {
                   //         _setDefaultCard(item);
                   //     }
                   // }).catch((err) => {
-                  //     console.log('err', err);
                   // });
                   _setDefaultCard(item);
                 }}
