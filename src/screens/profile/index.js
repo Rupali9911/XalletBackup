@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 import {
   StyleSheet,
@@ -16,7 +16,6 @@ import PopupMenu from '../../components/PopupMenu';
 import {useDispatch, useSelector} from 'react-redux';
 import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
-import {Container} from 'src/styles/common.styles';
 import {confirmationAlert} from '../../common/function';
 import {
   heightPercentageToDP as hp,
@@ -48,7 +47,6 @@ import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
 import SocialMediaLinks from '../../components/SocialMediaLinks';
 import * as Tabs from 'react-native-collapsible-tab-view';
-import Contacts from '../DummyProfile/arrays';
 
 const {
   ConnectSmIcon,
@@ -68,7 +66,6 @@ function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
-  const ref = React.useRef();
   const isFocused = useIsFocused();
 
   // =============== Getting data from reducer ========================
@@ -191,47 +188,47 @@ function Profile({navigation, connector, route}) {
         : true;
     setProfileScroll(scrollEnabled);
 
-    switch (route.key) {
-      case 'profileCreated':
-        return (
-          <NFTCreated
-            key={id}
-            id={id}
-            navigation={navigation}
-            scrollEnabled={scrollEnabled}
-            setChildScroll={setChildScroll}
-          />
-        );
-      case 'nftOwned':
-        return (
-          <NFTOwned
-            key={id}
-            id={id}
-            navigation={navigation}
-            scrollEnabled={scrollEnabled}
-            setChildScroll={setChildScroll}
-          />
-        );
-      default:
-        return null;
-    }
-  };
+  //   switch (route.key) {
+  //     case 'profileCreated':
+  //       return (
+  //         <NFTCreated
+  //           key={id}
+  //           id={id}
+  //           navigation={navigation}
+  //           scrollEnabled={scrollEnabled}
+  //           setChildScroll={setChildScroll}
+  //         />
+  //       );
+  //     case 'nftOwned':
+  //       return (
+  //         <NFTOwned
+  //           key={id}
+  //           id={id}
+  //           navigation={navigation}
+  //           scrollEnabled={scrollEnabled}
+  //           setChildScroll={setChildScroll}
+  //         />
+  //       );
+  //     default:
+  //       return null;
+  //   }
+  // };
 
-  const renderTabView = id => {
-    return (
-      <TabViewScreen
-        index={index}
-        routes={routes}
-        switchRoutes={r => renderScene(r)}
-        indexChange={i => handleIndexChange(i)}
-        tabBarStyle={{
-          width: wp('50%'),
-          paddingHorizontal: wp('1%'),
-          justifyContent: 'center',
-        }}
-      />
-    );
-  };
+  // const renderTabView = id => {
+  //   return (
+  //     <TabViewScreen
+  //       index={index}
+  //       routes={routes}
+  //       switchRoutes={r => renderScene(r)}
+  //       indexChange={i => handleIndexChange(i)}
+  //       tabBarStyle={{
+  //         width: wp('50%'),
+  //         paddingHorizontal: wp('1%'),
+  //         justifyContent: 'center',
+  //       }}
+  //     />
+  //   );
+  // };
 
   const onSelect = from => {
     setSelectedImage(from);
