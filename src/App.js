@@ -83,7 +83,7 @@ const AppRoutes = () => {
     SplashScreen.hide();
     if (!renderPass && pass) {
       dispatch(updatePassStatus(true));
-      dispatch(setPasscodeAsync(JSON.parse(pass)));
+      dispatch(setPasscodeAsync(pass));
       toggle(true);
     }
   }
