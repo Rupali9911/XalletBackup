@@ -1,20 +1,19 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, Text, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect} from 'react';
+import {ActivityIndicator, Text, View} from 'react-native';
+import {Tabs} from 'react-native-collapsible-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
 import {Loader} from '../../components';
 import NFTItem from '../../components/NFTItem';
 import {colors} from '../../res';
 import {
   myNFTList,
-  myNftListReset,
   myNftLoadFail,
   myNftOwnedListingReset,
   myNftOwnedPageChange,
 } from '../../store/actions/myNFTaction';
 import {translate} from '../../walletUtils';
 import styles from './styles';
-import {Tabs} from 'react-native-collapsible-tab-view';
 
 const NFTOwned = props => {
   const {MyNFTReducer} = useSelector(state => state);
@@ -27,9 +26,6 @@ const NFTOwned = props => {
 
   useEffect(() => {
     // dispatch(myNftOwnedListingReset());
-
-    console.log('Useeffect Owned List Loading : ', MyNFTReducer.myNftOwnedListLoading)
-
     if (props.isFocused) {
       if (!MyNFTReducer?.myNftOwnedList?.length) {
         pressToggle();
@@ -59,6 +55,14 @@ const NFTOwned = props => {
     return null;
   };
 
+  const renderEmptyComponent = () => {
+    return (
+      <View style={styles.sorryMessageCont}>
+        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+      </View>
+    );
+  };
+
   const renderItem = ({item, index}) => {
     return (
       <NFTItem
@@ -81,7 +85,6 @@ const NFTOwned = props => {
     pressToggle();
   };
 
-
   return (
     <View style={styles.trendCont}>
       {MyNFTReducer.myNftOwnedListLoading &&
@@ -91,7 +94,7 @@ const NFTOwned = props => {
             <Loader />
           </View>
         </Tabs.ScrollView>
-      ) : MyNFTReducer.myNftOwnedList.length > 0 ? (
+      ) : (
         <Tabs.FlatList
           key={2}
           data={MyNFTReducer?.myNftOwnedList}
@@ -112,20 +115,14 @@ const NFTOwned = props => {
           }}
           onEndReachedThreshold={0.4}
           ListFooterComponent={renderFooter}
+          ListEmptyComponent={renderEmptyComponent}
           onRefresh={handlePullRefresh}
           refreshing={
             MyNFTReducer.myNftOwnedListPage === 1 &&
             MyNFTReducer.myNftOwnedListLoading
           }></Tabs.FlatList>
-      ) : (
-        <Tabs.ScrollView>
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        </Tabs.ScrollView>
       )}
     </View>
-   
   );
 };
 
