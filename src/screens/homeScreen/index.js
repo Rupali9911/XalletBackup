@@ -805,4 +805,4 @@ const HomeScreen = ({ navigation }) => {
   );
 };
 
-export default HomeScreen;
+export default React.memo(HomeScreen);

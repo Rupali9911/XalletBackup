@@ -146,7 +146,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
       }
     } catch {
       changeLoadingState(false);
-      console.log(e, "nftlist collectionList error");
     } finally {
       // changeLoadingState(false);
     }
@@ -345,7 +344,6 @@ const Collection = ({ changeLoadingState, routeParams, position, collectionData 
         setOpenTransactionPending(false)
       })
       .catch(err => {
-        console.log('payByWallet_err payByWallet 339', err);
         setOpenTransactionPending(false)
         if (typeof err === 'string' && err.includes('transaction underpriced')) {
           modalAlert(

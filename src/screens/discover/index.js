@@ -1,25 +1,25 @@
-import { Divider } from 'native-base';
-import React, { useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, FlatList, StyleSheet, View } from 'react-native';
-import { useDispatch, useSelector } from 'react-redux';
-import { Container } from 'src/styles/common.styles';
-import { BASE_URL, NEW_BASE_URL } from '../../common/constants';
-import { Loader } from '../../components';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useMemo, useState} from 'react';
+import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
+import {useSelector} from 'react-redux';
+import {Container} from 'src/styles/common.styles';
+import {NEW_BASE_URL} from '../../common/constants';
+import {Loader} from '../../components';
 import AppSearch from '../../components/appSearch';
-import { hp } from '../../constants/responsiveFunct';
-import { colors } from '../../res';
-import { getNFTList, nftListReset, nftLoadStart, pageChange } from '../../store/actions/nftTrendList';
-import DiscoverItem from './discoverItem';
-import { networkType } from "../../common/networkType";
-import { nftDataCollectionLoadSuccess } from "../../store/actions/nftDataCollectionAction";
-import axios from 'axios';
+import {SIZE} from '../../constants';
+import {hp} from '../../constants/responsiveFunct';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import { useIsFocused } from '@react-navigation/native';
-import { SIZE } from '../../constants';
+import {colors} from '../../res';
+import DiscoverItem from './discoverItem';
 
-function ExploreScreen() {
-  const { wallet, userData } = useSelector(state => state.UserReducer);
+const ExploreScreen = () => {
+  console.log('@@@ Discover screen (Tab) =======>');
+  const isFocused = useIsFocused();
 
+  //=================== Getting data from reducer ======================
+  const {userData} = useSelector(state => state.UserReducer);
+
+  //=================== Component Level State ======================
   const [page, setPage] = useState(1);
   const [count, setCount] = useState(0);
   const [discoverNFTList, setDiscoverNFTList] = useState([]);
@@ -27,53 +27,53 @@ function ExploreScreen() {
   const [footerLoader, setFooterLoader] = useState(false);
   const [noMore, setNoMore] = useState(false);
   const [isFetching, toggleFetching] = useState(false);
-  const owner = wallet?.address;
-  const userId = userData?.id;
-  const isFocused = useIsFocused()
 
+  //=================== useEffect (API call) ======================
   useEffect(() => {
     if (isFocused) {
-      setLoader(true)
-      loadNFTList(1, true)
+      setLoader(true);
+      loadNFTList(1, true);
     }
   }, []);
 
+  //=================== Discover API call function ======================
   const loadNFTList = (page, refresh) => {
-    const url = `${NEW_BASE_URL}/nfts/nfts-discover`
+    const url = `${NEW_BASE_URL}/nfts/nfts-discover`;
     sendRequest({
-      url, params: {
+      url,
+      params: {
         page,
         limit: 12,
-        userId
-      }
+        userId: userData?.id,
+      },
     })
       .then(json => {
-        if (json?.data === "No record found") {
-          setNoMore(true)
+        if (json?.data === 'No record found') {
+          setNoMore(true);
         } else {
           if (json?.list?.length > 0) {
-            const selectedPack = json?.list
+            const selectedPack = json?.list;
             if (refresh) {
-              setDiscoverNFTList([...selectedPack])
+              setDiscoverNFTList([...selectedPack]);
             } else {
-              setDiscoverNFTList([...discoverNFTList, ...selectedPack])
+              setDiscoverNFTList([...discoverNFTList, ...selectedPack]);
             }
-            setCount(json.count)
+            setCount(json.count);
           }
         }
-        setLoader(false)
-        toggleFetching(false)
-        setFooterLoader(false)
+        setLoader(false);
+        toggleFetching(false);
+        setFooterLoader(false);
       })
       .catch(err => {
-        setLoader(false)
+        setLoader(false);
         setFooterLoader(false);
-        toggleFetching(false)
-        console.log(err, "error discover")
+        toggleFetching(false);
+        console.log(err, 'error discover');
       });
+  };
 
-  }
-
+  //=================== Flatlist Footer Component (Activity Indicator) ======================
   const renderFooter = () => {
     if (!footerLoader) return null;
     return (
@@ -85,36 +85,46 @@ function ExploreScreen() {
     );
   };
 
-  const renderItem = ({ item }) => {
+  //=================== Flatlist Render Component ======================
+  const renderItem = ({item}) => {
     return <DiscoverItem item={item} />;
   };
 
+  const memoizedValue = useMemo(() => renderItem, [discoverNFTList]);
+
+  //=================== Flatlist Refresh & Pagination ======================
   const onRefresh = () => {
     toggleFetching(true);
-    setPage(1)
-    loadNFTList(1, true)
-  }
-
-  const memoizedValue = useMemo(() => renderItem, [discoverNFTList]);
+    setPage(1);
+    loadNFTList(1, true);
+  };
 
   const handleFlastListEndReached = () => {
     if (!noMore) {
       if (!footerLoader && discoverNFTList.length !== count) {
-        setFooterLoader(true)
+        setFooterLoader(true);
         let pageI = page + 1;
-        setPage(pageI)
-        loadNFTList(pageI)
+        setPage(pageI);
+        loadNFTList(pageI);
       }
     }
-  }
-  const keyExtractor = (item, index) => { return 'item_' + index }
-  const itemSeparator = () => (<View style={{
-    height: 10,
-  }} />)
+  };
+
+  const keyExtractor = (item, index) => {
+    return 'item_' + index;
+  };
+
+  const itemSeparator = () => (
+    <View
+      style={{
+        height: 10,
+      }}
+    />
+  );
 
   return (
     <Container>
-      <View style={{ flex: 1 }}>
+      <View style={{flex: 1}}>
         <View style={styles.listContainer}>
           {loader ? (
             <View style={styles.loaderContainer}>
@@ -124,17 +134,18 @@ function ExploreScreen() {
             <FlatList
               data={discoverNFTList}
               renderItem={memoizedValue}
-              onRefresh={onRefresh}
-              refreshing={isFetching}
-              ItemSeparatorComponent={itemSeparator}
-              ListFooterComponent={renderFooter}
               keyExtractor={keyExtractor}
               initialNumToRender={10}
+              refreshing={isFetching}
+              onRefresh={onRefresh}
               horizontal={false}
               pagingEnabled={false}
+              removeClippedSubviews={true}
               legacyImplementation={false}
               onEndReached={handleFlastListEndReached}
               onEndReachedThreshold={0.4}
+              ItemSeparatorComponent={itemSeparator}
+              ListFooterComponent={renderFooter}
             />
           )}
         </View>
@@ -142,9 +153,9 @@ function ExploreScreen() {
       </View>
     </Container>
   );
-}
+};
 
-export default ExploreScreen;
+export default React.memo(ExploreScreen);
 
 const styles = StyleSheet.create({
   listContainer: {

@@ -44,34 +44,11 @@ const MagicLayer = () => {
       {magicLoading && renderMessage()}
     </>
   ) : null;
-
-  // return magicLoading ? (
-  //   <View style={styles.container}>
-  //     <View style={styles.magicRelayer}>
-  //       <magic.Relayer />
-  //     </View>
-
-  //     <View style={styles.loader}>
-  //       <Loader />
-  //     </View>
-  //   </View>
-  // ) : null;
 };
 
 export default MagicLayer;
 
 const styles = StyleSheet.create({
-  // container: {
-  //   backgroundColor: Colors.WHITE1,
-  //   height: screenHeight,
-  //   width: screenWidth,
-  // },
-  // magicRelayer: {
-  //   flex: 1 / 2,
-  // },
-  // loader: {
-  //   marginTop: Platform.OS === 'android' ? hp(5) : null,
-  // },
   container: {
     ...CommonStyles.center,
     zIndex: 1,

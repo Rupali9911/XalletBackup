@@ -74,7 +74,7 @@ import { getTokenNameFromId } from '../../utils/nft';
 import { getDefaultToken, getERC20Tokens } from '../../utils/token';
 import { translate, environment} from '../../walletUtils';
 import { toFixCustom } from '../createNFTScreen/helperFunction';
-import { handleLike } from '../discover/discoverItem';
+import { handleLike } from '../../utils/handleLikeFunction';
 import {
   handleTransactionError,
   sendCustomTransaction,

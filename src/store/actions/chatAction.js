@@ -36,8 +36,15 @@ import {
 
   //=============Reamin Count==============
   CHAT_REMAIN_COUNT,
+  GET_AI_BG_IMAGE_START,
+  GET_AI_BG_IMAGE_SUCCESS,
+  GET_AI_BG_IMAGE_FAIL,
+  GET_AI_BG_IMAGE_RESET,
 } from '../types';
-import sendRequest from '../../helpers/AxiosApiRequest';
+import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
+
+//=====================Xana Chat Base Url=====================
+const xana_base_url = `https://prod-backend.xanalia.com/xana-genesis-chat`;
 
 //=====================Chat=====================
 export const chatLoadingStart = data => ({
@@ -159,6 +166,25 @@ export const chatHistoryNextPage = nextPage => ({
   payload: nextPage,
 });
 
+//=========================CHAT BOT BG IMAGE====================
+export const getAIBackgroundImageStart = () => ({
+  type: GET_AI_BG_IMAGE_START,
+});
+
+export const getAIBackgroundImageSuccess = data => ({
+  type: GET_AI_BG_IMAGE_SUCCESS,
+  payload: data,
+});
+
+export const getAIBackgroundImageFail = error => ({
+  type: GET_AI_BG_IMAGE_FAIL,
+  payload: error,
+});
+
+export const getAIBackgroundImageReset = () => ({
+  type: GET_AI_BG_IMAGE_RESET,
+});
+
 //===================Set Remaining Words============================
 export const remainWordCountData = count => ({
   type: CHAT_REMAIN_COUNT,
@@ -168,54 +194,56 @@ export const remainWordCountData = count => ({
 //=====================Chat=====================
 export const getAiChat =
   (address, name, collectionAddress, locale, nftId, text, tokenId) =>
-  (dispatch, getState) => {
-    let bot_name = name?.split(' ').slice?.(1)?.[0]
-      ? name?.split(' ').slice?.(1)?.[0]
-      : name;
-    const {reducerTabTitle} = getState().chatReducer;
-    dispatch(chatLoadingStart(true));
-    return new Promise((resolve, reject) => {
-      let url = `https://prod-backend.xanalia.com/xana-genesis-chat/chat-bot-ai`;
-      let data = {
-        address,
-        bot_name,
-        collectionAddress,
-        locale,
-        nftId: nftId.toString(),
-        text,
-        tokenId,
-        is_owned: reducerTabTitle === 'Owned' ? true : false,
-      };
-      sendRequest({
-        url,
-        method: 'POST',
-        data,
-      })
-        .then(res => {
-          dispatch(chatLoadingStart(false));
-          if (res?.data) {
-            dispatch(chatLoadingSuccess(res));
-            dispatch(remainWordCountData(res?.remainWordLimit?.userWordLimit));
-            resolve(res);
-          } else {
-            dispatch(chatLoadingSuccess(res));
-            resolve(res);
-          }
+    (dispatch, getState) => {
+      let bot_name = name?.split(' ').slice?.(1)?.[0]
+        ? name?.split(' ').slice?.(1)?.[0]
+        : name;
+      const { reducerTabTitle } = getState().chatReducer;
+      dispatch(chatLoadingStart(true));
+      return new Promise((resolve, reject) => {
+        let url = `https://prod-backend.xanalia.com/xana-genesis-chat/chat-bot-ai`;
+        let data = {
+          address,
+          bot_name,
+          collectionAddress,
+          locale,
+          nftId: nftId.toString(),
+          text,
+          tokenId,
+          is_owned: reducerTabTitle === 'Owned' ? true : false,
+        };
+        sendRequest({
+          url,
+          method: 'POST',
+          data,
         })
-        .catch(err => {
-          dispatch(chatLoadFail(err));
-          reject(err);
-        });
-    });
-  };
+          .then(res => {
+            dispatch(chatLoadingStart(false));
+            if (res?.data) {
+              dispatch(chatLoadingSuccess(res));
+              dispatch(remainWordCountData(res?.remainWordLimit?.userWordLimit));
+              resolve(res);
+            } else {
+              dispatch(chatLoadingSuccess(res));
+              resolve(res);
+            }
+          })
+          .catch(err => {
+            dispatch(chatLoadFail(err));
+            reject(err);
+          });
+      });
+    };
 
 //==================================Owned-Other==============================
 export const getNftCollections =
   (page, address, tabTitle) => (dispatch, getState) => {
     dispatch(setTabTitle(tabTitle));
     const {ownerList, otherList} = getState().chatReducer;
-    let url = `https://prod-backend.xanalia.com/xana-genesis-chat`;
-    url = tabTitle === 'Owned' ? `${url}/my-data` : `${url}/other-data`;
+    let url =
+      tabTitle === 'Owned'
+        ? `${xana_base_url}/my-data`
+        : `${xana_base_url}/other-data`;
 
     const data = {
       cursor: '',
@@ -223,20 +251,17 @@ export const getNftCollections =
       page: page,
       limit: 50,
     };
-    // const headers = {
-    //   Authorization: `Bearer dfsdfsfsfsdfsddfsdfdjsldjflsjdlfj`,
-    // };
 
     (tabTitle === 'Owned'
       ? sendRequest({
-          url,
-          method: 'POST',
-        })
+        url,
+        method: 'POST',
+      })
       : sendRequest({
-          url,
-          method: 'POST',
-          data,
-        })
+        url,
+        method: 'POST',
+        data,
+      })
     )
       .then(response => {
         if (response) {
@@ -263,7 +288,6 @@ export const getNftCollections =
         }
       })
       .catch(err => {
-        console.log('Error : ', err);
         tabTitle === 'Owned'
           ? dispatch(ownedNftLoadSuccess([]))
           : dispatch(otherNftLoadSuccess([]));
@@ -273,7 +297,7 @@ export const getNftCollections =
 //=====================Search=====================
 export const getSearchResult = (text, address) => dispatch => {
   return new Promise((resolve, reject) => {
-    let url = `https://prod-backend.xanalia.com/xana-genesis-chat/search-nfts`;
+    let url = `${xana_base_url}/search-nfts`;
     let data = {
       owner: address,
       searchValue: text,
@@ -300,7 +324,7 @@ export const getChatBotHistory =
     return new Promise((resolve, reject) => {
       let limit = 5;
       sendRequest({
-        url: `https://prod-backend.xanalia.com/xana-genesis-chat/chat-bot-history`,
+        url: `${xana_base_url}/chat-bot-history`,
         method: 'GET',
         params: {
           page,
@@ -324,3 +348,126 @@ export const getChatBotHistory =
         });
     });
   };
+
+//==================================Owned-Other==============================
+export const uploadAIBgImage =
+  (file, collections_address, token_id) => async (dispatch, getState) => {
+    dispatch(getAIBackgroundImageStart());
+
+    let url = `${xana_base_url}/upload-s3`;
+    const {address} = getState().UserReducer?.userData?.userWallet;
+    const token = await getAccessToken('ACCESS_TOKEN');
+
+    const imageData = {
+      name: file.fileName,
+      type: file.type,
+      uri:
+        Platform.OS === 'android'
+          ? file.path
+          : file.path.replace('file://', ''),
+    };
+    const formData = new FormData();
+    formData.append('address', address);
+    formData.append('token_id', token_id);
+    formData.append('collections_address', collections_address);
+    formData.append('file', imageData);
+
+    sendRequest({
+      url: url,
+      method: 'POST',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    })
+      .then(res => {
+        console.log('🚀 ~ file: uploadAIBgImage.js:383 ~ res', res);
+        const data = {
+          address,
+          image_url: res?.url,
+          collections_address,
+          token_id,
+        };
+
+        dispatch(uploadAIBgImageData(data));
+      })
+      .catch(err => {
+        console.log('🚀 ~ file: chatAction.js:388 ~ err', err);
+        dispatch(getAIBackgroundImageFail());
+      });
+  };
+
+export const uploadAIBgImageData = data => {
+  return async (dispatch, getState) => {
+    const token = await getAccessToken('ACCESS_TOKEN');
+    let url = `${xana_base_url}/upload-background-image`;
+    sendRequest({
+      url,
+      method: 'POST',
+      data: data,
+    })
+      .then(res => {
+        dispatch(getAIBackgroundImageSuccess(res));
+        console.log('🚀 ~ file: uploadAIBgImageData.js:510 ~ ~ res', res);
+      })
+      .catch(err => {
+        console.log('🚀 ~ file: chatAction.js:513 ~ return ~ err', err);
+        dispatch(getAIBackgroundImageFail());
+      });
+  };
+};
+
+export const getAIBgImage = (address, collections_address, token_id) => {
+  return (dispatch, getState) => {
+    dispatch(getAIBackgroundImageStart());
+    let url = `${xana_base_url}/get-background-image`;
+    sendRequest({
+      url,
+      method: 'POST',
+      data: {
+        address,
+        collections_address,
+        token_id,
+      },
+    })
+      .then(res => {
+        dispatch(getAIBackgroundImageSuccess(res));
+      })
+      .catch(err => {
+        console.log('🚀 ~ file: chatAction.js:538 ~ return ~ err', err);
+        dispatch(getAIBackgroundImageFail());
+      });
+  };
+};
+
+export const chatBotUpdate = (botName, tokenId, previous_msg, update_msg) => {
+  return (dispatch, getState) => {
+    const {language_name} = getState().LanguageReducer?.selectedLanguageItem;
+    const {address} = getState().UserReducer?.userData?.userWallet;
+    let bot_name = botName?.split(' ').slice?.(1)?.[0]
+      ? botName?.split(' ').slice?.(1)?.[0]
+      : botName;
+    let url = `${xana_base_url}/chat-bot-update`;
+    sendRequest({
+      url,
+      method: 'POST',
+      data: {
+        address,
+        bot_name,
+        locale: language_name,
+        text: previous_msg,
+        tokenId,
+        update_msg,
+      },
+    })
+      .then(res => {
+        console.log('🚀 ~ file: chatAction.js:550 ~ return ~ res', res);
+        dispatch(remainWordCountData(res?.remainWordLimit?.userWordLimit));
+      })
+      .catch(err => {
+        console.log('🚀 ~ file: chatAction.js:538 ~ return ~ err', err);
+      });
+  };
+};

@@ -33,9 +33,6 @@ const QRScreen = () => {
     const route = useRoute();
 
     const { item } = route.params;
-
-    // console.log('item', item);
-
     const { userData } = useSelector((state) => state.UserReducer);
     const wallet = userData?.userWallet;
 
@@ -58,7 +55,6 @@ const QRScreen = () => {
 
     const onSharing = () => {
         qrRef && qrRef.capture().then(uri => {
-            // console.log("do something with ", uri);
             let options = {
                 title: "Share code",
                 url: `${uri}`,
@@ -66,10 +62,9 @@ const QRScreen = () => {
 
             Share.open(options)
                 .then((res) => {
-                    // console.log(res);
                 })
                 .catch((err) => {
-                    err && console.log(err);
+
                 });
         });
     }

@@ -72,7 +72,7 @@ const AiChat = () => {
       .then(res => {
         dispatch(remainWordCountData(res?.word_count?.userWordLimit));
       })
-      .catch(err => console.log(err));
+      .catch(err => {});
   };
 
   //====================render-Tab-Bar=======================
@@ -132,4 +132,4 @@ const AiChat = () => {
   );
 };
 
-export default AiChat;
+export default React.memo(AiChat);
