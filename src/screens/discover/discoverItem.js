@@ -1,25 +1,21 @@
-import React, {useState} from 'react';
-import {Box, Flex, HStack, Pressable, Text} from 'native-base';
-import {useNavigation} from '@react-navigation/native';
-import {TouchableOpacity, View} from 'react-native';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
-import {C_Image} from '../../components';
-import {SVGS} from '../../constants';
-import {fonts} from '../../res';
-import {translate} from '../../walletUtils';
-import {ImagekitType} from '../../common/ImageConstant';
-import {handleLike} from '../../utils/handleLikeFunction';
-import {alertWithSingleBtn, numberWithCommas} from '../../utils';
-import {styles} from './styled';
-
-const {ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon} = SVGS;
+import React, { useState } from 'react';
+import { Box, Flex, HStack, Pressable, Text } from 'native-base';
+import { useNavigation } from '@react-navigation/native';
+import { TouchableOpacity, View } from 'react-native';
+import { C_Image } from '../../components';
+import { SVGS } from '../../constants';
+import { fonts } from '../../res';
+import { translate } from '../../walletUtils';
+import { ImagekitType } from '../../common/ImageConstant';
+import { handleLike } from '../../utils/handleLikeFunction';
+import { numberWithCommas } from '../../utils';
+import { styles } from './styled';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import CommonStyles from '../../constants/styles';
+import { modalAlert } from '../../common/function';
+const { ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;
 //========================== Discover Item Component =============================
-function discoverItem({item}) {
+function discoverItem({ item }) {
   const navigation = useNavigation();
 
   //========================== Component's Level States =============================
@@ -32,14 +28,14 @@ function discoverItem({item}) {
   let creatorName = nftItem?.creator?.name
     ? nftItem.creator.name
     : nftItem?.creator?.address?.includes('0x')
-    ? nftItem.creator.address.substring(0, 6)
-    : '---';
+      ? nftItem.creator.address.substring(0, 6)
+      : '---';
 
   let ownerName = nftItem?.owner?.name
     ? nftItem.owner.name
     : nftItem?.owner?.address?.includes('0x')
-    ? nftItem.owner.address.substring(0, 6)
-    : '---';
+      ? nftItem.owner.address.substring(0, 6)
+      : '---';
 
   //========================== Render creater and owner avatar image =============================
   const renderCreaterOwnerAvatar = () => {
@@ -48,7 +44,7 @@ function discoverItem({item}) {
         <Flex flex={1}>
           <Pressable
             onPress={() => avatarpress('creator')}
-            _pressed={{opacity: 60}}>
+            _pressed={{ opacity: 60 }}>
             <HStack>
               <C_Image
                 imageType={'profile'}
@@ -78,7 +74,7 @@ function discoverItem({item}) {
         <Flex flex={1}>
           <Pressable
             onPress={() => avatarpress('owner')}
-            _pressed={{opacity: 60}}>
+            _pressed={{ opacity: 60 }}>
             <HStack>
               <C_Image
                 imageType={'profile'}
@@ -139,30 +135,23 @@ function discoverItem({item}) {
         <TouchableOpacity onPress={handleLikeMethod}>
           {Number(nftItem?.isLike) ? <HeartActiveIcon /> : <HeartWhiteIcon />}
         </TouchableOpacity>
-        <View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <Menu
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <PopupMenu
+            items={[
+              { label: `${translate('common.reportNft')}` },
+              { label: `${translate('common.blockUser')}` },
+            ]}
+            textStyle={{ ...CommonStyles.titleStyle }}
             onSelect={value => {
-              alertWithSingleBtn(
+              modalAlert(
                 translate('common.Confirm'),
                 value === 1
-                  ? translate('common.nftReported')
-                  : translate('common.userBlocked'),
+                  ? translate('common.userBlocked')
+                  : translate('common.nftReported'),
               );
-            }}>
-            <MenuTrigger children={<ThreeDotsVerticalIcon />} />
-            <MenuOptions>
-              <MenuOption value={1}>
-                <Text style={{marginVertical: 10}}>
-                  {translate('common.reportNft')}
-                </Text>
-              </MenuOption>
-              <MenuOption value={2}>
-                <Text style={{marginVertical: 10}}>
-                  {translate('common.blockUser')}
-                </Text>
-              </MenuOption>
-            </MenuOptions>
-          </Menu>
+            }}
+            children={<ThreeDotsVerticalIcon />}
+          />
         </View>
       </HStack>
     );
@@ -198,10 +187,10 @@ function discoverItem({item}) {
   const avatarpress = v => {
     if (v === 'owner') {
       if (nftItem?.owner?.address)
-        navigation.push('Profile', {id: nftItem?.owner?.address});
+        navigation.push('Profile', { id: nftItem?.owner?.address });
     } else {
       if (nftItem?.creator?.address)
-        navigation.push('Profile', {id: nftItem?.creator?.address});
+        navigation.push('Profile', { id: nftItem?.creator?.address });
     }
   };
 

@@ -40,13 +40,10 @@ import {hp} from '../../constants/responsiveFunct';
 import {View} from 'native-base';
 import Colors from '../../constants/Colors';
 import {COLORS} from '../../constants';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
 import {Portal} from '@gorhom/portal';
+import CommonStyles from '../../constants/styles';
+
 const {
   InstagramIcon,
   ArtistSvg,
@@ -389,16 +386,12 @@ function Profile(props) {
       <View style={styles.infoPPopUpView}>
         <Text style={styles.label}>{translate(title)}</Text>
         <TouchableOpacity onPress={() => onClick(true)}>
-          <Menu opened={opened}>
-            <MenuTrigger />
-            <MenuOptions optionsContainerStyle={styles.menuOption}>
-              <MenuOption>
-                <Text style={{color: '#FFFFFF'}} onPress={() => onClick(false)}>
-                  {translate('common.PROFILE_SAVE_MSG')}
-                </Text>
-              </MenuOption>
-            </MenuOptions>
-          </Menu>
+          <PopupMenu
+            opened={opened}
+            items={[{label: `${translate('common.PROFILE_SAVE_MSG')}!`}]}
+            containerStyle={styles.menuOption}
+            textStyle={{...CommonStyles.textStyle}}
+          />
           <InfoIcon style={styles.infoIcon} />
         </TouchableOpacity>
       </View>

@@ -122,7 +122,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
               });
           } else {
             modalAlert(
-              translate('wallet.common.verification'),
+              translate('common.error'),
               translate('wallet.common.error.invalidPhrase'),
             );
             dispatch(endLoader());
@@ -134,7 +134,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
             err.toString() == 'Error: invalid checksum'
           ) {
             modalAlert(
-              translate('wallet.common.verification'),
+              translate('common.error'),
               translate('wallet.common.error.invalidPhrase'),
             );
           }
@@ -326,7 +326,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
               onPress={() => {
                 if (/\s\s+/g.test(phrase.trim())) {
                   modalAlert(
-                    translate('wallet.common.verification'),
+                    translate('common.error'),
                     translate('wallet.common.error.invalidPhrase'),
                   );
                 } else {
