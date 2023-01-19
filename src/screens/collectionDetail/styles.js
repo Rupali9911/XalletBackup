@@ -329,9 +329,8 @@ const styles = StyleSheet.create({
   text: {margin: SIZE(10), fontSize: SIZE(12)},
   themeColor: {color: Colors.themeColor},
   blackTextColor: {color: Colors.black},
-
   mainNftText: {
-    marginTop: SIZE(40),
+    marginTop: SIZE(55),
     marginBottom: SIZE(20),
     flexDirection: 'row',
     alignItems: 'center',

@@ -26,7 +26,7 @@ import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
 import { NEW_BASE_URL } from '../../common/constants';
 import Fee from '../../common/fee';
-import { twitterLink } from '../../common/function';
+import { twitterLink,instagramLink } from '../../common/function';
 import { ImagekitType } from '../../common/ImageConstant';
 import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppBackground from '../../components/appBackground';
@@ -93,8 +93,7 @@ const {
   HeartActiveIcon,
   ThreeDotsVerticalIcon,
   TwitterIcon,
-  FacebookIcon,
-  InstagramIcon,
+  InstaIcon,
   VerficationIcon,
 } = SVGS;
 
@@ -2705,40 +2704,38 @@ const DetailScreen = ({ navigation, route }) => {
 
   const renderSocialLinks = () => {
     let twitterFullLink = twitterLink(detailNFT?.creator?.twitterLink);
+    let instagramFullLink = instagramLink(detailNFT?.creator?.instagramLink);
     return (
       <View style={styles.socialLinksWrap}>
         {detailNFT?.creator?.twitterLink ? (
-          <TouchableOpacity
-            style={styles.marginRight}
-            hitSlop={hitSlop}
-            onPress={() => Linking.openURL(twitterFullLink)}>
-            <TwitterIcon />
-          </TouchableOpacity>
+          <View
+            style={styles.socialView}
+          >
+            <TouchableOpacity
+              hitSlop={hitSlop}
+              onPress={() => Linking.openURL(twitterFullLink)}
+            >
+             <TwitterIcon />
+            </TouchableOpacity>
+          </View>
         ) : null}
         {detailNFT?.creator?.instagramLink ? (
-          <TouchableOpacity
-            hitSlop={hitSlop}
-            style={{ marginRight: 6 }}
-            onPress={() =>
-              Linking.openURL(
-                'https://www.instagram.com/' +
-                detailNFT?.creator?.instagramLink,
-              )
-            }>
-            <InstagramIcon />
-          </TouchableOpacity>
-        ) : null}
-        {detailNFT?.creator?.facebookLink ? (
-          <TouchableOpacity
-            hitSlop={hitSlop}
-            onPress={() => Linking.openURL(detailNFT?.creator?.facebookLink)}>
-            <FacebookIcon />
-          </TouchableOpacity>
+          <View 
+           style={styles.socialView}
+          >
+            <TouchableOpacity
+              hitSlop={hitSlop}
+              onPress={() =>
+                Linking.openURL(instagramFullLink)}
+            >
+              <InstaIcon />
+            </TouchableOpacity>
+          </View>
         ) : null}
       </View>
     );
   };
-
+  
   //===================== Render Detail NFTDetailDropdown Function =======================
   const renderDetailNFTDetailDropdown = () => {
     return (
@@ -2858,7 +2855,6 @@ const DetailScreen = ({ navigation, route }) => {
         collectionAddress={collectionAddress}
         chain={networkName?.toLowerCase()}
         onRequestClose={() => {
-
           setShowPaymentMethod(false);
           // dispatch(setPaymentObject(null));
         }}

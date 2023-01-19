@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -46,7 +45,7 @@ import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
-
+import SocialMediaLinks from '../../components/SocialMediaLinks'
 const {
   ConnectSmIcon,
   SettingIcon,
@@ -55,11 +54,6 @@ const {
   CopyProfile,
   SettingIconBlack,
   DefaultProfile,
-  YouTubeIcon,
-  WebIcon,
-  Twitter,
-  Instagram,
-  DiscordIcon,
   VerficationIcon,
 } = SVGS;
 
@@ -163,24 +157,6 @@ function Profile({navigation, connector, route}) {
   const handleIndexChange = index => {
     console.log('Index', index);
     setIndex(index);
-  };
-
-  const LinkingUrl = type => {
-    let url;
-    if (type === 'discordSite') {
-      url = /(http(s?)):\/\//i.test(userDetails?.discordSite)
-        ? userDetails?.discordSite
-        : 'https://' + userDetails?.discordSite;
-    } else if (type === 'webSite') {
-      url = /(http(s?)):\/\//i.test(userDetails?.website)
-        ? userDetails?.website
-        : 'https://' + userDetails?.website;
-    } else if (type === 'twitterSite') {
-      url = 'https://twitter.com/' + userDetails?.twitterSite;
-    } else if (type === 'instagramSite') {
-      url = 'https://www.instagram.com/' + userDetails?.instagramSite;
-    }
-    return Linking.openURL(url);
   };
 
   const renderScene = ({route}) => {
@@ -546,40 +522,8 @@ function Profile({navigation, connector, route}) {
           <View style={styles.userDetailsWrapper}>
             {renderProfileNameAndId()}
           </View>
-          <View style={styles.socialSiteView}>
-            {userDetails?.twitterSite ? (
-              <TouchableOpacity onPress={() => LinkingUrl('twitterSite')}>
-                <Twitter width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.instagramSite ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => LinkingUrl('instagramSite')}>
-                <Instagram width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.youtubeSite ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => Linking.openURL(userDetails?.youtubeSite)}>
-                <YouTubeIcon width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.discordSite ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => LinkingUrl('discordSite')}>
-                <DiscordIcon width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.website ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => LinkingUrl('webSite')}>
-                <WebIcon width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
+          <View style={{...CommonStyles.socialSiteView}}>
+            <SocialMediaLinks socialSiteData={userDetails} />
           </View>
           {!route.params && (
             <EditButton
@@ -773,15 +717,7 @@ const styles = StyleSheet.create({
     top: SIZE(150),
     right: SIZE(10),
   },
-  socialSiteButton: {
-    marginLeft: SIZE(12),
-  },
-  socialSiteView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginTop: SIZE(15),
-  },
+ 
   tabView: {
     height: height / 1.5,
     marginTop: SIZE(10),
