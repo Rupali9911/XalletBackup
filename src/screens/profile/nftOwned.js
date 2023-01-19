@@ -14,7 +14,6 @@ import {
 } from '../../store/actions/myNFTaction';
 import {translate} from '../../walletUtils';
 import styles from './styles';
-import {Tabs} from 'react-native-collapsible-tab-view';
 
 const NFTOwned = props => {
   const {MyNFTReducer} = useSelector(state => state);
@@ -27,12 +26,6 @@ const NFTOwned = props => {
 
   useEffect(() => {
     // dispatch(myNftOwnedListingReset());
-
-    console.log(
-      'Useeffect Owned List Loading : ',
-      MyNFTReducer.myNftOwnedListLoading,
-    );
-
     if (props.isFocused) {
       if (!MyNFTReducer?.myNftOwnedList?.length) {
         pressToggle();
@@ -101,7 +94,7 @@ const NFTOwned = props => {
             <Loader />
           </View>
         </Tabs.ScrollView>
-      ) : MyNFTReducer.myNftOwnedList.length > 0 ? (
+      ) : (
         <Tabs.FlatList
           key={2}
           data={MyNFTReducer?.myNftOwnedList}
@@ -122,17 +115,12 @@ const NFTOwned = props => {
           }}
           onEndReachedThreshold={0.4}
           ListFooterComponent={renderFooter}
+          ListEmptyComponent={renderEmptyComponent}
           onRefresh={handlePullRefresh}
           refreshing={
             MyNFTReducer.myNftOwnedListPage === 1 &&
             MyNFTReducer.myNftOwnedListLoading
           }></Tabs.FlatList>
-      ) : (
-        <Tabs.ScrollView>
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        </Tabs.ScrollView>
       )}
     </View>
   );
