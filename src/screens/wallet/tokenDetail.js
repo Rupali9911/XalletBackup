@@ -1,8 +1,8 @@
-import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { Image, StyleSheet, View } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {Image, StyleSheet, View} from 'react-native';
 import NumberFormat from 'react-number-format';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Web3 from 'web3';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
@@ -10,9 +10,9 @@ import TextView from '../../components/appText';
 import GradientBackground from '../../components/gradientBackground';
 import Colors from '../../constants/Colors';
 import ImagesSrc from '../../constants/Images';
-import { hp, RF, wp } from '../../constants/responsiveFunct';
+import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { NEW_BASE_URL } from '../../common/constants';
+import {NEW_BASE_URL} from '../../common/constants';
 import {
   addAllBnbTransactions,
   addAllEthTransactions,
@@ -20,15 +20,20 @@ import {
   addAllXetaTransactions,
 } from '../../store/reducer/walletReducer';
 import testnet from '../../common/networkType';
-import { environment, IsTestNet, translate, getConfigDetailsFromEnviorment } from '../../walletUtils';
-import { HeaderBtns } from './components/HeaderButtons';
+import {
+  environment,
+  IsTestNet,
+  translate,
+  getConfigDetailsFromEnviorment,
+} from '../../walletUtils';
+import {HeaderBtns} from './components/HeaderButtons';
 import History from './components/History';
-import { balance } from './functions';
-import { networkType } from '../../common/networkType';
-import { Loader } from '../../components';
-import sendRequest, { getWallet } from '../../helpers/AxiosApiRequest';
+import {balance} from './functions';
+import {networkType} from '../../common/networkType';
+import {Loader} from '../../components';
+import sendRequest, {getWallet} from '../../helpers/AxiosApiRequest';
 
-const TokenDetail = ({ route, navigation }) => {
+const TokenDetail = ({route, navigation}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const environment = IsTestNet ? 'testnet' : 'mainnet';
@@ -213,7 +218,12 @@ const TokenDetail = ({ route, navigation }) => {
         networkId: networkType?.id,
         environment,
       };
-      if (coin !== 'BNB' && coin !== 'ETH' && coin !== 'Matic' && coin !== 'XETA') {
+      if (
+        coin !== 'BNB' &&
+        coin !== 'ETH' &&
+        coin !== 'Matic' &&
+        coin !== 'XETA'
+      ) {
         params.tokenName = coin;
         params.contractAddress = config.ContractAddress
         //=================== API Request object ======================
@@ -277,7 +287,9 @@ const TokenDetail = ({ route, navigation }) => {
                 decimalScale={8}
                 thousandSeparator={true}
                 renderText={formattedValue => (
-                  <TextView style={styles.priceCont}>{formattedValue}</TextView>
+                  <TextView style={styles.priceCont}>
+                    {Number(formattedValue)}
+                  </TextView>
                 )}
               />
               {/*<View style={styles.tokenDetail}>*/}
@@ -300,7 +312,7 @@ const TokenDetail = ({ route, navigation }) => {
               label={translate('wallet.common.send')}
             />
             <HeaderBtns
-              onPress={() => navigation.navigate('receive', { item })}
+              onPress={() => navigation.navigate('receive', {item})}
               image={ImagesSrc.receive}
               label={translate('wallet.common.receive')}
             />

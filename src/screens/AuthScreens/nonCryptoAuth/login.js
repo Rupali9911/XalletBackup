@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View} from 'react-native';
+import {BackHandler, Keyboard, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import AppBackground from '../../../components/appBackground';
 import AppHeader from '../../../components/appHeader';
@@ -26,7 +26,7 @@ import TextView from '../../../components/appText';
 import AppButton from '../../../components/appButton';
 import CommonStyles from '../../../constants/styles';
 
-const LoginCrypto = () => {
+const LoginCrypto = ({navigation}) => {
   const dispatch = useDispatch();
   const {loading, magicLoading} = useSelector(state => state.UserReducer);
 
@@ -41,8 +41,31 @@ const LoginCrypto = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const gobackAction = () => {
+      {
+        navigation.goBack();
+        return true;
+      }
+    };
+    const backAction = () => {
+      if (!magicLoading) {
+        gobackAction();
+      }
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      backAction,
+    );
+
+    return () => backHandler.remove();
+  }, [magicLoading]);
+
   const collectWallet = async timeout => {
     try {
+      Keyboard.dismiss();
       let token = await requestConnectToDApp(email);
       // console.log('🚀 ~ file: login.js ~ line 40 ~ collectWal ~ token', token);
       if (token) {
