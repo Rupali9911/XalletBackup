@@ -1,6 +1,6 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 
-import {colors, fonts} from '../../res';
+import { colors, fonts } from '../../res';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
@@ -69,6 +69,12 @@ const styles = StyleSheet.create({
   },
   headerList: {
     // margin: SIZE(10)
+  },
+  tabBarStyle: {
+    height: SIZE(40),
+    width: wp('30%'),
+    paddingHorizontal: wp('1%'),
+    justifyContent: 'center',
   },
   headerView: {
     paddingBottom: SIZE(10),

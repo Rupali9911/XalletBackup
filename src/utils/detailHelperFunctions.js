@@ -45,7 +45,6 @@ export function showActualValue(data, decimalValue, returnType) {
     }
     return val.toString();
   } else if (returnType === "number") {
-    // console.log(parseFloat(val));
     return parseFloat(val);
   }
 }

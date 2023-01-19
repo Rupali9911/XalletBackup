@@ -10,18 +10,45 @@ import CommonStyles from '../../../constants/styles';
 import Colors from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import { RF, hp, wp } from '../../../constants/responsiveFunct';
+import PopupMenu from '../../../components/PopupMenu/PopupMenu';
+import {translate} from '../../../walletUtils';
 
-export const HeaderBtns = (props) => {
-    return (
-        <TouchableOpacity onPress={props.onPress} style={styles.buttonContHeader} >
-            <View style={[styles.iconContainer,props.bgColor && {backgroundColor: props.bgColor}]}>
-                <Image source={props.image} style={[styles.headerBottomIcons,props.iconColor && {tintColor: props.iconColor}]} />
-            </View>
-            <Text style={[styles.headerBtnsText, styles.headerBottomText, props.labelColor && {color: props.labelColor}, props.labelStyle]} >{props.label}</Text>
-        </TouchableOpacity>
-    )
+export const HeaderBtns = props => {
+  return (
+    <TouchableOpacity onPress={props.onPress} style={styles.buttonContHeader}>
+      {props?.copyAddress && (
+        <PopupMenu
+          opened={props.copyAddress}
+          items={[{label: `${translate('wallet.common.copied')}!`}]}
+          containerStyle={{...CommonStyles.containerStyle}}
+          textStyle={{...CommonStyles.textStyle}}
+        />
+      )}
+      <View
+        style={[
+          styles.iconContainer,
+          props.bgColor && {backgroundColor: props.bgColor},
+        ]}>
+        <Image
+          source={props.image}
+          style={[
+            styles.headerBottomIcons,
+            props.iconColor && {tintColor: props.iconColor},
+          ]}
+        />
+      </View>
+      <Text
+        style={[
+          styles.headerBtnsText,
+          styles.headerBottomText,
+          props.labelColor && {color: props.labelColor},
+          props.labelStyle,
+        ]}>
+        {props.label}
+      </Text>
+    </TouchableOpacity>
+  )
 }
-
 const styles = StyleSheet.create({
     headerBtns: {
         flexDirection: "row"

@@ -33,7 +33,7 @@ import {
   setPasscode,
   startLoader,
 } from '../../store/reducer/userReducer';
-import { alertWithSingleBtn } from '../../utils';
+import {modalAlert} from '../../common/function';
 import { translate } from '../../walletUtils';
 //================= =================
 import '@ethersproject/shims';
@@ -113,35 +113,34 @@ const ImportWallet = ({ route, navigation }) => {
               })
               .catch(err => {
                 if (err.data.messageCode === 'AUTH.DELETED') {
-                  alertWithSingleBtn(
+                  modalAlert(
                     translate('wallet.common.alert'),
                     translate('common.ACCOUNT_DELETED'),
                   );
                 }
               });
           } else {
-            alertWithSingleBtn(
-              translate('wallet.common.verification'),
+            modalAlert(
+              translate('common.error'),
               translate('wallet.common.error.invalidPhrase'),
             );
             dispatch(endLoader());
           }
         })
         .catch(err => {
-          console.log('err', err.toString());
           if (
             err.toString() == 'Error: invalid mnemonic' ||
             err.toString() == 'Error: invalid checksum'
           ) {
-            alertWithSingleBtn(
-              translate('wallet.common.verification'),
+            modalAlert(
+              translate('common.error'),
               translate('wallet.common.error.invalidPhrase'),
             );
           }
           dispatch(endLoader());
         });
     } else {
-      alertWithSingleBtn(
+      modalAlert(
         translate('common.error'),
         translate('wallet.common.requirePhrase'),
       );
@@ -173,7 +172,7 @@ const ImportWallet = ({ route, navigation }) => {
             })
             .catch(err => {
               if (err.data.messageCode === 'AUTH.DELETED') {
-                alertWithSingleBtn(
+                modalAlert(
                   translate('wallet.common.alert'),
                   translate('common.ACCOUNT_DELETED'),
                 );
@@ -181,15 +180,14 @@ const ImportWallet = ({ route, navigation }) => {
             });
         })
         .catch(err => {
-          console.log('recoverWalletByPrivateKey err', err.toString());
-          alertWithSingleBtn(
-            translate('wallet.common.verification'),
+          modalAlert(
+            translate('common.error'),
             translate('wallet.common.error.invalidPrivateKey'),
           );
           dispatch(endLoader());
         });
     } else {
-      // alertWithSingleBtn(
+      // modalAlert(
       //   translate('common.error'),
       //   translate('wallet.common.requirePhrase'),
       // );

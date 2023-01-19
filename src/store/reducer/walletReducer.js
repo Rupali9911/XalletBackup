@@ -358,7 +358,7 @@ export const getTransactions = (address, type, coin) => (dispatch) =>
 
 export const setConnectedAppsToLocal = (data) => (dispatch) =>
     new Promise(async (resolve, reject) => {
-        await AsyncStorage.setItem('@apps', JSON.stringify(data), (err) => console.log(err));
+        await AsyncStorage.setItem('@apps', JSON.stringify(data), (err) => { });
         dispatch(setConnectedApps(data));
         resolve();
     });

@@ -13,12 +13,7 @@ import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {openSettings} from 'react-native-permissions';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
 import {useDispatch, useSelector} from 'react-redux';
 import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
@@ -47,7 +42,6 @@ import {
 import {translate} from '../../walletUtils';
 import NFTCreated from './nftCreated';
 import NFTOwned from './nftOwned';
-import {SocketHandler} from './socketHandler';
 import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
@@ -72,6 +66,7 @@ const {
 const {height} = Dimensions.get('window');
 
 function Profile({navigation, connector, route}) {
+  console.log('@@@ Profile Screen (Tab) =========>');
   const actionSheetRef = useRef(null);
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
@@ -131,11 +126,8 @@ function Profile({navigation, connector, route}) {
   //===================== UseEffect Function =========================
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      handleUserData();
-    });
-    return unsubscribe;
-  }, [navigation]);
+    handleUserData();
+  }, []);
 
   useEffect(() => {
     if (
@@ -306,9 +298,21 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (selectedImage === 'profile') {
-              dispatch(updateAvtar(userDetails.id, temp));
+              dispatch(
+                updateAvtar(
+                  userData?.userWallet?.address,
+                  userDetails.id,
+                  temp,
+                ),
+              );
             } else if (selectedImage === 'banner') {
-              dispatch(updateBanner(userDetails.id, temp));
+              dispatch(
+                updateBanner(
+                  userData?.userWallet?.address,
+                  userDetails.id,
+                  temp,
+                ),
+              );
             }
           }
         })
@@ -354,9 +358,21 @@ function Profile({navigation, connector, route}) {
               image: image,
             };
             if (selectedImage === 'profile') {
-              dispatch(updateAvtar(userDetails.id, temp));
+              dispatch(
+                updateAvtar(
+                  userData?.userWallet?.address,
+                  userDetails.id,
+                  temp,
+                ),
+              );
             } else if (selectedImage === 'banner') {
-              dispatch(updateBanner(userDetails.id, temp));
+              dispatch(
+                updateBanner(
+                  userData?.userWallet?.address,
+                  userDetails.id,
+                  temp,
+                ),
+              );
             }
           }
         })
@@ -384,23 +400,19 @@ function Profile({navigation, connector, route}) {
     return <VerficationIcon width={SIZE(25)} height={SIZE(25)} />;
   };
   const renderBannerImage = () => {
-    const renderBanner = () => {
-      if (userDetails?.banner && !imageBannerLoading) {
-        return (
-          <C_Image
-            size={ImagekitType.FULLIMAGE}
-            uri={userDetails?.banner}
-            imageStyle={styles.collectionListImage}
-          />
-        );
-      } else if (!imageBannerLoading && !userDetails?.banner) {
-        return <View style={styles.collectionWrapper}></View>;
-      } else if (imageBannerLoading) {
-        return <LoadingView />;
-      } else return null;
-    };
-
-    return renderBanner();
+    if (userDetails?.banner && !imageBannerLoading) {
+      return (
+        <C_Image
+          size={ImagekitType.FULLIMAGE}
+          uri={userDetails?.banner}
+          imageStyle={styles.collectionListImage}
+        />
+      );
+    } else if (!imageBannerLoading && !userDetails?.banner) {
+      return <View style={styles.collectionWrapper}></View>;
+    } else if (imageBannerLoading) {
+      return <LoadingView />;
+    } else return null;
   };
 
   const renderIconImage = () => {
@@ -463,7 +475,7 @@ function Profile({navigation, connector, route}) {
     return (
       <View style={styles.profileInfo}>
         <View style={styles.userNameView}>
-          <Text style={styles.userNameText}>
+          <Text style={styles.userNameText} numberOfLines={1}>
             {userDetails?.userName ? userDetails?.userName : 'Unnamed'}
           </Text>
         </View>
@@ -476,20 +488,12 @@ function Profile({navigation, connector, route}) {
             )}
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
-            <Menu opened={openDial1}>
-              <MenuTrigger />
-              <MenuOptions
-                optionsContainerStyle={{
-                  width: 'auto',
-                  backgroundColor: Colors.BLACK1,
-                }}>
-                <MenuOption>
-                  <Text style={{color: '#FFFFFF'}}>
-                    {`${translate('common.Copied')}!`}
-                  </Text>
-                </MenuOption>
-              </MenuOptions>
-            </Menu>
+            <PopupMenu
+              opened={openDial1}
+              items={[{label: `${translate('common.Copied')}!`}]}
+              containerStyle={{...CommonStyles.containerStyle}}
+              textStyle={{...CommonStyles.textStyle}}
+            />
             <CopyToClipboard
               // onPress={() => copyToClipboard()}
               style={{marginLeft: SIZE(6)}}
@@ -505,20 +509,19 @@ function Profile({navigation, connector, route}) {
   const RenderHeader = () => {
     return (
       <View
-        style={
-          {
-            // flex: socialSite ? 0.6 : 0.55,
-            position: 'relative',
-            paddingBottom: SIZE(10),
-          }
-        }
+        style={{
+          // flex: socialSite ? 0.6 : 0.55,
+          position: 'relative',
+          paddingBottom: SIZE(10),
+        }}
+        pointerEvents="box-none"
         // onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}
       >
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
         )}
-        <View>
+        <View pointerEvents="box-none">
           {!route.params && (
             <TouchableOpacity
               style={styles.settings}
@@ -528,7 +531,9 @@ function Profile({navigation, connector, route}) {
               <SettingIcon width={SIZE(23)} height={SIZE(23)} />
             </TouchableOpacity>
           )}
-          <View style={styles.collectionWrapper}>{renderBannerImage()}</View>
+          <View style={styles.collectionWrapper} pointerEvents="box-none">
+            {renderBannerImage()}
+          </View>
           {!route.params && (
             <TouchableOpacity
               style={styles.editImage}
@@ -539,40 +544,33 @@ function Profile({navigation, connector, route}) {
           <TouchableOpacity
             style={styles.copyProfile}
             onPress={() => copyProfileToClipboard()}>
-            <Menu opened={openDial2}>
-              <MenuTrigger />
-              <MenuOptions
-                optionsContainerStyle={{
-                  width: 'auto',
-                  backgroundColor: Colors.BLACK1,
-                }}>
-                <MenuOption>
-                  <Text style={{color: '#FFFFFF'}}>
-                    {`${translate('common.Copied')}!`}
-                  </Text>
-                </MenuOption>
-              </MenuOptions>
-            </Menu>
+            <PopupMenu
+              opened={openDial2}
+              items={[{label: `${translate('common.Copied')}!`}]}
+              containerStyle={{...CommonStyles.containerStyle}}
+              textStyle={{...CommonStyles.textStyle}}
+            />
             <CopyProfile width={SIZE(12)} height={SIZE(12)} />
           </TouchableOpacity>
-          <View style={styles.iconWrapper}>
+          <View style={styles.iconWrapper} pointerEvents="box-none">
             <View
               style={[
                 styles.iconBadgeVw,
                 route?.params?.role === 4
                   ? styles.borderBtnColor
                   : styles.borderTrans,
-              ]}>
+              ]}
+              pointerEvents="box-none">
               {renderIconImage()}
               {route?.params?.role === 4 ? (
                 <View style={styles.markIconView}>{renderVerifiedIcon()}</View>
               ) : null}
             </View>
           </View>
-          <View style={styles.userDetailsWrapper}>
+          <View style={styles.userDetailsWrapper} pointerEvents="box-none">
             {renderProfileNameAndId()}
           </View>
-          <View style={styles.socialSiteView}>
+          <View style={styles.socialSiteView} pointerEvents="box-none">
             {userDetails?.twitterSite ? (
               <TouchableOpacity onPress={() => LinkingUrl('twitterSite')}>
                 <Twitter width={SIZE(35)} height={SIZE(35)} />
@@ -811,6 +809,7 @@ const styles = StyleSheet.create({
   userNameText: {
     fontSize: SIZE(22),
     fontWeight: '700',
+    paddingHorizontal: SIZE(38),
   },
   userIdText: {
     fontFamily: 'Arial',

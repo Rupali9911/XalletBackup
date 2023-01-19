@@ -34,7 +34,7 @@ import {
 import {getSig} from '../../screens/wallet/functions';
 import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
 import {translate} from '../../walletUtils';
-import {alertWithSingleBtn} from '../../common/function';
+import {modalAlert} from '../../common/function';
 import {setConnectedApps} from './walletReducer';
 import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
 import {reject} from 'lodash';
@@ -476,10 +476,6 @@ export const deleteAccountApi = () => dispatch =>
       method: 'POST',
     })
       .then(response => {
-        console.log(
-          '🚀 ~ file: userReducer.js ~ line 440 ~ newPromise ~ response',
-          response,
-        );
         dispatch(deleteAccountSucces(response));
         resolve(response);
       })
@@ -523,7 +519,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     .catch(err => {
       dispatch(endLoading());
       if (err.response.status === 401) {
-        alertWithSingleBtn(
+        modalAlert(
           translate('wallet.common.alert'),
           translate('common.sessionexpired'),
           () => {
@@ -532,7 +528,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
         );
         dispatch(signOut());
       }
-      // alertWithSingleBtn(
+      // modalAlert(
       //   translate('wallet.common.alert'),
       //   translate('wallet.common.error.networkFailed'),
       //   () => {
@@ -622,7 +618,7 @@ export const removeBanner = (banner, id) => async dispatch => {
       return error;
     });
 };
-export const updateAvtar = (userId, file) => async dispatch => {
+export const updateAvtar = (address, userId, file) => async dispatch => {
   dispatch(startLoadingImage());
   const extension = file.type.split('/')[1];
   const name = new Date().getTime();
@@ -644,6 +640,10 @@ export const updateAvtar = (userId, file) => async dispatch => {
       });
       if (userProfileResponse == undefined) {
         dispatch(endLoadingImage());
+      } else if (userProfileResponse === '') {
+        setTimeout(() => {
+          dispatch(getUserData(address, false));
+        }, 5000);
       }
     } catch (error) {
       dispatch(endLoadingImage());
@@ -652,7 +652,7 @@ export const updateAvtar = (userId, file) => async dispatch => {
   });
 };
 
-export const updateBanner = (userId, file) => async dispatch => {
+export const updateBanner = (address, userId, file) => async dispatch => {
   dispatch(startLoadingBanner());
   const extension = file.type.split('/')[1];
   const name = new Date().getTime();
@@ -674,6 +674,10 @@ export const updateBanner = (userId, file) => async dispatch => {
       });
       if (userProfileResponse == undefined) {
         dispatch(endLoadingBanner());
+      } else if (userProfileResponse === '') {
+        setTimeout(() => {
+          dispatch(getUserData(address, false));
+        }, 5000);
       }
     } catch (error) {
       console.log('@@@ Update banner image error =======>', error);

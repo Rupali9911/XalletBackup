@@ -54,7 +54,6 @@ export const getAllCards = (token) => (dispatch) =>
                     reject();
                 }
             }).catch((err) => {
-                console.log('error___', err);
                 reject();
             });
     });

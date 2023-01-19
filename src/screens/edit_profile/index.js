@@ -40,12 +40,10 @@ import {hp} from '../../constants/responsiveFunct';
 import {View} from 'native-base';
 import Colors from '../../constants/Colors';
 import {COLORS} from '../../constants';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import {Portal} from '@gorhom/portal';
+import CommonStyles from '../../constants/styles';
+
 const {
   InstagramIcon,
   ArtistSvg,
@@ -153,46 +151,49 @@ function Profile(props) {
   const renderArtistModal = () => {
     return (
       <View style={styles.contentView}>
-        <Modal
-          backdropColor="#000000"
-          backdropOpacity={0.6}
-          onBackdropPress={() => {
-            setIsVisible(false);
-          }}
-          isVisible={isVisible}
-          transparent={true}>
-          <View style={styles.artistModalView}>
-            <ArtistSvg />
-            <Text style={styles.artistTitle}>
-              {translate('common.ARTIST_BTN_REQUEST')}
-            </Text>
-            <Text style={styles.artistDescription}>
-              {translate('common.ARTIST_DESCRIPTION_LINE_1')}
-            </Text>
-            <Text style={[styles.artistDescription, {marginBottom: SIZE(28)}]}>
-              {translate('common.ARTIST_DESCRIPTION_LINE_2')}
-            </Text>
-            <View style={styles.infoView}>
-              <ArtistSvgI />
-              <Text style={styles.infoTitle}>
-                {' ' + translate('common.ARTIST_NOTE')}
+        <Portal>
+          <Modal
+            backdropColor="#000000"
+            backdropOpacity={0.6}
+            onBackdropPress={() => {
+              setIsVisible(false);
+            }}
+            isVisible={isVisible}
+            transparent={true}>
+            <View style={styles.artistModalView}>
+              <ArtistSvg />
+              <Text style={styles.artistTitle}>
+                {translate('common.ARTIST_BTN_REQUEST')}
               </Text>
+              <Text style={styles.artistDescription}>
+                {translate('common.ARTIST_DESCRIPTION_LINE_1')}
+              </Text>
+              <Text
+                style={[styles.artistDescription, {marginBottom: SIZE(28)}]}>
+                {translate('common.ARTIST_DESCRIPTION_LINE_2')}
+              </Text>
+              <View style={styles.infoView}>
+                <ArtistSvgI />
+                <Text style={styles.infoTitle}>
+                  {' ' + translate('common.ARTIST_NOTE')}
+                </Text>
+              </View>
+              <GroupButton
+                style={styles.artistGroupView}
+                onLeftPress={() => {
+                  setIsVisible(false);
+                  setTimeout(() => {
+                    renderComingSoonModal();
+                  }, 500);
+                }}
+                leftStyle={styles.artistLeft}
+                leftTextStyle={styles.groupLeftTitle}
+                leftText={translate('common.OK')}
+                rightHide
+              />
             </View>
-            <GroupButton
-              style={styles.artistGroupView}
-              onLeftPress={() => {
-                setIsVisible(false);
-                setTimeout(() => {
-                  renderComingSoonModal();
-                }, 500);
-              }}
-              leftStyle={styles.artistLeft}
-              leftTextStyle={styles.groupLeftTitle}
-              leftText={translate('common.OK')}
-              rightHide
-            />
-          </View>
-        </Modal>
+          </Modal>
+        </Portal>
       </View>
     );
   };
@@ -200,16 +201,18 @@ function Profile(props) {
   const messageModal = () => {
     return (
       <View style={styles.msgModalContent}>
-        <Modal isVisible={msgModal} style={styles.msgModal}>
-          <View style={[styles.msgModalView, styles.messageModalView]}>
-            {toastMsg?.error ? (
-              <ErrorIcon width={20} height={20} />
-            ) : (
-              <SuccessIcon width={20} height={20} />
-            )}
-            <Text style={styles.msgModalText}>{msg}</Text>
-          </View>
-        </Modal>
+        <Portal>
+          <Modal isVisible={msgModal} style={styles.msgModal}>
+            <View style={[styles.msgModalView, styles.messageModalView]}>
+              {toastMsg?.error ? (
+                <ErrorIcon width={20} height={20} />
+              ) : (
+                <SuccessIcon width={20} height={20} />
+              )}
+              <Text style={styles.msgModalText}>{msg}</Text>
+            </View>
+          </Modal>
+        </Portal>
       </View>
     );
   };
@@ -217,14 +220,16 @@ function Profile(props) {
   const comingSoonModal = () => {
     return (
       <View style={styles.msgModalContent}>
-        <Modal isVisible={isComingSoonModal} style={styles.msgModal}>
-          <View style={styles.msgModalView}>
-            <ComingSoonInfoIcon width={20} height={20} />
-            <Text style={styles.msgModalText}>
-              {translate('common.comingSoonApr')}
-            </Text>
-          </View>
-        </Modal>
+        <Portal>
+          <Modal isVisible={isComingSoonModal} style={styles.msgModal}>
+            <View style={styles.msgModalView}>
+              <ComingSoonInfoIcon width={20} height={20} />
+              <Text style={styles.msgModalText}>
+                {translate('common.comingSoonApr')}
+              </Text>
+            </View>
+          </Modal>
+        </Portal>
       </View>
     );
   };
@@ -381,16 +386,12 @@ function Profile(props) {
       <View style={styles.infoPPopUpView}>
         <Text style={styles.label}>{translate(title)}</Text>
         <TouchableOpacity onPress={() => onClick(true)}>
-          <Menu opened={opened}>
-            <MenuTrigger />
-            <MenuOptions optionsContainerStyle={styles.menuOption}>
-              <MenuOption>
-                <Text style={{color: '#FFFFFF'}} onPress={() => onClick(false)}>
-                  {translate('common.PROFILE_SAVE_MSG')}
-                </Text>
-              </MenuOption>
-            </MenuOptions>
-          </Menu>
+          <PopupMenu
+            opened={opened}
+            items={[{label: `${translate('common.PROFILE_SAVE_MSG')}!`}]}
+            containerStyle={styles.menuOption}
+            textStyle={{...CommonStyles.textStyle}}
+          />
           <InfoIcon style={styles.infoIcon} />
         </TouchableOpacity>
       </View>

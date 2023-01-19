@@ -41,16 +41,12 @@ const HotCollection = () => {
   //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && isFirstRender) {
-      timer = setTimeout(() => {
-        console.log('hot collection');
-        dispatch(hotCollectionLoadStart());
-        dispatch(hotCollectionListReset());
-        getHotCollection(1, totalCount);
-        dispatch(hotCollectionPageChange(1));
-        setIsFirstRender(false);
-      }, 100);
+      dispatch(hotCollectionLoadStart());
+      dispatch(hotCollectionListReset());
+      getHotCollection(1, totalCount);
+      dispatch(hotCollectionPageChange(1));
+      setIsFirstRender(false);
     }
-    return () => clearTimeout(timer);
   }, [isFocused]);
 
   //===================== Dispatch Action to Fetch Hot Collection NFT List =========================
@@ -154,9 +150,7 @@ const HotCollection = () => {
           } else {
             Linking.openURL(
               'https://www.xanalia.com/xanalia_nftart_award_2021',
-            ).catch(err => {
-              console.error('Failed opening page because: ', err);
-            });
+            ).catch(err => {});
           }
         }}
       />

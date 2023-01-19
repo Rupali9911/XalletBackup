@@ -9,10 +9,10 @@ import Fonts from '../../../constants/Fonts';
 import { tokens, translate } from '../../../walletUtils';
 import Separator from '../../../components/separator';
 import NumberFormat from 'react-number-format';
+import { Portal } from '@gorhom/portal';
 
 const ListItems = (props) => {
     const { item } = props;
-    // console.log("@@@ list items props to render ===========>", props.item)
     return (
         <View style={{ flex: 1, marginVertical: 15 }}>
             <TouchableOpacity onPress={() => props.onPress && props.onPress(item)} style={styles.listCont} >
@@ -74,56 +74,58 @@ const SelectToken = (props) => {
     }, [props.values]);
 
     return (
-        <Modal
-            visible={visible}
-            transparent
-            animationType={'slide'}
-            onRequestClose={onRequestClose}>
-            <SafeAreaView style={styles.container}>
-                <View style={styles.contentContainer}>
-                    <View style={styles.actionView}>
-                        <TouchableOpacity hitSlop={{ top: 15, left: 15, right: 15, bottom: 15 }} onPress={onRequestClose}>
-                            <Image source={ImagesSrc.backArrow} style={CommonStyles.whiteBackIcon} />
-                        </TouchableOpacity>
-                        <TextInput
-                            style={styles.inputStyle}
-                            placeholder={`${translate("common.search")} - ${isSend ? translate('wallet.common.send') : translate('wallet.common.receive')}`}
-                            placeholderTextColor={Colors.separatorLight}
-                            value={searchTxt}
-                            onChangeText={setSearchTxt}
-                        />
-                    </View>
+        <Portal>
+            <Modal
+                visible={visible}
+                transparent
+                animationType={'slide'}
+                onRequestClose={onRequestClose}>
+                <SafeAreaView style={styles.container}>
+                    <View style={styles.contentContainer}>
+                        <View style={styles.actionView}>
+                            <TouchableOpacity hitSlop={{ top: 15, left: 15, right: 15, bottom: 15 }} onPress={onRequestClose}>
+                                <Image source={ImagesSrc.backArrow} style={CommonStyles.whiteBackIcon} />
+                            </TouchableOpacity>
+                            <TextInput
+                                style={styles.inputStyle}
+                                placeholder={`${translate("common.search")} - ${isSend ? translate('wallet.common.send') : translate('wallet.common.receive')}`}
+                                placeholderTextColor={Colors.separatorLight}
+                                value={searchTxt}
+                                onChangeText={setSearchTxt}
+                            />
+                        </View>
 
-                    <FlatList
-                        contentContainerStyle={{ paddingVertical: hp("1.8%") }}
-                        data={balance_Data.filter((_) => {
-                            if (searchTxt !== '') {
-                                // console.log("@@@ searching on select token.js =========>?", searchTxt?.toLowerCase(), _.tokenName?.toLowerCase());
-                                // return (_.network == network.name && _.tokenName.includes(searchTxt))
-                                return (_?.network == network?.name && _?.tokenName.toLowerCase() == searchTxt?.toLowerCase())
-                            } else {
-                                return _?.network == network?.name
+                        <FlatList
+                            contentContainerStyle={{ paddingVertical: hp("1.8%") }}
+                            data={balance_Data.filter((_) => {
+                                if (searchTxt !== '') {
+                                    // console.log("@@@ searching on select token.js =========>?", searchTxt?.toLowerCase(), _.tokenName?.toLowerCase());
+                                    // return (_.network == network.name && _.tokenName.includes(searchTxt))
+                                    return (_?.network == network?.name && _?.tokenName.toLowerCase() == searchTxt?.toLowerCase())
+                                } else {
+                                    return _?.network == network?.name
+                                }
+                            })}
+                            renderItem={({ item }) => {
+                                return (
+                                    <ListItems item={item} onPress={props.onTokenPress} />
+                                )
                             }
-                        })}
-                        renderItem={({ item }) => {
-                            return (
-                                <ListItems item={item} onPress={props.onTokenPress} />
-                            )
-                        }
-                        }
-                        keyExtractor={(item, index) => `_${index}`}
-                        ItemSeparatorComponent={() => <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
-                            <Separator style={styles.separator} />
-                        </View>}
-                        ListEmptyComponent={() => {
-                            return (
-                                <TextView style={styles.noData} >{translate("wallet.common.noData")}</TextView>
-                            );
-                        }} />
+                            }
+                            keyExtractor={(item, index) => `_${index}`}
+                            ItemSeparatorComponent={() => <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }} >
+                                <Separator style={styles.separator} />
+                            </View>}
+                            ListEmptyComponent={() => {
+                                return (
+                                    <TextView style={styles.noData} >{translate("wallet.common.noData")}</TextView>
+                                );
+                            }} />
 
-                </View>
-            </SafeAreaView>
-        </Modal>
+                    </View>
+                </SafeAreaView>
+            </Modal>
+        </Portal>
     );
 }
 

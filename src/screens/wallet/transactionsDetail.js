@@ -1,7 +1,7 @@
 import Clipboard from '@react-native-clipboard/clipboard';
+import React, {useState} from 'react';
 import moment from 'moment';
-import React from 'react';
-import { Image, Linking, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Image, Linking,StyleSheet, TouchableOpacity, View,Text,} from 'react-native';
 import NumberFormat from 'react-number-format';
 import check from '../../assets/pngs/check.png';
 import copy from '../../assets/pngs/copy.png';
@@ -11,9 +11,9 @@ import TextView from '../../components/appText';
 import Colors from '../../constants/Colors';
 import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { alertWithSingleBtn } from '../../utils';
 import { environment, translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
 
 export default function transactionsDetail({ route }) {
   const transactionInfo = route?.params?.data;
@@ -22,35 +22,43 @@ export default function transactionsDetail({ route }) {
   let datetime = new Date(transactionInfo?.timeStamp * 1000);
   let UTCTime = moment(datetime).utc().format('YYYY-MM-DD HH:mm:ss');
   let localTime = moment.unix(transactionInfo?.timeStamp).format('YYYY-MM-DD HH:mm:ss');
-
   let displayTime =
     selectedLanguageItem.language_name !== regionLanguage ? UTCTime : localTime;
   const coin = route?.params?.coin;
+  const [showTxAddress, setShowTxAddress] = useState(false);
+  const [showTxId, setShowTxId] = useState(false);
+  
   const copyAddress = () => {
     Clipboard.setString(
       transactionInfo?.direction == 'in'
         ? transactionInfo?.from
         : transactionInfo?.to,
     );
-    alertWithSingleBtn(translate('wallet.common.copied'));
+    setShowTxAddress(true);
+    setTimeout(() => {
+      setShowTxAddress(false);
+    }, 700);
   };
+
   const copyTransactionHash = () => {
     Clipboard.setString(transactionInfo?.hash);
-    alertWithSingleBtn(translate('wallet.common.copied'));
+    setShowTxId(true);
+    setTimeout(() => {
+      setShowTxId(false);
+    }, 700);
   };
+
   const openURL = () => {
     if (coin?.network == 'BSC') {
-      Linking.openURL(`${environment.bscScanURL}${transactionInfo?.hash}`);
+      Linking.openURL(`${environment.bscScanURL}tx/${transactionInfo?.hash}`);
     } else if (coin?.network == 'Polygon') {
-      Linking.openURL(`${environment.polygonScanURL}${transactionInfo?.hash}`);
+      Linking.openURL(`${environment.polygonScanURL}tx/${transactionInfo?.hash}`);
     } else if (coin?.network == 'Ethereum') {
-      Linking.openURL(`${environment.ethereumScanURL}${transactionInfo?.hash}`);
+      Linking.openURL(`${environment.ethereumScanURL}tx/${transactionInfo?.hash}`);
     } else if (coin?.network == 'XANACHAIN') {
-      Linking.openURL(`${environment.xanaScanURL}${transactionInfo?.hash}`);
+      Linking.openURL(`${environment.xanaScanURL}tx/${transactionInfo?.hash}`);
     }
   };
-
-
   return (
     <AppBackground>
       <AppHeader
@@ -112,8 +120,14 @@ export default function transactionsDetail({ route }) {
                 ? transactionInfo?.from
                 : transactionInfo?.to}
             </TextView>
-            <TouchableOpacity onPress={copyAddress}>
+            <TouchableOpacity onPress={() => copyAddress()}>
               <Image style={styles.copyImage} source={copy} />
+              <PopupMenu
+                opened={showTxAddress}
+                items={[{label: `${translate('wallet.common.copied')}!`}]}
+                containerStyle={{...CommonStyles.containerStyle}}
+                textStyle={{...CommonStyles.textStyle}}
+              />
             </TouchableOpacity>
           </View>
         </View>
@@ -130,6 +144,12 @@ export default function transactionsDetail({ route }) {
             </TextView>
             <TouchableOpacity onPress={copyTransactionHash}>
               <Image style={styles.copyImage} source={copy} />
+              <PopupMenu
+                opened={showTxId}
+                items={[{label: `${translate('wallet.common.copied')}!`}]}
+                containerStyle={{...CommonStyles.containerStyle}}
+                textStyle={{...CommonStyles.textStyle}}
+              />
             </TouchableOpacity>
           </View>
         </View>

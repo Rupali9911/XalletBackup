@@ -16,7 +16,7 @@ import { basePriceTokens } from '../../web3/config/availableTokens';
 import { blockChainConfig } from '../../web3/config/blockChainConfig';
 import { networkType } from '../../web3/config/networkType';
 import { sellNFT, setApprovalForAll } from '../wallet/functions';
-import { alertWithSingleBtn } from '../../common/function';
+import { modalAlert } from '../../common/function';
 
 const Web3 = require('web3');
 
@@ -59,7 +59,6 @@ const SellNFT = ({ route, navigation }) => {
     let chainType = params.length > 1 ? params[0] : 'binance';
     let collectionAddress = params.length > 2 ? params[1] : null;
 
-    // console.log('params:', params, ', tokenId:', _tokenId, ', collectionAddresss', collectionAddress);
     if (chainType === 'polygon') {
         MarketPlaceAbi = blockChainConfig[1].marketConConfig.abi;
         MarketContractAddress = blockChainConfig[1].marketConConfig.add;
@@ -331,9 +330,9 @@ const SellNFT = ({ route, navigation }) => {
                         <TouchableOpacity style={styles.saleButton} onPress={() => {
                             console.log(baseCurrency, price);
                             if (baseCurrency == null) {
-                                alertWithSingleBtn('', 'Please select Token');
+                                modalAlert('', 'Please select Token');
                             } else if (price == '' || parseFloat(`${price}`) <= 0) {
-                                alertWithSingleBtn('', 'Please enter price');
+                                modalAlert('', 'Please enter price');
                             } else {
                                 checkForApproval(nftDetail.id, price);
                             }

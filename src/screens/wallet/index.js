@@ -1,10 +1,10 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Image } from 'react-native';
-import { SvgWithCssUri } from 'react-native-svg';
-import { useDispatch, useSelector } from 'react-redux';
-import { SIZE } from 'src/constants';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {StyleSheet, Text, TouchableOpacity, View, Image} from 'react-native';
+import {SvgWithCssUri} from 'react-native-svg';
+import {useDispatch, useSelector} from 'react-redux';
+import {SIZE} from 'src/constants';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppModal from '../../components/appModal';
@@ -14,15 +14,15 @@ import NotificationActionModal from '../../components/notificationActionModal';
 import PriceText from '../../components/priceText';
 import SuccessModal from '../../components/successModal';
 import ToggleButtons from '../../components/toggleButton';
-import { COLORS } from '../../constants';
+import {COLORS} from '../../constants';
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import ImagesSrc from '../../constants/Images';
-import { hp, RF, wp } from '../../constants/responsiveFunct';
+import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { getWallet } from '../../helpers/AxiosApiRequest';
+import {getWallet} from '../../helpers/AxiosApiRequest';
 import SingleSocket from '../../helpers/SingleSocket';
-import { updateCreateState } from '../../store/reducer/userReducer';
+import {updateCreateState} from '../../store/reducer/userReducer';
 import {
   updateBalances,
   updateBSCBalances,
@@ -31,15 +31,15 @@ import {
   updatePolygonBalances,
   updateXanaBalances,
 } from '../../store/reducer/walletReducer';
-import { environment, translate } from '../../walletUtils';
-import { HeaderBtns } from './components/HeaderButtons';
+import {environment, translate} from '../../walletUtils';
+import {HeaderBtns} from './components/HeaderButtons';
 import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
-import { balance, currencyInDollar } from './functions';
+import {balance, currencyInDollar} from './functions';
 
 import NetInfo from '@react-native-community/netinfo';
-import { alertWithSingleBtn } from '../../common/function';
+import { modalAlert } from '../../common/function';
 
 const ethers = require('ethers');
 var Accounts = require('web3-eth-accounts');
@@ -47,7 +47,7 @@ var Accounts = require('web3-eth-accounts');
 const singleSocket = new SingleSocket();
 var accounts = new Accounts('');
 
-const Wallet = ({ route, navigation }) => {
+const Wallet = ({route, navigation}) => {
   let wallet = null;
   let subscribeEth;
   let subscribeBnb;
@@ -55,7 +55,7 @@ const Wallet = ({ route, navigation }) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
-  const { isCreate, userData, isBackup } = useSelector(
+  const {isCreate, userData, isBackup} = useSelector(
     state => state.UserReducer,
   );
   const {
@@ -236,10 +236,10 @@ const Wallet = ({ route, navigation }) => {
         />
         <TouchableOpacity
           style={styles.networkIcon}
-          hitSlop={{ top: 10, bottom: 10, right: 10, left: 10 }}
+          hitSlop={{top: 10, bottom: 10, right: 10, left: 10}}
           onPress={() => setPickerVisible(true)}>
           {networkType?.name !== 'XANACHAIN' &&
-            networkType?.name !== 'Ethereum' ? (
+          networkType?.name !== 'Ethereum' ? (
             <SvgWithCssUri
               width={SIZE(28)}
               height={SIZE(28)}
@@ -247,8 +247,12 @@ const Wallet = ({ route, navigation }) => {
             />
           ) : (
             <Image
-              style={{ height: SIZE(28), width: SIZE(28) }}
-              source={networkType?.name !== 'Ethereum' ? ImagesSrc.xetaNew : ImagesSrc.etherium}
+              style={{height: SIZE(28), width: SIZE(28)}}
+              source={
+                networkType?.name !== 'Ethereum'
+                  ? ImagesSrc.xetaNew
+                  : ImagesSrc.etherium
+              }
             />
           )}
         </TouchableOpacity>
@@ -417,7 +421,7 @@ const Wallet = ({ route, navigation }) => {
         onTokenPress={item => {
           setSelectTokenVisible(false);
           const tokenInfo = getTokenDollarAmount(item.type);
-          navigation.navigate('tokenDetail', { item, tokenInfo });
+          navigation.navigate('tokenDetail', {item, tokenInfo});
         }}
         onRefresh={onRefreshToken}
       />
@@ -510,7 +514,7 @@ const Wallet = ({ route, navigation }) => {
               tokenInfo,
             });
           } else {
-            navigation.navigate('receive', { item, type: item.type });
+            navigation.navigate('receive', {item, type: item.type});
           }
         }}
       />
@@ -597,8 +601,8 @@ const Wallet = ({ route, navigation }) => {
     } else {
       setLoading(false);
       setFetching(false);
-      alertWithSingleBtn(
-        translate('wallet.common.alert'),
+      modalAlert(
+        translate('common.alertTitle'),
         translate('wallet.common.error.networkError'),
       );
     }
@@ -606,8 +610,8 @@ const Wallet = ({ route, navigation }) => {
 
   //=================== Price In Dollerrs =============================
   const priceInDollars = pubKey => {
-    try {
-      return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      try {
         let balanceRequests = [
           currencyInDollar(pubKey, 'BSC'),
           currencyInDollar(pubKey, 'ETH'),
@@ -632,16 +636,17 @@ const Wallet = ({ route, navigation }) => {
           .catch(err => {
             setLoading(false);
             setFetching(false);
-            // alertWithSingleBtn(
+            // modalAlert(
             //   translate('wallet.common.alert'),
             //   translate('wallet.common.error.networkError'),
             // );
             reject();
           });
-      });
-    } catch (error) {
-      console.log('@@@ price in dollars error ========>', error);
-    }
+      } catch (error) {
+        console.log('@@@ price in dollars error ========>', error);
+        reject();
+      }
+    });
   };
 
   //====================== Get Ethereum Balances ========================
@@ -961,4 +966,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Wallet;
+export default React.memo(Wallet);

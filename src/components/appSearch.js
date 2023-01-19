@@ -18,12 +18,13 @@ import Fonts from '../constants/Fonts';
 import Images from '../constants/Images';
 import {hp, RF, wp} from '../constants/responsiveFunct';
 import CommonStyles from '../constants/styles';
-import {searchNFT, updateNftDetail} from '../store/actions/newNFTActions';
+import {searchNFT} from '../store/actions/newNFTActions';
 import {translate} from '../walletUtils';
 import LoadingView from './LoadingView';
 import {Verifiedcollections} from './verifiedCollection';
 
-export default function AppSearch() {
+function AppSearch() {
+  console.log('@@@ App Search bar (Tab) =======>');
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
@@ -34,7 +35,6 @@ export default function AppSearch() {
 
   useEffect(() => {
     setSearchData([]);
-    setSearchTxt('');
   }, [isFocused]);
 
   useEffect(() => {
@@ -44,7 +44,6 @@ export default function AppSearch() {
         console.log(searchTxt);
         dispatch(searchNFT(searchTxt))
           .then(response => {
-            console.log('search response', response);
             setloading(false);
             if (
               response?.artistSearch.length > 0 ||
@@ -164,7 +163,10 @@ export default function AppSearch() {
   );
 }
 
-const ResultItem = ({item, index, withTag, onPress}) => {
+export default React.memo(AppSearch);
+
+const ResultItem = React.memo(({item, index, withTag, onPress}) => {
+  console.log('@@@ Result Item screen (Tab) =======>');
   const [loading, setLoading] = useState(false);
   return (
     <View style={[styles.resultItemContainer]}>
@@ -201,7 +203,7 @@ const ResultItem = ({item, index, withTag, onPress}) => {
       </TouchableOpacity>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {

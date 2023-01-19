@@ -2,7 +2,7 @@ import NetInfo from '@react-native-community/netinfo';
 import { Alert } from 'react-native';
 import base64 from 'base-64';
 import { translate, environment } from '../walletUtils';
-import { alertWithSingleBtn } from '../common/function';
+import {modalAlert} from '../common/function';
 
 var isAlert = false;
 export const STRIPE_API_URL = "https://api.stripe.com/v1/";
@@ -23,14 +23,12 @@ export const ApiRequest = async (url, method, body, headers) => {
     }
     return new Promise(function (resolve, reject) {
         NetInfo.fetch().then(state => {
-            // console.log("Connection type", state.type, state.isConnected);
             if (state.isConnected) {
                 isAlert = false;
                 fetch(url, requestOptions)
                     .then(response => {
                         const statusCode = response.status;
                         // return JSON.parse(JSON.stringify(response));
-                        // console.log('response from API', response);
                         if (statusCode == 200) {
                             return response.json();
                         } else {
@@ -64,7 +62,7 @@ export const ApiRequest = async (url, method, body, headers) => {
                     })
                     .catch(error => {
                         reject(error)
-                        // alertWithSingleBtn(
+                        // modalAlert(
                         //     translate("wallet.common.alert"),
                         //     translate("wallet.common.error.apiFailed"),
                         //     (e) => {
@@ -76,9 +74,9 @@ export const ApiRequest = async (url, method, body, headers) => {
             } else {
                 if (!isAlert) {
                     isAlert = true;
-                    alertWithSingleBtn(
-                        translate("wallet.common.alert"),
-                        translate("wallet.common.error.networkError"),
+                    modalAlert(
+                        translate('common.alertTitle'),
+                        translate('wallet.common.error.networkError'),
                         () => {
                             isAlert = false;
                             reject();
@@ -90,7 +88,7 @@ export const ApiRequest = async (url, method, body, headers) => {
             }
         }).catch(err => {
             reject(err);
-            // alertWithSingleBtn(
+            // modalAlert(
             //     translate("wallet.common.alert"),
             //     translate("wallet.common.error.apiFailed"),
             //     (e) => {
@@ -119,17 +117,13 @@ export const StripeApiRequest = (url, body, method = "POST") => {
         formBody = formBody.join("&");
         requestOptions.body = formBody;
     }
-    // console.log('requestOptions', requestOptions);
     return new Promise(function (resolve, reject) {
         NetInfo.fetch().then(state => {
-            // console.log("Connection type", state.type, state.isConnected);
             if (state.isConnected) {
                 isAlert = false;
-                // console.log('requestOptions',requestOptions);
                 fetch(`${STRIPE_API_URL}${url}`, requestOptions)
                     .then(response => {
                         const statusCode = response.status;
-                        // console.log('response from API', response);
                         try {
                             return response.json();
                         } catch (err) {
@@ -146,7 +140,7 @@ export const StripeApiRequest = (url, body, method = "POST") => {
                     })
                     .catch(error => {
                         reject();
-                        // alertWithSingleBtn(
+                        // modalAlert(
                         //     translate("wallet.common.alert"),
                         //     translate("wallet.common.error.networkFailed"),
                         //     (e) => {
@@ -157,9 +151,9 @@ export const StripeApiRequest = (url, body, method = "POST") => {
             } else {
                 if (!isAlert) {
                     isAlert = true;
-                    alertWithSingleBtn(
-                        translate("wallet.common.alert"),
-                        translate("wallet.common.error.networkError"),
+                    modalAlert(
+                        translate('common.alertTitle'),
+                        translate('wallet.common.error.networkError'),
                         () => {
                             isAlert = false;
                             reject();
@@ -171,7 +165,7 @@ export const StripeApiRequest = (url, body, method = "POST") => {
             }
         }).catch(err => {
             reject();
-            // alertWithSingleBtn(
+            // modalAlert(
             //     translate("wallet.common.alert"),
             //     translate("wallet.common.error.apiFailed"),
             //     (e) => {

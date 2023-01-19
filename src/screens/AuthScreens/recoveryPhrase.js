@@ -34,8 +34,8 @@ import {
   setPasscode,
   startLoader,
 } from '../../store/reducer/userReducer';
-import { alertWithSingleBtn } from '../../utils';
 import { translate } from '../../walletUtils';
+import {modalAlert} from '../../common/function';
 //================= =================
 import '@ethersproject/shims';
 import { hdkey } from 'ethereumjs-wallet';
@@ -114,36 +114,34 @@ const RecoveryPhrase = ({ route, navigation }) => {
                 dispatch(setBackupStatus(true));
               })
               .catch(err => {
-                console.log("@@@ Login external wallet api error =========>", err);
                 dispatch(endLoader());
-                // alertWithSingleBtn(
+                // modalAlert(
                 //   translate('wallet.common.alert'),
                 //   translate('wallet.common.tryAgain'),
                 // );
               });
           } else {
-            alertWithSingleBtn(
-              translate('wallet.common.verification'),
+            modalAlert(
+              translate('common.error'),
               translate('wallet.common.error.invalidPhrase'),
             );
             dispatch(endLoader());
           }
         })
         .catch(err => {
-          console.log('err', err.toString());
           if (
             err.toString() == 'Error: invalid mnemonic' ||
             err.toString() == 'Error: invalid checksum'
           ) {
-            alertWithSingleBtn(
-              translate('wallet.common.verification'),
+            modalAlert(
+              translate('common.error'),
               translate('wallet.common.error.invalidPhrase'),
             );
           }
           dispatch(endLoader());
         });
     } else {
-      alertWithSingleBtn(
+      modalAlert(
         translate('common.error'),
         translate('wallet.common.requirePhrase'),
       );
@@ -193,7 +191,7 @@ const RecoveryPhrase = ({ route, navigation }) => {
       <AppHeader
         showBackButton
         title={translate('wallet.common.backup')}
-        onPressBack={isSetting ? () => navigation.navigate('Setting', {isSetting} ) : () => navigation.goBack()}
+        onPressBack={isSetting ? () => navigation.navigate('Setting', { isSetting }) : () => navigation.goBack()}
       />
       <KeyboardAwareScrollView
         contentContainerStyle={styles.scrollContent}
@@ -327,8 +325,8 @@ const RecoveryPhrase = ({ route, navigation }) => {
               labelStyle={CommonStyles.buttonLabel}
               onPress={() => {
                 if (/\s\s+/g.test(phrase.trim())) {
-                  alertWithSingleBtn(
-                    translate('wallet.common.verification'),
+                  modalAlert(
+                    translate('common.error'),
                     translate('wallet.common.error.invalidPhrase'),
                   );
                 } else {

@@ -25,6 +25,7 @@ import {C_Image} from '../../components';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import {SIZE, SVGS} from 'src/constants';
 import {ImagekitType} from '../../common/ImageConstant';
+import {Portal} from '@gorhom/portal';
 const {Ethereum} = SVGS;
 
 const ListItem = props => {
@@ -375,63 +376,65 @@ const CollectionList = ({
         </View>
         {pageLoader && <ActivityIndicator size="small" color={'#000000'} />}
       </CardCont>
-      <Modal
-        isVisible={modalVisible}
-        onBackdropPress={() => {
-          setModalVisible(false);
-        }}
-        backdropColor="#B4B3DB"
-        backdropOpacity={0.8}
-        animationIn="zoomInDown"
-        animationOut="zoomOutUp"
-        animationInTiming={600}
-        animationOutTiming={600}
-        backdropTransitionInTiming={600}
-        backdropTransitionOutTiming={600}>
-        <View style={styles.modalCont}>
-          <Text style={styles.modalTitle}>
-            {translate('common.collected')} {translate('wallet.common.detail')}
-          </Text>
-          {selectData ? (
-            <ScrollView>
-              <View style={styles.nftImageCont}>
-                <C_Image
-                  size={ImagekitType.AVATAR}
-                  uri={selectData?.image}
-                  imageStyle={{height: wp(30), width: wp(30)}}
+      <Portal>
+        <Modal
+          isVisible={modalVisible}
+          onBackdropPress={() => {
+            setModalVisible(false);
+          }}
+          backdropColor="#B4B3DB"
+          backdropOpacity={0.8}
+          animationIn="zoomInDown"
+          animationOut="zoomOutUp"
+          animationInTiming={600}
+          animationOutTiming={600}
+          backdropTransitionInTiming={600}
+          backdropTransitionOutTiming={600}>
+          <View style={styles.modalCont}>
+            <Text style={styles.modalTitle}>
+              {translate('common.collected')}{' '}
+              {translate('wallet.common.detail')}
+            </Text>
+            {selectData ? (
+              <ScrollView>
+                <View style={styles.nftImageCont}>
+                  <C_Image
+                    size={ImagekitType.AVATAR}
+                    uri={selectData?.image}
+                    imageStyle={{height: wp(30), width: wp(30)}}
+                  />
+                </View>
+                <ModalItems
+                  label={`${translate('common.nftName')}:`}
+                  value={selectData?.name}
                 />
-              </View>
-              <ModalItems
-                label={`${translate('common.nftName')}:`}
-                value={selectData?.name}
-              />
-              <ModalItems
-                label={`${translate('common.LIST_COLLECTION_TABLE_SYMBOL')}:`}
-                value={selectData?.symbol}
-              />
-              <ModalItems
-                label={`${translate('wallet.common.contractAddress')}:`}
-                value={selectData?.contractAddress}
-              />
-              <ModalItems
-                label={`${translate('wallet.common.network')}:`}
-                value={selectData?.network}
-              />
-              <ModalItems
-                label={`${translate('wallet.common.status')}:`}
-                value={selectData?.status}
-              />
-              <ModalItems
-                label={`${translate('wallet.common.created')}:`}
-                value={selectData.createdAt}
-              />
-              <ModalItems
-                label={`${translate('common.NFT')} ${translate(
-                  'common.created',
-                )}:`}
-                value={selectData?.nftCreated}
-              />
-              {/* <ModalItems
+                <ModalItems
+                  label={`${translate('common.LIST_COLLECTION_TABLE_SYMBOL')}:`}
+                  value={selectData?.symbol}
+                />
+                <ModalItems
+                  label={`${translate('wallet.common.contractAddress')}:`}
+                  value={selectData?.contractAddress}
+                />
+                <ModalItems
+                  label={`${translate('wallet.common.network')}:`}
+                  value={selectData?.network}
+                />
+                <ModalItems
+                  label={`${translate('wallet.common.status')}:`}
+                  value={selectData?.status}
+                />
+                <ModalItems
+                  label={`${translate('wallet.common.created')}:`}
+                  value={selectData.createdAt}
+                />
+                <ModalItems
+                  label={`${translate('common.NFT')} ${translate(
+                    'common.created',
+                  )}:`}
+                  value={selectData?.nftCreated}
+                />
+                {/* <ModalItems
                                     label={`${translate("common.trade")}:`}
                                     value="-"
                                 />
@@ -439,28 +442,30 @@ const CollectionList = ({
                                     label={`${translate("common.Earned")}:`}
                                     value={selectData.earned}
                                 /> */}
-              {selectData?.type === 4 && (
-                <View style={[styles.saveBtnGroup, {justifyContent: 'center'}]}>
-                  <CardButton
-                    onPress={() => {
-                      setModalVisible(false);
-                      switchEditNFT(selectData?.collectionData);
-                    }}
-                    label={translate('wallet.common.edit')}
-                    buttonCont={{width: '48%'}}
-                  />
-                  {/* <CardButton
+                {selectData?.type === 4 && (
+                  <View
+                    style={[styles.saveBtnGroup, {justifyContent: 'center'}]}>
+                    <CardButton
+                      onPress={() => {
+                        setModalVisible(false);
+                        switchEditNFT(selectData?.collectionData);
+                      }}
+                      label={translate('wallet.common.edit')}
+                      buttonCont={{width: '48%'}}
+                    />
+                    {/* <CardButton
                                             onPress={() => null}
                                             border={colors.BLUE6}
                                             buttonCont={{ width: '48%' }}
                                             label={translate("wallet.common.delete")}
                                         /> */}
-                </View>
-              )}
-            </ScrollView>
-          ) : null}
-        </View>
-      </Modal>
+                  </View>
+                )}
+              </ScrollView>
+            ) : null}
+          </View>
+        </Modal>
+      </Portal>
     </View>
   );
 };

@@ -78,6 +78,7 @@ import com.android.build.OutputFile
  */
 
 project.ext.react = [
+    entryFile: "index.js",
     enableHermes: true
 ]
 
@@ -118,7 +119,7 @@ def jscFlavor = 'org.webkit:android-jsc:+'
  * on project.ext.react, JavaScript will not be compiled to Hermes Bytecode
  * and the benefits of using Hermes will therefore be sharply reduced.
  */
-def enableHermes = project.ext.react.get("enableHermes", false);
+def enableHermes = project.ext.react.get("enableHermes", true);
 
 android {
     ndkVersion rootProject.ext.ndkVersion
@@ -137,8 +138,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // minSdkVersion 24
         multiDexEnabled true
-        versionCode 3
-        versionName "3.01.06"
+        versionCode 1
+        versionName "3.01.20"
         missingDimensionStrategy 'react-native-camera', 'general'
         missingDimensionStrategy 'store', 'play'
         vectorDrawables.useSupportLibrary = true

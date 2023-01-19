@@ -2,7 +2,7 @@ import NetInfo from '@react-native-community/netinfo';
 import EncryptedStorage from 'react-native-encrypted-storage';
 import axios from 'axios';
 import {NEW_BASE_URL} from '../common/constants';
-import {alertWithSingleBtn} from '../common/function';
+import {modalAlert} from '../common/function';
 import {translate} from '../walletUtils';
 
 var isAlert = false;
@@ -35,15 +35,10 @@ async function sendRequest(payload) {
       return response?.data;
     } else {
       if (!isAlert) {
-        isAlert = true;
-        alertWithSingleBtn(
-          translate('wallet.common.alert'),
+        modalAlert(
+          translate('common.alertTitle'),
           translate('wallet.common.error.networkError'),
-          () => {
-            isAlert = false;
-            // return Promise.reject()
-          },
-        );
+        )
       } else {
         // return Promise.reject()
       }

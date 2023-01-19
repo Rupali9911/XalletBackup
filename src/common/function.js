@@ -1,4 +1,7 @@
+import {translate} from '../walletUtils';
 import {Alert} from 'react-native';
+import {alertAction} from '../store/actions/alertAction';
+import store from '../store/index';
 
 const confirmationAlert = (
   title,
@@ -19,14 +22,16 @@ const confirmationAlert = (
     },
   ]);
 };
-
-const alertWithSingleBtn = (title, message, onOkPress, btnTxt) => {
-  Alert.alert(title, message, [
-    {
-      text: btnTxt ? btnTxt : 'Ok',
+const modalAlert = (title, description, onOkPress, btnTxt) => {
+  store.dispatch(
+    alertAction({
+      status: true,
+      title,
+      description,
+      text: btnTxt ? btnTxt : 'OK',
       onPress: onOkPress,
-    },
-  ]);
+    }),
+  );
 };
 
 const twitterLink = username => `https://twitter.com/${username}`;
@@ -39,4 +44,4 @@ const getFileType = uri => {
   return type;
 };
 
-export {confirmationAlert, alertWithSingleBtn, twitterLink, getFileType};
+export {confirmationAlert, modalAlert, twitterLink, getFileType};

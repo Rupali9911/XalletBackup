@@ -31,7 +31,7 @@ const ForgetCrypto = ({ route }) => {
         // if (!v) {
         //     errorRend.email = translate("wallet.common.error.emailRequired")
         // } else
-            if (v && !regEmail.test(v)) {
+        if (v && !regEmail.test(v)) {
             errorRend.email = translate("common.emailval")
         }
         setError(errorRend)
@@ -52,7 +52,6 @@ const ForgetCrypto = ({ route }) => {
 
         axios.post(url, body)
             .then(response => {
-                console.log(response, "forget success")
                 setshowSuccess(translate("common.emailsendsuccess"));
                 setEmail("")
                 setError({});
@@ -60,10 +59,9 @@ const ForgetCrypto = ({ route }) => {
             })
             .catch(error => {
                 setLoading(false);
-                console.log(error.response, "forget error")
-                if (error.response?.data?.error_code){
-                    errorF.errorForget =translate(`common.${error.response?.data?.error_code}`);
-                } else{
+                if (error.response?.data?.error_code) {
+                    errorF.errorForget = translate(`common.${error.response?.data?.error_code}`);
+                } else {
                     errorF.errorForget = error.response?.data?.errors?.email
                 }
 
@@ -76,7 +74,7 @@ const ForgetCrypto = ({ route }) => {
             <AppHeader showBackButton title={''} />
 
             <View style={styles.sectionCont} >
-            <AppLogo/>
+                <AppLogo />
                 <Label label={translate("common.ForgottenUser")} containerStyle={{ marginTop: hp(6) }} />
 
                 {

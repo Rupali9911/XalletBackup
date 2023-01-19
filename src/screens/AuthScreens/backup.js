@@ -8,7 +8,7 @@ import { Button } from 'react-native-paper';
 import { useDispatch } from 'react-redux';
 import { SIZE } from 'src/constants';
 import { SIGN_MESSAGE } from '../../common/constants';
-import { alertWithSingleBtn } from '../../common/function';
+import { modalAlert } from '../../common/function';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppHeader from '../../components/appHeader';
@@ -59,7 +59,7 @@ const Backup = ({ navigation }) => {
     dispatch(loginExternalWallet(wallet, false, true))
       .then(() => { })
       .catch(err => {
-        alertWithSingleBtn(
+        modalAlert(
           translate('wallet.common.alert'),
           translate('wallet.common.tryAgain'),
         );

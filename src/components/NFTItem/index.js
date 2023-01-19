@@ -22,7 +22,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
 import ProfileImg from '../../assets/pngs/default_profile_img.png';
 import Ethereum from '../../assets/pngs/ethereum.png';
-import {handleLike} from '../../screens/discover/discoverItem';
+import {handleLike} from '../../utils/handleLikeFunction';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
 import {ImagekitType} from '../../common/ImageConstant';
 
@@ -58,6 +58,8 @@ export default function NFTItem(props, {navigation}) {
 
   //================== Components State Declaration ===================
   const [isLike, setIsLike] = useState(Number(item.isLike));
+  const [isRedirection, setIsRedirection] = useState(false);
+
   const screenNavigation = useNavigation();
 
   let timeout = null;
@@ -86,10 +88,12 @@ export default function NFTItem(props, {navigation}) {
         // disabled={isDisable}
         onLongPress={onLongPress}
         onPress={() => {
-          clearTimeout(timeout);
-          timeout = setTimeout(() => {
-            onPress();
-          }, 500);
+          if (isRedirection) return;
+          setIsRedirection(true);
+          onPress();
+          setTimeout(() => {
+            setIsRedirection(false);
+          }, 2000);
         }}
         style={styles.collectionListItem}>
         <View style={styles.listItemContainer}>
@@ -108,11 +112,9 @@ export default function NFTItem(props, {navigation}) {
       isLike: isLike,
       // totalLike: nftData?.totalLike
     };
-    console.log(nftItem, 'like nftItem');
     const nftData = await handleLike(nftItem);
     if (nftData) {
       setIsLike(!Number(nftItem.isLike));
-      // console.log("🚀 ~ file: index.js ~ line 87 ~ ", item)
     }
   };
 
@@ -204,7 +206,6 @@ export default function NFTItem(props, {navigation}) {
 
   //================== Render Name and Creator Name Function ===================
   const renderNameNcreatorName = isCollection => {
-    // console.log('This item is render for name and iscollction : ', isCollection, item);
     if (isCollection) {
       return (
         <View style={styles.nftName}>
@@ -392,7 +393,12 @@ export default function NFTItem(props, {navigation}) {
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        <SvgWithCssUri uri={item?.network?.avatar} style={styles.tokenIcon2} />
+        <C_Image
+          size={ImagekitType.AVATAR}
+          imageStyle={styles.tokenIcon2}
+          uri={item?.network?.avatar}
+          style={styles.chainLoaderIcon}
+        />
         <View
           style={{
             flexDirection: 'row',
@@ -804,7 +810,6 @@ export default function NFTItem(props, {navigation}) {
   // =================== End Commented Code =================================
 
   //=====================(Main return Function)=============================
-  // console.log('THis is ismecollection and ishotcollection : ', isMeCollection, isCollection)
   return (
     <>
       {isMeCollection

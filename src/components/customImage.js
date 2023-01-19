@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ActivityIndicator, StyleSheet, Image} from 'react-native';
 import FastImage from 'react-native-fast-image';
 import {SVGS, SIZE, IMAGES, NFT_TYPE_TO_ID} from '../constants';
@@ -11,14 +11,22 @@ import {getImageUri} from '../common/ImageConstant';
 const {PlayButtonIcon} = SVGS;
 
 const C_Image = props => {
-  let [loadImage, setLoadImage] = useState(true);
-  let [brokenUrl, setBrokenUrl] = useState(false);
-  let [isBroken, setIsBroken] = useState(false);
+  const [loadImage, setLoadImage] = useState(false);
+  const [brokenUrl, setBrokenUrl] = useState(false);
+  const [isBroken, setIsBroken] = useState(false);
 
   let fileType = getFileType(props?.uri);
   let imageUri = getImageUri(props?.uri, props?.size);
-  // console.log('🚀 ~ file: customImage.js:20 ~ imageUri', props?.imageStyle);
   const checkVideoUrl = props?.category;
+
+  useEffect(() => {
+    if (
+      fileType?.toLowerCase() === 'svg' ||
+      fileType?.toLowerCase()?.includes('svg')
+    ) {
+      setLoadImage(true);
+    }
+  }, [fileType]);
 
   return (
     <>
@@ -31,7 +39,6 @@ const C_Image = props => {
             uri={props?.uri}
             onLoad={o => setLoadImage(false)}
             onError={({nativeEvent}) => {
-              console.log(nativeEvent, 'svg errror => 60', props?.uri);
               setLoadImage(false);
               setIsBroken(true);
             }}
@@ -43,7 +50,6 @@ const C_Image = props => {
           onLoadStart={() => setLoadImage(true)}
           onLoadEnd={() => setLoadImage(false)}
           onError={({nativeEvent}) => {
-            console.log(nativeEvent, 'errror => 74', imageUri);
             setIsBroken(true);
           }}
           source={
@@ -52,6 +58,7 @@ const C_Image = props => {
                 ? IMAGES.brokenIcon
                 : {
                     uri: imageUri,
+                    // cache: 'only-if-cached',
                   }
               : props.imageType == 'profile'
               ? IMAGES.DEFAULTPROFILE
@@ -76,6 +83,7 @@ const C_Image = props => {
               ? {
                   uri: imageUri,
                   priority: FastImage.priority.high,
+                  // cache: 'cacheOnly',
                 }
               : props.imageType == 'profile'
               ? IMAGES.DEFAULTPROFILE
@@ -136,4 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default C_Image;
+export default React.memo(C_Image);

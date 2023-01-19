@@ -81,7 +81,6 @@ export const watchBalanceUpdate = (updateBalance, type) => {
     })
     .on('connected', function (subscriptionId) { })
     .on('data', function (log) {
-      // console.log("data",log);
       updateBalance && updateBalance();
     })
     .on('changed', function (log) {
@@ -165,7 +164,6 @@ export const watchEtherTransfers = (pubKey, type, addToList) => {
 };
 
 export const currencyInDollar = async (pubkey, type) => {
-  // console.log("@@@ currency in dollar func =======>", type)
   let rpcUrl = '';
   let nftDex = '';
   let nftAbi = '';
@@ -230,21 +228,22 @@ export const currencyInDollar = async (pubkey, type) => {
             ids: 'xana',
             vs_currencies: 'usd',
           },
-        }).then(function (info) {
-          resolve(info.xana.usd);
-        }).catch((e) => {
-          console.log('@@@ xana chain dollar price error=====>', e);
-          reject({
-            success: false,
-            data: 'Smart contract not deployed to detected network.',
-          });
         })
+          .then(function (info) {
+            resolve(info.xana.usd);
+          })
+          .catch(e => {
+            console.log('@@@ xana chain dollar price error=====>', e);
+            reject({
+              success: false,
+              data: 'Smart contract not deployed to detected network.',
+            });
+          });
       } else {
         await contract.methods
           .getReserves()
           .call()
           .then(function (info) {
-            // console.log('@@@ currency in dollar func =======>', type, info);
             maticQuickReserve = web3.utils.fromWei(
               info._reserve0.toString(),
               'ether',
@@ -258,7 +257,6 @@ export const currencyInDollar = async (pubkey, type) => {
             );
           })
           .catch(e => {
-            console.log('@@@ ----------->', e, type);
             reject({
               success: false,
               data: 'Smart contract not deployed to detected network.',

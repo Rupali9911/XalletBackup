@@ -32,7 +32,6 @@ const disable = async () => {
     if (proxy === undefined) return undefined;
     await proxy.user.logout();
   } catch (error) {
-    console.error(error);
     return false;
   }
 };
@@ -42,7 +41,6 @@ const getProxy = () => {
     Store.getState().LanguageReducer.selectedLanguageItem?.language_name;
 
   const data = createMagicLinkProxy(language_name);
-  // console.log('🚀 ~ file: magicLink.js ~ line 37 ~ getProxy ~ data', data);
   return data?.MagicLink;
 };
 

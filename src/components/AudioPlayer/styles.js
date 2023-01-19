@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
         width: SIZE(90),
         justifyContent: 'center',
         alignItems: 'center',
+        
     },
     controlView: {
         width: SIZE(40),
@@ -63,9 +64,15 @@ const styles = StyleSheet.create({
     },
     speedMenuOption: {
         height: SIZE(35),
-        justifyContent: 'center',
-        alignItems: 'center',
+        textAlign:'center'
     },
+    playbackSpeedView:{
+        flexDirection:"row",
+        marginHorizontal:20,
+    },
+    playbackSpeedTitle:{
+    textAlign:'center',
+    left:20}
 });
 
 export default styles;

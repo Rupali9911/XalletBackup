@@ -23,7 +23,7 @@ import {
   SCAN_WALLET,
   getConfigDetailsFromEnviorment,
 } from '../../walletUtils';
-import { alertWithSingleBtn } from '../../utils';
+import { modalAlert } from '../../common/function';
 import { useDispatch, useSelector } from 'react-redux';
 import { transfer } from './functions';
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -67,7 +67,7 @@ const verifyAddress = address => {
 };
 
 const showErrorAlert = msg => {
-  alertWithSingleBtn(translate('common.error'), msg);
+  modalAlert(translate('common.error'), msg);
 };
 
 export const AddressField = props => {
@@ -200,7 +200,7 @@ const ScanScreen = React.memo(props => {
               jumpTo('Send');
             })
             .catch(() => {
-              alertWithSingleBtn(
+              modalAlert(
                 translate('wallet.common.error.invalidCode'),
                 translate('wallet.common.error.scanCodeAlert'),
                 () => {
@@ -211,7 +211,7 @@ const ScanScreen = React.memo(props => {
         }
       })
       .catch(() => {
-        alertWithSingleBtn(
+        modalAlert(
           translate('wallet.common.error.invalidCode'),
           translate('wallet.common.error.scanCodeAlert'),
           () => {
@@ -380,7 +380,6 @@ const SendScreen = React.memo(props => {
               web3,
               reject,
             );
-            console.log('@@@ Getting sign data ========>', signData);
             if (!signData) return;
             const data = {
               from: transferParameters.publicAddress,
@@ -390,21 +389,16 @@ const SendScreen = React.memo(props => {
             };
             const gasPrice = await getGasPrice(networkConfig.rpcURL);
             const gasLimit = await getGasLimit(data, networkConfig.rpcURL);
-            console.log('@@@ Gas limit  ERC-20 1111 =======>', typeof gasLimit);
             const gasFee = web3.utils.fromWei(
               (gasPrice * gasLimit).toString(),
               'ether',
             );
-            console.log("@@@ gas fee ERC-20 2222 =======>", gasFee)
             const finalGasFee = Number(Number(gasFee).toFixed(8));
-            console.log('@@@ Gas Fee ERC-20 3333=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
             setGasFee(finalGasFee.toString());
           } else if (isSelftToken() && !isMaxButtonPress && amount && !alertMessage.isInsufficientFund && !alertMessage.gasFeeAlert && Number(amount) > 0) {
             const gasPrice = await getGasPrice(networkConfig.rpcURL);
             const gasFee = web3.utils.fromWei((gasPrice * 21000).toString(), 'ether');
-            console.log("@@@ gas fee self 1111 =======>", gasFee)
             const finalGasFee = Number(Number(gasFee).toFixed(8));
-            console.log('@@@ Gas Fee self 2222=======>', finalGasFee, typeof finalGasFee, finalGasFee.toString());
             setGasFee(finalGasFee.toString());
           }
         });
@@ -687,7 +681,14 @@ const SendScreen = React.memo(props => {
     navigation.popToTop();
   };
 
-  const invalidAmount = amount.replace(/[^.]/g, "").length > 1 ? true : false
+  const regx = /^[0-9\.][\.\d]*(,\d+)?$/;
+  const invalidAmount = amount
+    ? regx.test(amount)
+      ? amount.replace(/[^.]/g, '').length > 1
+        ? true
+        : false
+      : true
+    : false;
 
   const decimalDigitAlert =
     (amount && amount.includes('.') && amount?.split('.')[1]?.length) > 8 && (type !== 'USDT' && type !== 'USDC')

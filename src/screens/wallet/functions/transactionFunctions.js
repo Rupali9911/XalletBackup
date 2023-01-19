@@ -1,6 +1,7 @@
 import Common from 'ethereumjs-common';
 import { getWallet } from '../../../helpers/AxiosApiRequest';
-import { alertWithSingleBtn } from '../../../utils';
+import {modalAlert} from '../../../common/function';
+
 import { translate, IsTestNet } from '../../../walletUtils';
 import { blockChainConfig } from '../../../web3/config/blockChainConfig';
 
@@ -126,17 +127,13 @@ const transactionProcessing = async (
 ) => {
   try {
     const tx = new EthereumTx(txObject, { common });
-    // console.log("@@@ tx =====>", tx)
     const privKey = Buffer.from(privateKey.substring(2, 66), 'hex');
     tx.sign(privKey);
     const serializedTx = tx.serialize();
-    // console.log("@@@ serializedTx =====>", serializedTx)
     const raw = '0x' + serializedTx.toString('hex');
-    // console.log("@@@ raw =====>", raw)
     await web3.eth
       .sendSignedTransaction(raw, async (err, txHash) => {
         if (txHash) {
-          console.log('@@@ Transaction hash line-no.-134 ===========>', txHash);
           // resolve({ success: true, status: 200, data: txHash });
         } else if (err) {
           console.log(err);
@@ -367,7 +364,6 @@ export const balanceTransfer = async (transferParameters, config) => {
         'pending',
       );
       if (txCount.error) reject(txCount.error);
-      // console.log('@@@ balance transfer func (txnCount) =========>', txCount);
 
       let txObject;
 
@@ -378,7 +374,6 @@ export const balanceTransfer = async (transferParameters, config) => {
         tokenType === 'XETA'
       ) {
         //NON ERC20(BNB,MATIC,ETH)
-        // console.log("@@@ For NON ERRC20 Token if ============>", tokenType);
         const gasPrice = await getGasPrice(config.rpcURL);
 
         let convertto6decimal = parseFloat(transferParameters.amount).toFixed(
@@ -388,7 +383,6 @@ export const balanceTransfer = async (transferParameters, config) => {
           convertto6decimal.toString(),
           'ether',
         );
-        // console.log("@@@ For NON ERRC20 Token (amountToSend) ========>", amountToSend)
 
         txObject = {
           from: transferParameters.publicAddress,
@@ -412,7 +406,6 @@ export const balanceTransfer = async (transferParameters, config) => {
         );
       } else {
         //ERC20(TAL,TNFT etc.)
-        // console.log("@@@ For ERRC20 Token else ============>", tokenType);
         let signData = getSignData(transferParameters, config, web3, reject);
         if (!signData) return;
         const transaction = {
@@ -426,7 +419,6 @@ export const balanceTransfer = async (transferParameters, config) => {
           transaction,
           config.rpcURL,
         );
-        // console.log("@@@ balance transfer func gasLimit and gasPrice ===========>", { gasLimit: Number(gasLimit), gasPrice: Number(gasPrice) });
 
         txObject = {
           from: transferParameters.publicAddress,
@@ -473,11 +465,11 @@ export const handleTransactionError = error => {
     (error.includes('transaction underpriced') ||
       error.includes('insufficient funds for gas * price + value'))
   ) {
-    alertWithSingleBtn(
+    modalAlert(
       translate('wallet.common.alert'),
       translate('common.blanceLow'),
     );
   } else {
-    alertWithSingleBtn(translate('common.error'), error?.message);
+    modalAlert(translate('common.error'), error?.message);
   }
 };

@@ -88,20 +88,12 @@ export const buyNFTApi = (
 
         const config = getConfigDetails(currentNetwork?.name);
 
-        console.log(
-          '🚀 ~ file: .js ~ line 93 ~  ~ transactionParameters',
-          transactionParameters,
-          config.rpcURL,
-        );
+
         const { gasLimit, gasPrice } = await estimateGasTransactions(
           transactionParameters,
           config.rpcURL,
         );
-        console.log(
-          '🚀 ~ file: .js ~ line 62 ~  ~ gasLimit,gasPrice',
-          gasLimit,
-          gasPrice,
-        );
+
         dispatch(
           buyNFTSuccess({
             ...buyNFTRes,
@@ -114,7 +106,6 @@ export const buyNFTApi = (
         );
       })
       .catch(error => {
-        console.log('🚀 ~ file: .js ~ line 37 ~ buyAPI ~ error', error);
         dispatch(buyNFTFail(error));
         handleTransactionError(error);
       });

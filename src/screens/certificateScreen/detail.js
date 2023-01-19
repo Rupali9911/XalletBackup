@@ -1,65 +1,50 @@
-import Slider from '@react-native-community/slider';
-import {useIsFocused} from '@react-navigation/native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { Portal } from '@gorhom/portal';
+import { useIsFocused } from '@react-navigation/native';
+import { isInteger } from 'lodash';
 import moment from 'moment';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   BackHandler,
   FlatList,
   Image,
   Linking,
-  Platform,
   SafeAreaView,
   ScrollView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
+  ActivityIndicator
 } from 'react-native';
 import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
-import VideoPlayer from 'react-native-video-controls';
 import Modal from 'react-native-modal';
-import {ActivityIndicator} from 'react-native-paper';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
-import Sound from 'react-native-sound';
-import {Cell, Row, Table, TableWrapper} from 'react-native-table-component';
-import {
-  default as PlayPause,
-  default as PlaySpeed,
-  default as FullScreen,
-} from 'react-native-vector-icons/MaterialCommunityIcons';
-import IconMute from 'react-native-vector-icons/Octicons';
-import {useDispatch, useSelector} from 'react-redux';
-import {IMAGES, SIZE, SVGS} from 'src/constants';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import { useDispatch, useSelector } from 'react-redux';
+import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
-import historyImg from '../../../assets/images/history.png';
-import tradingImg from '../../../assets/images/trading.png';
-import {NEW_BASE_URL} from '../../common/constants';
+import { NEW_BASE_URL } from '../../common/constants';
 import Fee from '../../common/fee';
-import {twitterLink} from '../../common/function';
-import {AppHeader, C_Image, GroupButton} from '../../components';
+import { twitterLink } from '../../common/function';
+import { ImagekitType } from '../../common/ImageConstant';
+import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppBackground from '../../components/appBackground';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
+import AudioPlayer from '../../components/AudioPlayer/AudioPlayer';
+import CustomVideoPlayer from '../../components/VideoPlayer/CustomVideoPlayer';
 import Checkbox from '../../components/checkbox';
 import ImageModal from '../../components/ImageModal';
 import NFTDetailDropdown from '../../components/NFTDetailDropdown';
 import NFTItem from '../../components/NFTItem';
 import PaymentMethod from '../../components/PaymentMethod';
 import PaymentNow from '../../components/PaymentMethod/payNowModal';
-import TransactionPending from '../../components/Popup/transactionPending';
 import SuccessModalContent from '../../components/successModal';
 import TokenInput from '../../components/TextInput/tokenInput';
 import {
   AMOUNT_BID_HIGHER,
   CATEGORY_VALUE,
-  COLORS,
   compareAddress,
   FILTER_TRADING_HISTORY_OPTIONS,
   NFT_MARKET_STATUS,
@@ -67,11 +52,10 @@ import {
   SERVICE_FEE,
   SORT_TRADING_HISTORY,
 } from '../../constants';
-import {formatAddress} from '../../constants/addressFormat';
 import Colors from '../../constants/Colors';
-import {getDateString, getExpirationDate} from '../../constants/date';
+import { getDateString, getExpirationDate } from '../../constants/date';
 import Images from '../../constants/Images';
-import {hp, wp} from '../../constants/responsiveFunct';
+import { hp, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import {
   getEventByValue,
@@ -80,31 +64,31 @@ import {
 } from '../../constants/tradingHistory';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import useValidate from '../../hooks/useValidate';
-import {buyNFTApi} from '../../store/actions/detailsNFTAction';
-import {setPaymentObject} from '../../store/reducer/paymentReducer';
-import {alertWithSingleBtn, numberWithCommas} from '../../utils';
-import {collectionClick} from '../../utils/detailHelperFunctions';
-import {getTokenNameFromId} from '../../utils/nft';
-import {getDefaultToken, getERC20Tokens} from '../../utils/token';
-import {translate} from '../../walletUtils';
-import {toFixCustom} from '../createNFTScreen/helperFunction';
-import {handleLike} from '../discover/discoverItem';
+import { buyNFTApi } from '../../store/actions/detailsNFTAction';
+import { setPaymentObject } from '../../store/reducer/paymentReducer';
+import {numberWithCommas } from '../../utils';
+import {modalAlert} from '../../common/function';
+
+import { collectionClick } from '../../utils/detailHelperFunctions';
+import { getTokenNameFromId } from '../../utils/nft';
+import { getDefaultToken, getERC20Tokens } from '../../utils/token';
+import { translate, environment} from '../../walletUtils';
+import { toFixCustom } from '../createNFTScreen/helperFunction';
+import { handleLike } from '../../utils/handleLikeFunction';
 import {
   handleTransactionError,
   sendCustomTransaction,
 } from '../wallet/functions/transactionFunctions';
-import ShowModal from './modal';
 import styles from './styles';
-import {validatePrice} from './supportiveFunctions';
-import VideoModel from './ModalVideo';
-import {ImagekitType} from '../../common/ImageConstant';
-import {isInteger} from 'lodash';
-
+import { validatePrice } from './supportiveFunctions';
+import TradingHistory from './TradingHistory';
+import BidHistory from './BidHistory';
+import OfferList from './OfferList';
+import DetailModal from './DetailModal';
 const Web3 = require('web3');
 
 // =============== SVGS Destructuring ========================
 const {
-  PlayButtonIcon,
   HeartWhiteIcon,
   HeartActiveIcon,
   ThreeDotsVerticalIcon,
@@ -112,30 +96,27 @@ const {
   FacebookIcon,
   InstagramIcon,
   VerficationIcon,
-  CircleCloseIcon,
 } = SVGS;
 
-const DetailScreen = ({navigation, route}) => {
+const DetailScreen = ({ navigation, route }) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
-  const refVideo = useRef(null);
-  const {validateNumber} = useValidate();
+  const { validateNumber } = useValidate();
 
   // =============== Props Destructuring ========================
-  const {item, setNftItem, networkName, collectionAddress, nftTokenId} =
+  const { item, setNftItem, networkName, collectionAddress, nftTokenId } =
     route.params;
   // =============== Getting data from reducer ========================
-  const {paymentObject} = useSelector(state => state.PaymentReducer);
-  const {userData} = useSelector(state => state.UserReducer);
-  const {networks} = useSelector(state => state.NetworkReducer);
-  const {buyNFTRes, isBuyLoading} = useSelector(
+  const { paymentObject } = useSelector(state => state.PaymentReducer);
+  const { userData } = useSelector(state => state.UserReducer);
+  const { networks } = useSelector(state => state.NetworkReducer);
+  const { buyNFTRes, isBuyLoading } = useSelector(
     state => state.detailsNFTReducer,
   );
 
   //================== Components State Declaration ===================
   const [ownerDataN, setOwnerDataN] = useState();
-  const [ownerN, setOwnerN] = useState();
   const [showPaymentMethod, setShowPaymentMethod] = useState(false);
   const [showPaymentNow, setShowPaymentNow] = useState(false);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
@@ -145,28 +126,8 @@ const DetailScreen = ({navigation, route}) => {
   const [load, setLoad] = useState(true);
   const [collectCreat, setcollectCreat] = useState();
   const [artistDetail, setArtistData] = useState();
-  const [showThumb, toggleThumb] = useState(true);
-  const [videoCurrentTime, setVideoCurrentTime] = useState(0);
-  const [isFullScreeen, setFullScreeen] = useState(false);
-  const [showVideoModal, setShowVideoModal] = useState(false);
-  const [videoLoadErr, setVideoLoadErr] = useState(false);
-  const [videoKey, setVideoKey] = useState(1);
-  const [playVideo, toggleVideoPlay] = useState(false);
-  const [videoError, setVideoError] = useState('');
 
-  const [tradingTableHead, setTradingTableHead] = useState([
-    translate('common.event'),
-    translate('common.price'),
-    translate('common.from'),
-    translate('common.to'),
-    translate('common.date') + ' (YYYY/MM/DD)',
-  ]);
-  const [bidHistoryTableHead, setBidHistoryTableHead] = useState([
-    translate('common.price'),
-    translate('common.from'),
-    translate('common.date'),
-    translate('common.expiration'),
-  ]);
+  //================== Trading, Bid, OfferList State ===================
   const [filterTableList, setFilterTableList] = useState([]);
   const [filterTableValue, setFilterTableValue] = useState([]);
   const [tradingTableData, setTradingTableData] = useState([]);
@@ -183,28 +144,28 @@ const DetailScreen = ({navigation, route}) => {
   const [cancelAuctionModal, setCancelAuctionModal] = useState(false);
   const [editedPrice, setEditedPrice] = useState('');
   const [priceEditModal, setPriceEditModal] = useState(false);
-
   const [cancelResellModal, setCancelResellModal] = useState(false);
-
   const [placeABid, setPlaceABid] = useState(false);
   const [isCheckService, setCheckService] = useState(false);
   const [isTopUpError, setIsTopUpError] = useState(false);
   const [checkOut, setCheckOut] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [isChecking, setIsChecking] = useState(false);
-
   const [openTransactionPending, setOpenTransactionPending] = useState(false);
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState('');
   const [tokenList, setTokenList] = useState([]);
   const [sellVisible, setSellVisible] = useState(false);
-
+  const [isDropDownOpen, setDropDownOpen] = useState({
+    TradingHistory: false,
+    BidHistory: false,
+    OfferList: false,
+    MoreCollection: false
+  })
   const [handleDate, setHandleDate] = useState({
     open: false,
     for: '',
   });
-
-  const DAY14 = 86400000 * 14;
   const [offerData, setOfferData] = useState({
     totalPrice: '',
     quantity: 1,
@@ -212,13 +173,11 @@ const DetailScreen = ({navigation, route}) => {
     networkTokenId: 0,
     nftId: '',
     expried: new Date(),
-
     error: {
       totalPrice: '',
       expried: '',
     },
   });
-
   const [sellData, setSellData] = useState({
     saleType: saleType.FIXEDPRICE,
     fixedPrice: '',
@@ -234,30 +193,13 @@ const DetailScreen = ({navigation, route}) => {
       startPrice: '',
     },
   });
-
   const [editPriceData, setEditPriceData] = useState({
     price: '',
     priceError: '',
   });
 
-  //================== Audio Timer =======================
-  const [music, setMusic] = useState(null);
-  const [isPlaying, setPlaying] = useState(false);
-  const [duration, setDuration] = useState(0);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [durationMin, setDurationMin] = useState(0);
-  const [durationSec, setDurationSec] = useState(0);
-  const [currentSec, setCurrentSec] = useState(0);
-  const [currentmin, setCurrentmin] = useState(0);
-  const [openPlaySpeed, setOpenPlaySpeed] = useState(false);
-  const [mute, setMute] = useState(false);
-  const [songCompleted, setSongCompleted] = useState(false);
-
-  //================== Unused State Declaration ===================
-  // const [artist, setArtist] = useState();
-  // const [videoLoad, setVideoLoad] = useState(false);
-  // const [playVideoLoad, setPlayVideoLoad] = useState(false);
-
+  //================== Component's local variables =======================
+  const DAY14 = 86400000 * 14;
   const categoryType = detailNFT?.category
     ? detailNFT?.category
     : item?.category;
@@ -265,134 +207,37 @@ const DetailScreen = ({navigation, route}) => {
   const thumbnailUrl = detailNFT?.thumbnailUrl
     ? detailNFT.thumbnailUrl
     : categoryType === CATEGORY_VALUE.music
-    ? item?.mediaUrl
-    : item?.thumbnailUrl;
+      ? item?.mediaUrl
+      : item?.thumbnailUrl;
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId;
   const network = detailNFT?.network ? detailNFT.network : item?.network;
   const userId = userData?.id;
   const walletAddress = userData?.userWallet?.address;
-
-  const hitSlop = {top: 5, bottom: 5, left: 5, right: 5};
-
   const auctionId = detailNFT?.saleData?.auction?.auctionId;
   const saleId = detailNFT?.saleData?.fixPrice?.id;
   const price = detailNFT?.saleData?.fixPrice?.price;
 
-  useEffect(() => {
-    if (buyNFTRes && isCheckService) {
-      if (buyNFTRes?.messageCode) {
-        setErrorMessage(buyNFTRes?.messageCode);
-      }
-      if (checkOut && buyNFTRes?.dataReturn) {
-        setCheckOut(false);
-        setTimeout(() => {
-          setShowPaymentMethod(true);
-        }, 500);
-      }
-    }
-  }, [buyNFTRes]);
+  const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 };
 
-  useEffect(() => {
-    if (categoryType === CATEGORY_VALUE.music) {
-      const audio = new Sound(mediaUrl, undefined, err => {
-        if (err) {
-          return;
-        }
-      });
-      setMusic(audio);
-      return function cleanup() {
-        audio.release();
-      };
-    }
-  }, [mediaUrl]);
+  let ownerName = ownerDataN?.name?.trim()
+    ? ownerDataN.name
+    : ownerDataN?.address?.includes('0x')
+      ? ownerDataN.address.substring(0, 6)
+      : '---';
 
-  const durationRef = useRef(0);
+  let creatorName = artistDetail?.name?.trim()
+    ? artistDetail.name
+    : artistDetail?.address?.includes('0x')
+      ? artistDetail.address.substring(0, 6)
+      : '---';
 
-  useEffect(() => {
-    if (categoryType === CATEGORY_VALUE.music) {
-      const interval = setInterval(() => {
-        if (music && durationRef?.current <= 0) {
-          setDuration(music?.getDuration());
-          setDurationMin(Math.floor(music.getDuration() / 60));
-          setDurationSec(Math.floor(music.getDuration() % 60));
-          durationRef.current = music.getDuration();
-        } else if (music && isPlaying) {
-          music.getCurrentTime(seconds => {
-            setCurrentTime(Math.round(seconds));
-            setCurrentmin(Math.floor(seconds / 60));
-            setCurrentSec(Math.floor(seconds % 60));
-          });
-        }
-      }, 100);
-      return () => clearInterval(interval);
-    }
-  }, [isPlaying, music]);
-
-  useEffect(() => {
-    if (Math.floor(duration) === currentTime) {
-      setCurrentTime(0);
-      setCurrentmin(0);
-      setCurrentSec(0);
-      setPlaying(false);
-      setSongCompleted(true);
-    }
-  }, [currentTime]);
-
-  useEffect(() => {
-    if (songCompleted) {
-      setCurrentSec(0);
-      setSongCompleted(false);
-    }
-  }, [songCompleted]);
-
-  const onPlayPausePress = async () => {
-    if (isPlaying) {
-      music.pause();
-      setPlaying(false);
-    } else {
-      music.play(success => {
-        setPlaying(false);
-      });
-      setPlaying(true);
-    }
-  };
-
-  useEffect(() => {
-    if (mute) {
-      music?.setVolume(0);
-    } else {
-      music?.setVolume(1);
-    }
-  }, [mute, music]);
-
-  const seekAudio = async value => {
-    if (value < 0) {
-      await music?.setCurrentTime(0);
-      setCurrentTime(0);
-      setCurrentmin(0);
-      setCurrentSec(0);
-      return;
-    }
-    await music?.setCurrentTime(value);
-    if (isPlaying) {
-      await music?.play();
-    }
-    setCurrentTime(value);
-    setCurrentmin(Math.floor(value / 60));
-    setCurrentSec(Math.floor(value % 60));
-  };
-
-  const setAudioSpeed = speed => {
-    setOpenPlaySpeed(false);
-    music.setSpeed(speed);
-    if (!isPlaying) {
-      music.pause();
-      setPlaying(false);
-    }
-  };
+  let collectionName = collectCreat?.name
+    ? collectCreat.name
+    : collectCreat?.address?.includes('0x')
+      ? collectCreat.address.substring(0, 6)
+      : '---';
 
   //===================== UseEffect Function =========================
-
   useEffect(() => {
     const backAction = () => {
       {
@@ -400,7 +245,6 @@ const DetailScreen = ({navigation, route}) => {
         return true;
       }
     };
-
     const backHandler = BackHandler.addEventListener(
       'hardwareBackPress',
       backAction,
@@ -421,16 +265,19 @@ const DetailScreen = ({navigation, route}) => {
     if (filterTableValue?.length && nftId) {
       setTradingTableData([]);
       getHistory('trading', filterTableValue);
-    } else if (nftId) {
+    } else if (isDropDownOpen.TradingHistory) {
       getHistory('trading');
+    } else if (isDropDownOpen.BidHistory && sellDetails.length === 0) {
+      getHistory('bid');
+    } else if (isDropDownOpen.MoreCollection && moreData.length === 0) {
+      getRealtedNFT();
+    } else if (isDropDownOpen.OfferList && offerList.length === 0) {
+      getOfferList();
     }
-  }, [filterTableValue, nftId]);
+  }, [filterTableValue, isDropDownOpen]);
 
   useEffect(() => {
     if (nftId) {
-      getHistory('bid');
-      getOfferList();
-      getRealtedNFT();
       const selectedNetwork = networks?.filter(
         item => item?.name === network?.networkName,
       );
@@ -470,13 +317,6 @@ const DetailScreen = ({navigation, route}) => {
     }
   }, [nftId]);
 
-  // useEffect(() => {
-  //   const unsubscribe = navigation.addListener('focus', () => {});
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // }, []);
-
   useEffect(() => {
     if (paymentObject) {
       setShowPaymentNow(true);
@@ -484,16 +324,22 @@ const DetailScreen = ({navigation, route}) => {
   }, [paymentObject]);
 
   useEffect(() => {
-    if (!showVideoModal) {
-      refVideo?.current?.player?.ref?.seek(videoCurrentTime);
+    if (buyNFTRes && isCheckService) {
+      if (buyNFTRes?.messageCode) {
+        setErrorMessage(buyNFTRes?.messageCode);
+      }
+      if (checkOut && buyNFTRes?.dataReturn) {
+        setCheckOut(false);
+        setTimeout(() => {
+          setShowPaymentMethod(true);
+        }, 500);
+      }
     }
-  }, [showVideoModal]);
+  }, [buyNFTRes]);
 
-  //===================== API Call Functions =========================
-
+  //===================== Get Nft Detail API Call Functions =========================
   const getNFTDetails = async reload => {
     let url = `${NEW_BASE_URL}/nfts/details`;
-
     sendRequest({
       url,
       params: {
@@ -533,6 +379,141 @@ const DetailScreen = ({navigation, route}) => {
       });
   };
 
+  //===================== Trading, Bid History API Call Functions =========================
+  const getHistory = (history, sort) => {
+    let page = 1;
+    let limit = 5;
+    let bidSort = 3;
+    let payload =
+      history === 'bid'
+        ? {
+          url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
+          method: 'GET',
+        }
+        : {
+          url: `${NEW_BASE_URL}/sale-nft/trading-history`,
+          method: 'POST',
+          data: {
+            page: 1,
+            limit: 30,
+            nftId: nftId,
+            sort,
+          },
+        };
+    sendRequest(payload)
+      .then(res => {
+        if (res?.items?.length > 0) {
+          if (history === 'bid') {
+            let tempList = [];
+
+            res?.items?.map(item => {
+              let temp = [
+                `${Number(item?.price)} ${item?.receiveToken}`,
+                item?.fromUser?.userWallet?.address,
+                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
+                getExpirationDate(item?.expired),
+              ];
+              tempList.push(temp);
+            });
+
+            setSellDetails(tempList);
+          } else {
+            let tradingList = [];
+            let filterList = [];
+
+            res?.items?.map(item => {
+              let from = item?.fromUser?.userWallet?.address;
+              let to = item?.toUser?.userWallet?.address;
+
+              if (item.action === SORT_TRADING_HISTORY.BUY_NFT) {
+                from = item?.toUser?.userWallet?.address;
+                to = item?.fromUser?.userWallet?.address;
+              }
+              let temp = [
+                getEventByValue(item?.action),
+                item?.price && item?.receiveToken
+                  ? Number(item?.price) + ' ' + item?.receiveToken
+                  : '',
+                getFromAddress(from, item?.action),
+                getToAddress(to, item?.action),
+                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
+              ];
+              tradingList.push(temp);
+              filterList.push(getEventByValue(item?.action));
+            });
+            // setTradingList(res?.items);
+            setTradingTableData(tradingList);
+            // setTradingTableData1(tradingList)
+            // setFilterTableValue(FILTER_TRADING_HISTORY_OPTIONS)
+          }
+        }
+        setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  //===================== Get More collection data API Call Functions =========================
+  const getRealtedNFT = async () => {
+    let page = 1;
+    let limit = 6;
+    let networkId = network?.networkId;
+    let url = `${NEW_BASE_URL}/nfts/nfts-by-collection`;
+    sendRequest({
+      url,
+      method: 'GET',
+      params: {
+        page,
+        limit,
+        collectionAddress,
+        currentNftId: nftId,
+        userId,
+        networkId,
+      },
+    })
+      .then(res => {
+        if (res?.list?.length > 0) {
+          setMoreData(res?.list);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
+  //===================== Offer List History API Call Functions =========================
+  const getOfferList = () => {
+    let url = `${NEW_BASE_URL}/sale-nft/offer-list/${nftId}`;
+    sendRequest({
+      url,
+      method: 'GET',
+    })
+      .then(res => {
+        if (res?.length > 0) {
+          let tempList = [];
+
+          res?.map(item => {
+            let temp = [
+              `${Number(item?.price)} ${item?.receiveToken}`,
+              item.fromUser?.address,
+              getDateString(item.createdAt ? item.createdAt : Date.now()),
+              item.expired * 1000 > Date.now()
+                ? timeSince(new Date(item.expired * 1000))
+                : 'Expired',
+              item?.networkTokenIcon,
+            ];
+            tempList.push(temp);
+          });
+
+          setOfferList(tempList);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   //====================== Render App Header Function =========================
   const renderAppHeader = () => {
     return (
@@ -543,44 +524,27 @@ const DetailScreen = ({navigation, route}) => {
         }}
         title={translate('wallet.common.detail')}
         showRightComponent={
-          <View style={{paddingRight: 10}}>
-            <Menu
+          <View style={{ paddingRight: 10 }}>
+           <PopupMenu
+              items={[
+                {label: `${translate('common.reportNft')}`},
+                {label: `${translate('common.blockUser')}`},
+              ]}
+              textStyle={{...CommonStyles.titleStyle}}
               onSelect={value => {
-                alertWithSingleBtn(
+                modalAlert(
                   translate('common.Confirm'),
                   value === 1
-                    ? translate('common.nftReported')
-                    : translate('common.userBlocked'),
+                    ? translate('common.userBlocked') 
+                    : translate('common.nftReported'),
                 );
-              }}>
-              <MenuTrigger children={<ThreeDotsVerticalIcon />} />
-              <MenuOptions>
-                {renderMenuOption(1)}
-                {renderMenuOption(2)}
-              </MenuOptions>
-            </Menu>
+              }}
+              children={<ThreeDotsVerticalIcon />}
+               />
           </View>
         }
       />
     );
-  };
-
-  const renderMenuOption = value => {
-    return (
-      <MenuOption value={value}>
-        <Text style={{marginVertical: 10}}>
-          {value === 1 && translate('common.reportNft')}
-          {value === 2 && translate('common.blockUser')}
-        </Text>
-      </MenuOption>
-    );
-  };
-
-  const toggleModal = state => {
-    setShowVideoModal(state);
-    if (state) {
-      toggleVideoPlay(true);
-    }
   };
 
   //================== Render Banner Image/Video Function ==================
@@ -590,236 +554,20 @@ const DetailScreen = ({navigation, route}) => {
         activeOpacity={1}
         onPress={() => {
           setImgModal(true);
-          toggleVideoPlay(!playVideo);
-          setFullScreeen(!playVideo);
         }}>
         {categoryType === CATEGORY_VALUE.movie ? (
-          <View
-            style={[
-              styles.modalImage,
-              {
-                backgroundColor: videoLoadErr
-                  ? Colors.BLACK1
-                  : styles.modalImage,
-              },
-            ]}>
-            {showThumb && (
-              <C_Image
-                uri={thumbnailUrl}
-                size={ImagekitType.FULLIMAGE}
-                imageStyle={styles.modalImage}
-              />
-            )}
-            {showThumb && (
-              <ActivityIndicator
-                style={styles.activity}
-                size="medium"
-                color={COLORS.BLACK1}
-              />
-            )}
-            {videoError !== '' ? (
-              <Text style={styles.videoError}>{videoError}</Text>
-            ) : (
-              <>
-                <VideoPlayer
-                  repeat
-                  disableBack
-                  disableVolume
-                  key={videoKey}
-                  ref={refVideo}
-                  source={{uri: mediaUrl}}
-                  playInBackground={false}
-                  disableFullscreen={!playVideo}
-                  disablePlayPause={!playVideo}
-                  disableSeekbar={!playVideo}
-                  disableTimer={!playVideo}
-                  tapAnywhereToPause={true}
-                  paused={showVideoModal ? true : !playVideo}
-                  onProgress={r => setVideoCurrentTime(r?.currentTime)}
-                  resizeMode={'cover'}
-                  onError={error => {
-                    console.log(error);
-                    setVideoLoadErr(true);
-                    toggleThumb(false);
-                    setVideoError(translate('common.VIDEO_FORMAT_ERROR'));
-                  }}
-                  onReadyForDisplay={() => toggleThumb(false)}
-                  onPlay={() => {
-                    toggleVideoPlay(true);
-                    setFullScreeen(true);
-                  }}
-                  onPause={() => {
-                    toggleVideoPlay(false);
-                    setFullScreeen(false);
-                  }}
-                  onLoad={o =>
-                    refVideo?.current?.player?.ref?.seek(videoCurrentTime)
-                  }
-                  onHideControls={() => setFullScreeen(false)}
-                  onShowControls={() => setFullScreeen(true)}
-                  style={styles.video}
-                />
-                {showVideoModal ? (
-                  <VideoModel
-                    url={mediaUrl}
-                    toggleModal={toggleModal}
-                    isVisible={showVideoModal}
-                    currentTime={videoCurrentTime}
-                    updateTime={setVideoCurrentTime}
-                    toggleVideoPlay={toggleVideoPlay}
-                  />
-                ) : null}
-              </>
-            )}
-
-            {playVideo && isFullScreeen && (
-              <TouchableOpacity
-                onPress={() => toggleModal(true)}
-                hitSlop={hitSlop}
-                style={styles.videoFullScreen}>
-                <FullScreen
-                  size={wp('6%')}
-                  name={'fullscreen'}
-                  color={Colors.white}
-                />
-              </TouchableOpacity>
-            )}
-
-            {!playVideo && videoError === '' && (
-              <View style={styles.videoIcon}>
-                <PlayButtonIcon width={SIZE(100)} height={SIZE(100)} />
-              </View>
-            )}
-          </View>
+          <CustomVideoPlayer
+            mediaUrl={mediaUrl}
+            thumbnailUrl={thumbnailUrl}
+          />
         ) : categoryType === CATEGORY_VALUE.music ? (
-          <View style={{...styles.modalImage}}>
+          <View style={{ ...styles.modalImage }}>
             <C_Image
               size={ImagekitType.FULLIMAGE}
               uri={thumbnailUrl}
               imageStyle={styles.modalImage}
             />
-            <View style={styles.musicPlayer}>
-              {duration === -1 ? (
-                <View style={styles.controlView}>
-                  <ActivityIndicator size="small" color="#0b0b0b" />
-                </View>
-              ) : (
-                <TouchableOpacity
-                  onPress={() => onPlayPausePress()}
-                  style={styles.controlView}>
-                  <PlayPause
-                    name={isPlaying ? 'pause' : 'play'}
-                    size={wp('6.5%')}
-                  />
-                </TouchableOpacity>
-              )}
-
-              {duration !== -1 ? (
-                <View style={styles.timeView}>
-                  <Text>
-                    {currentmin}:
-                    {currentSec > 9 ? currentSec : '0' + currentSec} /{' '}
-                    {durationMin}:
-                    {durationSec > 9 ? durationSec : '0' + durationSec}
-                  </Text>
-                </View>
-              ) : (
-                <View style={styles.timeView}>
-                  <Text>0:00 / 0:00</Text>
-                </View>
-              )}
-              <View style={{width: SIZE(150)}}>
-                <Slider
-                  style={{width: SIZE(140)}}
-                  value={currentTime === 0 ? -1 : currentTime}
-                  tapToSeek={true}
-                  minimumValue={0}
-                  maximumValue={duration}
-                  minimumTrackTintColor={Colors.GREY1}
-                  maximumTrackTintColor={Colors.GREY2}
-                  onSlidingComplete={value => {
-                    seekAudio(value);
-                  }}
-                />
-              </View>
-              <TouchableOpacity
-                style={styles.controlView}
-                onPress={() => setMute(!mute)}>
-                <IconMute name={mute ? 'mute' : 'unmute'} size={wp('4.5%')} />
-              </TouchableOpacity>
-              <View>
-                <Menu onSelect={() => setOpenPlaySpeed(true)}>
-                  <MenuTrigger
-                    style={styles.optionView}
-                    children={<ThreeDotsVerticalIcon />}
-                  />
-                  <MenuOptions>
-                    <MenuOption style={styles.menuOption}>
-                      <PlaySpeed size={wp('5%')} name={'play-speed'} />
-                      <Text>{translate('common.playbackSpeed')}</Text>
-                    </MenuOption>
-                  </MenuOptions>
-                </Menu>
-              </View>
-              <View>
-                <Menu
-                  key={openPlaySpeed}
-                  opened={openPlaySpeed}
-                  onBackdropPress={() => setOpenPlaySpeed(false)}
-                  style={
-                    Platform.OS === 'android'
-                      ? {
-                          position: 'absolute',
-                          left: 50,
-                        }
-                      : {}
-                  }>
-                  <MenuTrigger />
-                  <MenuOptions>
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(0.25)}
-                      style={styles.speedMenuOption}
-                      text="0.25"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(0.5)}
-                      style={styles.speedMenuOption}
-                      text="0.5"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(0.75)}
-                      style={styles.speedMenuOption}
-                      text="0.75"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(1)}
-                      style={styles.speedMenuOption}
-                      text="Normal"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(1.25)}
-                      style={styles.speedMenuOption}
-                      text="1.25"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(1.5)}
-                      style={styles.speedMenuOption}
-                      text="1.5"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(1.75)}
-                      style={styles.speedMenuOption}
-                      text="1.75"
-                    />
-                    <MenuOption
-                      onSelect={() => setAudioSpeed(2)}
-                      style={styles.speedMenuOption}
-                      text="2"
-                    />
-                  </MenuOptions>
-                </Menu>
-              </View>
-            </View>
+            <AudioPlayer mediaUrl={mediaUrl} />
           </View>
         ) : (
           <C_Image
@@ -905,11 +653,11 @@ const DetailScreen = ({navigation, route}) => {
     let uri =
       key === 'creator' && artistDetail?.avatar
         ? artistDetail?.avatar
-        : key === 'collection' && collectCreat.avatar
-        ? collectCreat.avatar
-        : key === 'owner' && ownerDataN?.avatar
-        ? ownerDataN.avatar
-        : null;
+        : key === 'collection' && collectCreat?.avatar
+          ? collectCreat?.avatar
+          : key === 'owner' && ownerDataN?.avatar
+            ? ownerDataN.avatar
+            : null;
     let imageStyle = fromNFT ? styles.creatorImage : styles.iconsImage;
     let imageView = fromNFT ? SIZE(40) : SIZE(30);
     return (
@@ -919,7 +667,7 @@ const DetailScreen = ({navigation, route}) => {
             uri={uri}
             size={ImagekitType.AVATAR}
             imageStyle={imageStyle}
-            style={{width: imageView}}
+            style={{ width: imageView }}
           />
         ) : (
           <Image style={imageStyle} source={IMAGES.DEFAULTUSER} />
@@ -930,8 +678,8 @@ const DetailScreen = ({navigation, route}) => {
               {key === 'creator'
                 ? translate('common.creator')
                 : key === 'collection'
-                ? translate('wallet.common.collection')
-                : key === 'owner' && translate('common.owner')}
+                  ? translate('wallet.common.collection')
+                  : key === 'owner' && translate('common.owner')}
             </Text>
           )}
           {key !== 'collection' ? (
@@ -984,11 +732,13 @@ const DetailScreen = ({navigation, route}) => {
   //====================Convert Price====================
 
   const convertPrice = val => {
+    console.log('Value', val)
     let price = val;
-    let priceArr = price?.split('.');
-    if (priceArr[1]?.length < 6) price = parseFloat(price?.toString());
-    else price = parseFloat(Number(price).toFixed(8));
-
+    if(val){
+      let priceArr = price?.split('.');
+      if (priceArr[1]?.length < 6) price = parseFloat(price?.toString());
+      else price = parseFloat(Number(price).toFixed(8));
+    }
     return Number(price);
   };
 
@@ -1007,7 +757,7 @@ const DetailScreen = ({navigation, route}) => {
     ) {
       label =
         detailNFT?.saleData?.auction?.highestPrice ===
-        detailNFT?.saleData?.auction?.startPrice
+          detailNFT?.saleData?.auction?.startPrice
           ? translate('common.minimumBid')
           : translate('common.highestBid');
       tokenIcon = detailNFT?.saleData?.auction?.tokenIcon;
@@ -1022,14 +772,14 @@ const DetailScreen = ({navigation, route}) => {
     }
 
     return (
-      <View style={{paddingHorizontal: SIZE(12), paddingBottom: SIZE(5)}}>
+      <View style={{ paddingHorizontal: SIZE(12), paddingBottom: SIZE(5) }}>
         {label && <Text style={styles.labelText}>{label}</Text>}
         <View style={styles.priceView}>
           <C_Image
             uri={tokenIcon}
             size={ImagekitType.AVATAR}
             imageStyle={styles.tokenIcon}
-            style={{width: SIZE(33)}}
+            style={{ width: SIZE(33) }}
           />
           {!load && (
             <Text style={styles.price}>
@@ -1108,13 +858,11 @@ const DetailScreen = ({navigation, route}) => {
               network?.networkName,
             )
               .then(res => {
-                console.log('approve payByWallet 331', res);
-                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                // modalAlert('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
                 getNFTDetails(true);
               })
               .catch(err => {
-                console.log('payByWallet_err payByWallet 339', err);
                 handlePendingModal(false);
                 handleTransactionError(err, translate);
               });
@@ -1156,12 +904,11 @@ const DetailScreen = ({navigation, route}) => {
               network?.networkName,
             )
               .then(res => {
-                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                // modalAlert('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
                 getNFTDetails(true);
               })
               .catch(err => {
-                console.log('payByWallet_err payByWallet 339', err);
                 handlePendingModal(false);
                 handleTransactionError(err, translate);
               });
@@ -1189,10 +936,6 @@ const DetailScreen = ({navigation, route}) => {
         method: 'PUT',
         data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 888 ~ editPriceApi ~ priceRes',
-        priceRes,
-      );
 
       if (priceRes?.messageCode) {
         handlePendingModal(false);
@@ -1240,23 +983,17 @@ const DetailScreen = ({navigation, route}) => {
             network?.networkName,
           )
             .then(res => {
-              // console.log('approve payByWallet 331', res);
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
             .catch(err => {
-              // console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
         }
       }
     } catch (error) {
-      console.log(
-        '🚀 ~ file: detail.js ~ line 953 ~ editPriceApi ~ error',
-        error,
-      );
       handlePendingModal(false);
       handleTransactionError(error, t);
     }
@@ -1276,7 +1013,7 @@ const DetailScreen = ({navigation, route}) => {
       !editPriceData.price ||
       Number(editPriceData.price) === 0 ||
       Number(editPriceData.price) ===
-        Number(detailNFT?.saleData?.fixPrice?.price)
+      Number(detailNFT?.saleData?.fixPrice?.price)
     ) {
       return false;
     }
@@ -1287,36 +1024,38 @@ const DetailScreen = ({navigation, route}) => {
   const editPriceModal = () => {
     const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice;
     return (
-      <Modal isVisible={priceEditModal}>
-        <View style={styles.editPriceContainner}>
-          <View style={styles.editPriceHeaderView}>
-            <Text style={styles.editPriceText}>
-              {translate('common.editPrice')}
-            </Text>
+      <Portal>
+        <Modal isVisible={priceEditModal}>
+          <View style={styles.editPriceContainner}>
+            <View style={styles.editPriceHeaderView}>
+              <Text style={styles.editPriceText}>
+                {translate('common.editPrice')}
+              </Text>
 
-            <TouchableOpacity onPress={() => setPriceEditModal(false)}>
-              <Image source={Images.cancelIcon} style={styles.cancelButton} />
-            </TouchableOpacity>
+              <TouchableOpacity onPress={() => setPriceEditModal(false)}>
+                <Image source={Images.cancelIcon} style={styles.cancelButton} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputWrapperView}>
+              <TokenInput
+                value={editPriceData.price}
+                onChangeText={onChangeEditPrice}
+                tokenName={tokenName}
+              />
+
+              <GroupButton
+                leftText={translate('common.change')}
+                leftDisabled={!isValidEditPrice()}
+                // leftDisabled={!isValidEditPrice() || !editPriceData.price}
+                leftLoading={false}
+                onLeftPress={() => editPriceApi()}
+                rightHide
+              />
+            </View>
           </View>
-
-          <View style={styles.inputWrapperView}>
-            <TokenInput
-              value={editPriceData.price}
-              onChangeText={onChangeEditPrice}
-              tokenName={tokenName}
-            />
-
-            <GroupButton
-              leftText={translate('common.change')}
-              leftDisabled={!isValidEditPrice()}
-              // leftDisabled={!isValidEditPrice() || !editPriceData.price}
-              leftLoading={false}
-              onLeftPress={() => editPriceApi()}
-              rightHide
-            />
-          </View>
-        </View>
-      </Modal>
+        </Modal>
+      </Portal>
     );
   };
 
@@ -1332,10 +1071,6 @@ const DetailScreen = ({navigation, route}) => {
         method: 'POST',
         data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 980 ~ .then ~ placeBidRes',
-        placeBidRes,
-      );
       setIsChecking(false);
       if (placeBidRes?.messageCode) {
         setErrorMessage(placeBidRes?.messageCode);
@@ -1344,10 +1079,6 @@ const DetailScreen = ({navigation, route}) => {
         setPlaceABid(false);
         handlePendingModal(true);
         const approveData = placeBidRes?.dataReturn?.approveData;
-        console.log(
-          '🚀 ~ file: detail.js ~ line 991 ~ //.then ~ approveData',
-          approveData,
-        );
         let approved = true;
         let noncePlus = 0;
         if (approveData) {
@@ -1365,10 +1096,6 @@ const DetailScreen = ({navigation, route}) => {
               walletAddress,
               nftTokenId,
               network?.networkName,
-            );
-            console.log(
-              '🚀 ~ file: detail.js ~ line 1005 ~ .then ~ txnResult',
-              txnResult,
             );
 
             if (txnResult) {
@@ -1402,13 +1129,11 @@ const DetailScreen = ({navigation, route}) => {
               network?.networkName,
             )
               .then(res => {
-                console.log('approve payByWallet 331', res);
-                // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+                // modalAlert('',translate('common.tansactionSuccessFull'));
                 // setLoading(false);
                 getNFTDetails(true);
               })
               .catch(err => {
-                console.log('payByWallet_err payByWallet 339', err);
                 handlePendingModal(false);
                 handleTransactionError(err, translate);
               });
@@ -1420,10 +1145,6 @@ const DetailScreen = ({navigation, route}) => {
         }
       }
     } catch (error) {
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1074 ~ handlePlaceBidAuth ~ err',
-        err,
-      );
       closeBidModal();
       handleTransactionError(error, t);
       handlePendingModal(false);
@@ -1446,9 +1167,7 @@ const DetailScreen = ({navigation, route}) => {
         'The new bid amount have to be grater than 5% the highest bid amount',
       );
       handlePendingModal(false);
-      console.log('1091 ???????');
     } else {
-      console.log('1093 <<<<<?>>>>>');
       setErrorMessage('');
       handlePlaceBidAuth();
     }
@@ -1462,54 +1181,58 @@ const DetailScreen = ({navigation, route}) => {
     );
 
     return (
-      <Modal isVisible={placeABid}>
-        <View style={styles.placeAbbidView}>
-          <View style={styles.PlaceAbidHeaderview}>
-            <Text style={styles.bidtext}>{translate('common.placeABid')}</Text>
-            <TouchableOpacity onPress={closeBidModal}>
-              <Image source={Images.cancelIcon} style={styles.cancelimg} />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.priceText}>{translate('common.price')}</Text>
-
-          <View style={{marginVertical: SIZE(35), marginTop: SIZE(15)}}>
-            <View style={styles.inputWrapperView1}>
-              <TextInput
-                value={editedPrice ? editedPrice : maxPrice.toString()}
-                keyboardType="numeric"
-                style={styles.inputField}
-                onChangeText={text => setEditedPrice(text)}
-                maxLength={10}
-              />
-
-              <View style={styles.tokenView}>
-                <Text style={styles.tokenText}>{tokenName}</Text>
-              </View>
+      <Portal>
+        <Modal isVisible={placeABid}>
+          <View style={styles.placeAbbidView}>
+            <View style={styles.PlaceAbidHeaderview}>
+              <Text style={styles.bidtext}>
+                {translate('common.placeABid')}
+              </Text>
+              <TouchableOpacity onPress={closeBidModal}>
+                <Image source={Images.cancelIcon} style={styles.cancelimg} />
+              </TouchableOpacity>
             </View>
-            {errorMessage !== '' && (
-              <Text style={styles.errorText1}>{errorMessage}</Text>
-            )}
-          </View>
 
-          <View style={styles.placeAbidgroupButtonView}>
-            <GroupButton
-              leftText={translate('common.Confirm')}
-              leftDisabled={isChecking}
-              leftLoading={isChecking}
-              onLeftPress={() => {
-                onPlaceBid(maxPrice);
-              }}
-              rightText={translate('common.topUp')}
-              rightDisabled={false}
-              rightLoading={false}
-              onRightPress={() => {}}
-              rightStyle={styles.rightGroupButton}
-              rightTextStyle={styles.rightGroupButtonText}
-            />
+            <Text style={styles.priceText}>{translate('common.price')}</Text>
+
+            <View style={{ marginVertical: SIZE(35), marginTop: SIZE(15) }}>
+              <View style={styles.inputWrapperView1}>
+                <TextInput
+                  value={editedPrice ? editedPrice : maxPrice.toString()}
+                  keyboardType="numeric"
+                  style={styles.inputField}
+                  onChangeText={text => setEditedPrice(text)}
+                  maxLength={10}
+                />
+
+                <View style={styles.tokenView}>
+                  <Text style={styles.tokenText}>{tokenName}</Text>
+                </View>
+              </View>
+              {errorMessage !== '' && (
+                <Text style={styles.errorText1}>{errorMessage}</Text>
+              )}
+            </View>
+
+            <View style={styles.placeAbidgroupButtonView}>
+              <GroupButton
+                leftText={translate('common.Confirm')}
+                leftDisabled={isChecking}
+                leftLoading={isChecking}
+                onLeftPress={() => {
+                  onPlaceBid(maxPrice);
+                }}
+                rightText={translate('common.topUp')}
+                rightDisabled={false}
+                rightLoading={false}
+                onRightPress={() => { }}
+                rightStyle={styles.rightGroupButton}
+                rightTextStyle={styles.rightGroupButtonText}
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </Portal>
     );
   };
 
@@ -1526,7 +1249,6 @@ const DetailScreen = ({navigation, route}) => {
 
   const handlePutOnsale = async () => {
     try {
-      console.log('🚀 ~ file: detail.js ~ line 1246 ~ ~ ~');
       // setIsLoading(true)
       setSellVisible(false);
       handlePendingModal(true);
@@ -1537,17 +1259,13 @@ const DetailScreen = ({navigation, route}) => {
         networkTokenId: Number(sellData.basePrice),
         nftId: nftId,
       };
-      console.log('🚀 ~ file: detail.js ~ line 1264 ~  ~ data', data);
 
       const resPutOnsale = await sendRequest({
         url,
         method: 'POST',
         data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1249 ~ .then ~ resPutOnsale',
-        resPutOnsale,
-      );
+
 
       const approveAllData = resPutOnsale?.approveAllData;
       const signData = resPutOnsale?.dataReturn?.signData;
@@ -1574,7 +1292,6 @@ const DetailScreen = ({navigation, route}) => {
             // toast.success(t('APPROVE_NFT_SUCCESS'))
           }
         } catch (error) {
-          console.log('🚀 ~ file: detail.js ~ line 1300 ~ ~ error', error);
           approved = false;
           // setIsLoading(false)
           // toast.error(t('APPROVE_NFT_FAIL'))
@@ -1599,24 +1316,21 @@ const DetailScreen = ({navigation, route}) => {
             network?.networkName,
           )
             .then(res => {
-              console.log('approve payByWallet 331', res);
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
         } catch (error) {
-          console.log('🚀 ~ file: detail.js ~ line 1340 ~ ~ error', error);
           // setIsLoading(false)
           // toast.error(error.message)
         }
       }
     } catch (error) {
-      console.log('🚀 ~ file: detail.js ~ line 1345 ~  ~ error', error);
       // setIsLoading(false)
       // toast.error(error.message)
     }
@@ -1637,8 +1351,6 @@ const DetailScreen = ({navigation, route}) => {
       setSellVisible(false);
       handlePendingModal(true);
       const url = `${NEW_BASE_URL}/auction-session`;
-      console.log('🚀 ~ file: detail.js ~ line 1266 ~ ~ ~', url);
-
       const data = {
         startPrice: Number(sellData.startPrice),
         receiveToken: getTokenName(sellData.basePrice),
@@ -1653,10 +1365,7 @@ const DetailScreen = ({navigation, route}) => {
         method: 'POST',
         data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1390 ~ ~ resPutOnAuction',
-        resPutOnAuction,
-      );
+
 
       // const resPutOnAuction = await nftServices.putOnAuction(dataCreateAuction);
       // const approveAllData = resPutOnAuction?.approveAllData
@@ -1680,12 +1389,11 @@ const DetailScreen = ({navigation, route}) => {
             network?.networkName,
           )
             .then(res => {
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
@@ -1695,23 +1403,16 @@ const DetailScreen = ({navigation, route}) => {
         }
       }
     } catch (error) {
-      console.log('🚀 ~ file: detail.js ~ line 1345 ~  ~ error', error);
       // setIsLoading(false)
       // toast.error(error.message)
     }
   };
 
   const onSell = () => {
-    console.log('🚀 ~ file: detail.js ~ line 1232 ~  ~ sellData', sellData);
     if (!isValidate()) {
-      console.log('🚀 ~ file: detail.js ~ line 1391 ~ ~ INVALID_DATA');
       // toast.error(t('INVALID_DATA'))
     } else {
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1394 ~ ~ sellData.saleType',
-        sellData.saleType,
-        sellData.saleType === saleType.FIXEDPRICE,
-      );
+
       if (sellData.saleType === saleType.FIXEDPRICE) {
         // handlePutOnSaleAuth();
         handlePutOnsale();
@@ -1735,7 +1436,7 @@ const DetailScreen = ({navigation, route}) => {
       isSuccess = false;
     }
     if (sellData.saleType === saleType.TIMEAUTION) {
-      const {closeTime, startTime, startPrice} = sellData;
+      const { closeTime, startTime, startPrice } = sellData;
 
       if (!startTime || startTime < Date.now()) {
         error.startTime = 'ERROR_INVALID_OPEN_TIME_AUTION1';
@@ -1765,105 +1466,108 @@ const DetailScreen = ({navigation, route}) => {
 
   const sellNftModal = () => {
     return (
-      <Modal isVisible={sellVisible}>
-        <View style={styles.sellModalView}>
-          <View style={styles.sellModalHeaderView}>
-            <Text style={styles.sellNftText}>{'Sell NFT'}</Text>
+      <Portal>
+        <Modal isVisible={sellVisible}>
+          <View style={styles.sellModalView}>
+            <View style={styles.sellModalHeaderView}>
+              <Text style={styles.sellNftText}>{'Sell NFT'}</Text>
 
-            <TouchableOpacity onPress={() => setSellVisible(false)}>
-              <Image source={Images.cancelIcon} style={styles.cancelimg} />
-            </TouchableOpacity>
-          </View>
+              <TouchableOpacity onPress={() => setSellVisible(false)}>
+                <Image source={Images.cancelIcon} style={styles.cancelimg} />
+              </TouchableOpacity>
+            </View>
 
-          <Text style={styles.saleTypeText}>
-            {translate('wallet.common.saleType') + ' --> ' + sellData.saleType}
-          </Text>
+            <Text style={styles.saleTypeText}>
+              {translate('wallet.common.saleType') +
+                ' --> ' +
+                sellData.saleType}
+            </Text>
 
-          <View style={styles.sellGroupButtonView}>
-            <GroupButton
-              leftText={'Fixed Price'}
-              leftDisabled={false}
-              leftLoading={false}
-              onLeftPress={() => {
-                setSellData({
-                  ...sellData,
-                  saleType: saleType.FIXEDPRICE,
-                });
-              }}
-              rightText={'Time Auction'}
-              rightDisabled={false}
-              rightLoading={false}
-              onRightPress={() => {
-                onSelectTimeAuction();
-              }}
-              rightStyle={
-                sellData.saleType === saleType.FIXEDPRICE
-                  ? styles.sellRightGroupButton
-                  : styles.sellLeftGroupButton
-              }
-              rightTextStyle={
-                sellData.saleType === saleType.FIXEDPRICE
-                  ? styles.sellRightGroupButtonText
-                  : styles.sellLeftGroupButtonText
-              }
-              leftStyle={
-                sellData.saleType === saleType.FIXEDPRICE
-                  ? styles.sellLeftGroupButton
-                  : styles.sellRightGroupButton
-              }
-              leftTextStyle={
-                sellData.saleType === saleType.FIXEDPRICE
-                  ? styles.sellLeftGroupButtonText
-                  : styles.sellRightGroupButtonText
-              }
-            />
-          </View>
+            <View style={styles.sellGroupButtonView}>
+              <GroupButton
+                leftText={'Fixed Price'}
+                leftDisabled={false}
+                leftLoading={false}
+                onLeftPress={() => {
+                  setSellData({
+                    ...sellData,
+                    saleType: saleType.FIXEDPRICE,
+                  });
+                }}
+                rightText={'Time Auction'}
+                rightDisabled={false}
+                rightLoading={false}
+                onRightPress={() => {
+                  onSelectTimeAuction();
+                }}
+                rightStyle={
+                  sellData.saleType === saleType.FIXEDPRICE
+                    ? styles.sellRightGroupButton
+                    : styles.sellLeftGroupButton
+                }
+                rightTextStyle={
+                  sellData.saleType === saleType.FIXEDPRICE
+                    ? styles.sellRightGroupButtonText
+                    : styles.sellLeftGroupButtonText
+                }
+                leftStyle={
+                  sellData.saleType === saleType.FIXEDPRICE
+                    ? styles.sellLeftGroupButton
+                    : styles.sellRightGroupButton
+                }
+                leftTextStyle={
+                  sellData.saleType === saleType.FIXEDPRICE
+                    ? styles.sellLeftGroupButtonText
+                    : styles.sellRightGroupButtonText
+                }
+              />
+            </View>
 
-          <Text style={[styles.saleTypeText, {textTransform: 'capitalize'}]}>
-            {sellData.saleType === saleType.FIXEDPRICE
-              ? translate('common.fixedPrice')
-              : 'Time Auction'}
-          </Text>
+            <Text style={[styles.saleTypeText, { textTransform: 'capitalize' }]}>
+              {sellData.saleType === saleType.FIXEDPRICE
+                ? translate('common.fixedPrice')
+                : 'Time Auction'}
+            </Text>
 
-          {sellData.saleType === saleType.FIXEDPRICE ? (
-            <View style={{paddingHorizontal: SIZE(8)}}>
-              <View style={styles.sellInputFieldView}>
-                <TextInput
-                  value={sellData.fixedPrice}
-                  onChangeText={value => {
-                    if (validateNumber(value).status) {
-                      setSellData({
-                        ...sellData,
-                        fixedPrice: value,
-                      });
-                    }
-                  }}
-                  style={styles.sellInputField}
-                />
-                <View style={{zIndex: 1}}>
-                  <DropDownPicker
-                    open={open}
-                    value={value}
-                    items={tokenList}
-                    setOpen={setOpen}
-                    maxHeight={60}
-                    setValue={setValue}
-                    setItems={setTokenList}
-                    dropDownContainerStyle={styles.sellDropDownContainer}
-                    style={styles.sellTokenPicker}
-                    placeholder={'Select Here'}
-                    selectedItemLabelStyle={{backgroundColor: Colors.BLACK2}}
+            {sellData.saleType === saleType.FIXEDPRICE ? (
+              <View style={{ paddingHorizontal: SIZE(8) }}>
+                <View style={styles.sellInputFieldView}>
+                  <TextInput
+                    value={sellData.fixedPrice}
+                    onChangeText={value => {
+                      if (validateNumber(value).status) {
+                        setSellData({
+                          ...sellData,
+                          fixedPrice: value,
+                        });
+                      }
+                    }}
+                    style={styles.sellInputField}
                   />
+                  <View style={{ zIndex: 1 }}>
+                    <DropDownPicker
+                      open={open}
+                      value={value}
+                      items={tokenList}
+                      setOpen={setOpen}
+                      maxHeight={60}
+                      setValue={setValue}
+                      setItems={setTokenList}
+                      dropDownContainerStyle={styles.sellDropDownContainer}
+                      style={styles.sellTokenPicker}
+                      placeholder={'Select Here'}
+                      selectedItemLabelStyle={{ backgroundColor: Colors.BLACK2 }}
+                    />
+                  </View>
                 </View>
-              </View>
 
-              {sellData.error.fixedPrice !== '' && (
-                <Text style={styles.errorText1}>
-                  {sellData.error.fixedPrice}
-                </Text>
-              )}
+                {sellData.error.fixedPrice !== '' && (
+                  <Text style={styles.errorText1}>
+                    {sellData.error.fixedPrice}
+                  </Text>
+                )}
 
-              {/* <TokenInput
+                {/* <TokenInput
                   value={sellInput}
                   onChangeText={setSellInput}
                   // tokenName={'BUSD'}
@@ -1877,116 +1581,121 @@ const DetailScreen = ({navigation, route}) => {
                   isDropdownVisible={true}
                   style={{marginHorizontal: 28}}
                 /> */}
-            </View>
-          ) : (
-            <View style={{paddingHorizontal: SIZE(8)}}>
-              <View style={styles.opneTimeView}>
-                <View style={{flex: 1 / 2}}>
-                  <Text style={styles.openTimeText}>
-                    {translate('wallet.common.openTime')}
-                  </Text>
-                  <TouchableOpacity
-                    style={styles.openTimeField}
-                    onPress={() => {
-                      setHandleDate({
-                        open: true,
-                        for: 'open',
-                      });
-                    }}>
-                    <Text style={styles.showTime}>
-                      {moment(sellData?.startTime).format('MM/DD/YYYY hh:mm a')}
-                    </Text>
-                  </TouchableOpacity>
-
-                  {sellData.error.startTime !== '' && (
-                    <Text style={styles.errorText1}>
-                      {sellData.error.startTime}
-                    </Text>
-                  )}
-                </View>
-
-                <View style={{flex: 1 / 2, marginLeft: SIZE(10)}}>
-                  <Text style={styles.openTimeText}>
-                    {translate('wallet.common.closeTime')}
-                  </Text>
-
-                  <TouchableOpacity
-                    style={styles.openTimeField}
-                    onPress={() => {
-                      setHandleDate({
-                        open: true,
-                        for: 'close',
-                      });
-                    }}>
-                    <Text style={styles.showTime}>
-                      {moment(sellData?.closeTime).format('MM/DD/YYYY hh:mm a')}
-                    </Text>
-                  </TouchableOpacity>
-
-                  {sellData.error.closeTime !== '' && (
-                    <Text style={styles.errorText1}>
-                      {sellData.error.closeTime}
-                    </Text>
-                  )}
-                </View>
               </View>
+            ) : (
+              <View style={{ paddingHorizontal: SIZE(8) }}>
+                <View style={styles.opneTimeView}>
+                  <View style={{ flex: 1 / 2 }}>
+                    <Text style={styles.openTimeText}>
+                      {translate('wallet.common.openTime')}
+                    </Text>
+                    <TouchableOpacity
+                      style={styles.openTimeField}
+                      onPress={() => {
+                        setHandleDate({
+                          open: true,
+                          for: 'open',
+                        });
+                      }}>
+                      <Text style={styles.showTime}>
+                        {moment(sellData?.startTime).format(
+                          'MM/DD/YYYY hh:mm a',
+                        )}
+                      </Text>
+                    </TouchableOpacity>
 
-              <Text style={styles.minPriceText}>{'Min Price'}</Text>
-              <View style={styles.sellInputFieldView}>
-                <TextInput
-                  style={styles.sellInputField}
-                  onChangeText={value => {
-                    if (validateNumber(value).status) {
-                      setSellData({
-                        ...sellData,
-                        startPrice: value,
-                      });
-                    }
-                  }}
-                  value={sellData.startPrice}
-                />
-                <View style={{zIndex: 1}}>
-                  <DropDownPicker
-                    open={open}
-                    value={value}
-                    items={tokenList}
-                    setOpen={setOpen}
-                    maxHeight={60}
-                    setValue={setValue}
-                    setItems={setTokenList}
-                    // dropDownContainerStyle={styles.sellDropDownContainer}
-                    style={styles.sellTokenPicker}
-                    placeholder={'Select Here'}
-                    selectedItemLabelStyle={{backgroundColor: Colors.BLACK2}}
+                    {sellData.error.startTime !== '' && (
+                      <Text style={styles.errorText1}>
+                        {sellData.error.startTime}
+                      </Text>
+                    )}
+                  </View>
+
+                  <View style={{ flex: 1 / 2, marginLeft: SIZE(10) }}>
+                    <Text style={styles.openTimeText}>
+                      {translate('wallet.common.closeTime')}
+                    </Text>
+
+                    <TouchableOpacity
+                      style={styles.openTimeField}
+                      onPress={() => {
+                        setHandleDate({
+                          open: true,
+                          for: 'close',
+                        });
+                      }}>
+                      <Text style={styles.showTime}>
+                        {moment(sellData?.closeTime).format(
+                          'MM/DD/YYYY hh:mm a',
+                        )}
+                      </Text>
+                    </TouchableOpacity>
+
+                    {sellData.error.closeTime !== '' && (
+                      <Text style={styles.errorText1}>
+                        {sellData.error.closeTime}
+                      </Text>
+                    )}
+                  </View>
+                </View>
+
+                <Text style={styles.minPriceText}>{'Min Price'}</Text>
+                <View style={styles.sellInputFieldView}>
+                  <TextInput
+                    style={styles.sellInputField}
+                    onChangeText={value => {
+                      if (validateNumber(value).status) {
+                        setSellData({
+                          ...sellData,
+                          startPrice: value,
+                        });
+                      }
+                    }}
+                    value={sellData.startPrice}
                   />
+                  <View style={{ zIndex: 1 }}>
+                    <DropDownPicker
+                      open={open}
+                      value={value}
+                      items={tokenList}
+                      setOpen={setOpen}
+                      maxHeight={60}
+                      setValue={setValue}
+                      setItems={setTokenList}
+                      // dropDownContainerStyle={styles.sellDropDownContainer}
+                      style={styles.sellTokenPicker}
+                      placeholder={'Select Here'}
+                      selectedItemLabelStyle={{ backgroundColor: Colors.BLACK2 }}
+                    />
+                  </View>
                 </View>
+
+                {sellData.error.startPrice !== '' && (
+                  <Text style={styles.errorText1}>
+                    {sellData.error.startPrice}
+                  </Text>
+                )}
               </View>
-
-              {sellData.error.startPrice !== '' && (
-                <Text style={styles.errorText1}>
-                  {sellData.error.startPrice}
-                </Text>
-              )}
-            </View>
-          )}
-          <Fee
-            royaltyFee={detailNFT?.royalty}
-            style={{paddingHorizontal: SIZE(8)}}
-          />
-
-          <View style={styles.sellGroupBButtonView}>
-            <GroupButton
-              leftText={'Sell item'}
-              leftDisabled={false}
-              leftLoading={false}
-              onLeftPress={() => onSell()}
-              rightStyle={styles.editPriceGroupButton}
-              rightTextStyle={styles.editPriceGroupButtonText}
-              rightHide
+            )}
+            <Fee
+              royaltyFee={detailNFT?.royalty}
+              style={{ paddingHorizontal: SIZE(8) }}
             />
+
+            <View style={styles.sellGroupBButtonView}>
+              <GroupButton
+                leftText={'Sell item'}
+                leftDisabled={false}
+                leftLoading={false}
+                onLeftPress={() => onSell()}
+                rightStyle={styles.editPriceGroupButton}
+                rightTextStyle={styles.editPriceGroupButtonText}
+                rightHide
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </Portal>
       // </View>
     );
   };
@@ -2014,10 +1723,7 @@ const DetailScreen = ({navigation, route}) => {
       totalPrice: Number(offerData.totalPrice),
       error: undefined,
     };
-    console.log(
-      '🚀 ~ file: index.tsx ~ line 123 ~ onMakeOffer ~ submitData',
-      submitData,
-    );
+
     const resOffer = await sendRequest({
       url,
       method: 'POST',
@@ -2050,17 +1756,13 @@ const DetailScreen = ({navigation, route}) => {
             nftTokenId,
             network?.networkName,
           );
-          console.log(
-            '🚀 ~ file: index.tsx ~ line 205 ~  ~ txnResult',
-            txnResult,
-          );
+
 
           if (txnResult) {
             noncePlus = 1;
             // toast.success(t('APPROVE_TOKEN_SUCCESS'));
           }
         } catch (error) {
-          console.log('🚀 ~ file: index.tsx ~ line 201 ~  ~ error', error);
           approved = false;
           // setOpen()
           // toast.error(t('APPROVE_TOKEN_FAIL'))
@@ -2085,18 +1787,15 @@ const DetailScreen = ({navigation, route}) => {
             network?.networkName,
           )
             .then(res => {
-              console.log('approve payByWallet 331', res);
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
         } catch (error) {
-          console.log('🚀 ~ file: index.tsx ~ line 230 ~  ~ error', error);
           // setOpen()
           handleTransactionError(error, translate);
           handlePendingModal(false);
@@ -2106,10 +1805,9 @@ const DetailScreen = ({navigation, route}) => {
   };
 
   const isOfferValidate = () => {
-    const error = {...offerData.error};
+    const error = { ...offerData.error };
     let isSuccess = true;
     if (offerData.expried < Date.now()) {
-      console.log('VAOOVAOVOV VALIDATE');
       error.expried = 'TIME_EXPIRED_OFFER_ERROR';
       isSuccess = false;
     }
@@ -2138,10 +1836,8 @@ const DetailScreen = ({navigation, route}) => {
   };
 
   const onMakeOffer = () => {
-    console.log(isOfferValidate());
     if (!isOfferValidate()) {
       // toast.error('INVALID_OFFER_DATA')
-      console.log('🚀 ~ file: detail.js ~ line 1779 ~ ~ INVALID_OFFER_DATA');
     } else if (!isCheckService) {
       setIsTopUpError(true);
       // setError('PLEASE_TICK_AGREE_SERVICE');
@@ -2168,10 +1864,7 @@ const DetailScreen = ({navigation, route}) => {
         data,
       })
         .then(buyNFTRes => {
-          console.log(
-            '🚀 ~ file: detail.js ~ line 1845 ~ handleBuyNft ~ buyNFTRes',
-            buyNFTRes,
-          );
+
           setIsChecking(false);
           if (buyNFTRes.messageCode) {
             setErrorMessage(buyNFTRes.messageCode);
@@ -2185,12 +1878,7 @@ const DetailScreen = ({navigation, route}) => {
             }, 500);
           }
         })
-        .catch(error => {
-          console.log(
-            '🚀 ~ file: detail.js ~ line 1850 ~ handleBuyNft ~ error',
-            error,
-          );
-        });
+        .catch(error => { });
 
       // if (buyNFTRes.messageCode) {
       //   setIsChecking(false);
@@ -2201,13 +1889,7 @@ const DetailScreen = ({navigation, route}) => {
       //   const approveAllData = buyNFTRes?.dataReturn?.approveAllData;
       //   const approveData = buyNFTRes?.dataReturn?.approveData;
       //   const signData = buyNFTRes?.dataReturn?.signData;
-      //   if (approveAllData) {
-      //     console.log(
-      //       '🚀 ~ file: detail.js ~ line 1856 ~ handleBuyNft ~ approveAllData',
-      //       approveAllData,
-      //     );
-      //     // console.log(approveAllData)
-      //   }
+      //   if (approveAllData) {}
       //   // setOpen(false);
       //   setOpenTransactionPending(true);
       //   let approved = true;
@@ -2259,13 +1941,11 @@ const DetailScreen = ({navigation, route}) => {
       //         network?.networkName,
       //       )
       //         .then(res => {
-      //           console.log('approve payByWallet 331', res);
-      //           // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+      //           // modalAlert('',translate('common.tansactionSuccessFull'));
       //           // setLoading(false);
       //           getNFTDetails(true);
       //         })
       //         .catch(err => {
-      //           console.log('payByWallet_err payByWallet 339', err);
       //           handlePendingModal(false);
       //           handleTransactionError(err, translate);
       //         });
@@ -2276,261 +1956,257 @@ const DetailScreen = ({navigation, route}) => {
       //     }
       //   }
       // }
-    } catch (error) {
-      console.log(
-        '🚀 ~ file: detail.js ~ line 1947 ~ handleBuyNft ~ error',
-        error,
-      );
-    }
+    } catch (error) { }
   };
 
   const ModalBody = () => {
     const tokenName = detailNFT?.saleData?.fixPrice?.tokenPrice;
 
     return (
-      <Modal isVisible={modalVisible ? modalVisible : checkOut}>
-        <View style={styles.mainview}>
-          <View style={styles.headerview}>
-            <Text style={styles.bidtext}>
-              {modalVisible
-                ? translate('common.makeAnOffer')
-                : translate('common.completeCheckOut')}
-            </Text>
-
-            <TouchableOpacity
-              onPress={() => {
-                closeModal();
-              }}>
-              <Image
-                style={styles.headerCancelButton}
-                source={Images.cancelIcon}
-              />
-            </TouchableOpacity>
-          </View>
-
-          <Text style={styles.itemText}>{translate('common.ITEM')}</Text>
-
-          <View style={styles.userView}>
-            <View style={styles.imageTextView}>
-              <C_Image
-                uri={thumbnailUrl}
-                size={ImagekitType.AVATAR}
-                imageStyle={styles.userImage}
-              />
-              <Text style={styles.amountText}>{detailNFT?.name}</Text>
-            </View>
-
-            <View style={styles.inputContainer}>
-              <View style={styles.curancyInputChange}>
-                {modalVisible ? (
-                  <TextInput
-                    value={offerData.totalPrice}
-                    keyboardType="numeric"
-                    style={styles.curancyInput}
-                    onChangeText={value => {
-                      const error = {...offerData.error};
-                      error.totalPrice = '';
-
-                      if (validateNumber(value).status) {
-                        setOfferData({
-                          ...offerData,
-                          error: error,
-                          totalPrice: value,
-                        });
-                      }
-                    }}
-                    maxLength={10}
-                  />
-                ) : (
-                  <Text style={styles.curancyInputPrice}>
-                    {numberWithCommas(Number(price).toFixed(3))}
-                  </Text>
-                )}
-              </View>
-
-              <View style={[styles.currencyView, {zIndex: 1}]}>
-                {modalVisible ? (
-                  <DropDownPicker
-                    open={open}
-                    value={value}
-                    items={tokenList}
-                    setOpen={setOpen}
-                    maxHeight={60}
-                    setValue={setValue}
-                    setItems={setTokenList}
-                    dropDownContainerStyle={styles.sellDropDownContainer}
-                    style={[
-                      styles.sellTokenPicker,
-                      {
-                        width: wp(24),
-                      },
-                    ]}
-                    placeholder={'Select Here'}
-                    selectedItemLabelStyle={{
-                      backgroundColor: Colors.BLACK2,
-                    }}
-                  />
-                ) : (
-                  <Text style={styles.tokenName}>{tokenName}</Text>
-                )}
-              </View>
-            </View>
-          </View>
-
-          <View style={styles.breakLine} />
-          {modalVisible ? (
-            <>
-              <Text style={styles.expirationText}>
-                {translate('common.offerExpiration')}
+      <Portal>
+        <Modal isVisible={modalVisible ? modalVisible : checkOut}>
+          <View style={styles.mainview}>
+            <View style={styles.headerview}>
+              <Text style={styles.bidtext}>
+                {modalVisible
+                  ? translate('common.makeAnOffer')
+                  : translate('common.completeCheckOut')}
               </Text>
 
               <TouchableOpacity
-                style={styles.numberView}
                 onPress={() => {
-                  setHandleDate({
-                    open: true,
-                    for: 'offer',
-                  });
+                  closeModal();
                 }}>
-                <Text style={styles.dateText}>
-                  {moment(offerData?.expried).format('MM/DD/YYYY hh:mm a')}
-                </Text>
-              </TouchableOpacity>
-            </>
-          ) : null}
-          <Text style={styles.feeText}>{translate('common.fee')}</Text>
-
-          {!isTopUpError ? (
-            <>
-              <View style={styles.royaltyFeeView}>
-                <Text>{translate('common.royaltyFee')}</Text>
-
-                <Text style={styles.priceInPercent}>
-                  {modalVisible
-                    ? `${toFixCustom(
-                        ((Number(offerData?.totalPrice) || 0) *
-                          Number(detailNFT?.royalty)) /
-                          100,
-                      )} ${offerData?.receiveToken} (${Number(
-                        detailNFT?.royalty,
-                      )}%)`
-                    : `${toFixCustom(
-                        (price * Number(detailNFT.royalty)) / 100,
-                      )} ${tokenName} (${Number(detailNFT.royalty)}%)`}
-                </Text>
-              </View>
-
-              <View style={styles.royaltyFeeView}>
-                <Text>{translate('common.serviceFee')}</Text>
-                <Text style={styles.priceInPercent}>
-                  {modalVisible
-                    ? `${toFixCustom(
-                        ((Number(offerData?.totalPrice) || 0) * SERVICE_FEE) /
-                          100,
-                      )} ${offerData?.receiveToken} (${SERVICE_FEE}%)`
-                    : `${toFixCustom(
-                        Number((price * SERVICE_FEE) / 100),
-                      )} ${tokenName} (${SERVICE_FEE}%)`}
-                </Text>
-              </View>
-            </>
-          ) : (
-            <View style={styles.feeErrorView}>
-              <Text style={styles.errorText}>
-                {'Fiat plugin not installed on Moralis!'}
-              </Text>
-
-              <TouchableOpacity onPress={() => setIsTopUpError(false)}>
                 <Image
                   style={styles.headerCancelButton}
                   source={Images.cancelIcon}
                 />
               </TouchableOpacity>
             </View>
-          )}
 
-          <View style={styles.breakLine} />
+            <Text style={styles.itemText}>{translate('common.ITEM')}</Text>
 
-          <View style={styles.willPayView}>
-            <Text>{translate('common.youWillPay')}</Text>
-            <Text style={styles.nftPrice}>
-              {modalVisible
-                ? `${toFixCustom(offerData?.totalPrice) || 0} ${
-                    offerData?.receiveToken
+            <View style={styles.userView}>
+              <View style={styles.imageTextView}>
+                <C_Image
+                  uri={thumbnailUrl}
+                  size={ImagekitType.AVATAR}
+                  imageStyle={styles.userImage}
+                />
+                <Text style={styles.amountText}>{detailNFT?.name}</Text>
+              </View>
+
+              <View style={styles.inputContainer}>
+                <View style={styles.curancyInputChange}>
+                  {modalVisible ? (
+                    <TextInput
+                      value={offerData.totalPrice}
+                      keyboardType="numeric"
+                      style={styles.curancyInput}
+                      onChangeText={value => {
+                        const error = { ...offerData.error };
+                        error.totalPrice = '';
+
+                        if (validateNumber(value).status) {
+                          setOfferData({
+                            ...offerData,
+                            error: error,
+                            totalPrice: value,
+                          });
+                        }
+                      }}
+                      maxLength={10}
+                    />
+                  ) : (
+                    <Text style={styles.curancyInputPrice}>
+                      {numberWithCommas(Number(price).toFixed(3))}
+                    </Text>
+                  )}
+                </View>
+
+                <View style={[styles.currencyView, { zIndex: 1 }]}>
+                  {modalVisible ? (
+                    <DropDownPicker
+                      open={open}
+                      value={value}
+                      items={tokenList}
+                      setOpen={setOpen}
+                      maxHeight={60}
+                      setValue={setValue}
+                      setItems={setTokenList}
+                      dropDownContainerStyle={styles.sellDropDownContainer}
+                      style={[
+                        styles.sellTokenPicker,
+                        {
+                          width: wp(24),
+                        },
+                      ]}
+                      placeholder={'Select Here'}
+                      selectedItemLabelStyle={{
+                        backgroundColor: Colors.BLACK2,
+                      }}
+                    />
+                  ) : (
+                    <Text style={styles.tokenName}>{tokenName}</Text>
+                  )}
+                </View>
+              </View>
+            </View>
+
+            <View style={styles.breakLine} />
+            {modalVisible ? (
+              <>
+                <Text style={styles.expirationText}>
+                  {translate('common.offerExpiration')}
+                </Text>
+
+                <TouchableOpacity
+                  style={styles.numberView}
+                  onPress={() => {
+                    setHandleDate({
+                      open: true,
+                      for: 'offer',
+                    });
+                  }}>
+                  <Text style={styles.dateText}>
+                    {moment(offerData?.expried).format('MM/DD/YYYY hh:mm a')}
+                  </Text>
+                </TouchableOpacity>
+              </>
+            ) : null}
+            <Text style={styles.feeText}>{translate('common.fee')}</Text>
+
+            {!isTopUpError ? (
+              <>
+                <View style={styles.royaltyFeeView}>
+                  <Text>{translate('common.royaltyFee')}</Text>
+
+                  <Text style={styles.priceInPercent}>
+                    {modalVisible
+                      ? `${toFixCustom(
+                        ((Number(offerData?.totalPrice) || 0) *
+                          Number(detailNFT?.royalty)) /
+                        100,
+                      )} ${offerData?.receiveToken} (${Number(
+                        detailNFT?.royalty,
+                      )}%)`
+                      : `${toFixCustom(
+                        (price * Number(detailNFT.royalty)) / 100,
+                      )} ${tokenName} (${Number(detailNFT.royalty)}%)`}
+                  </Text>
+                </View>
+
+                <View style={styles.royaltyFeeView}>
+                  <Text>{translate('common.serviceFee')}</Text>
+                  <Text style={styles.priceInPercent}>
+                    {modalVisible
+                      ? `${toFixCustom(
+                        ((Number(offerData?.totalPrice) || 0) * SERVICE_FEE) /
+                        100,
+                      )} ${offerData?.receiveToken} (${SERVICE_FEE}%)`
+                      : `${toFixCustom(
+                        Number((price * SERVICE_FEE) / 100),
+                      )} ${tokenName} (${SERVICE_FEE}%)`}
+                  </Text>
+                </View>
+              </>
+            ) : (
+              <View style={styles.feeErrorView}>
+                <Text style={styles.errorText}>
+                  {'Fiat plugin not installed on Moralis!'}
+                </Text>
+
+                <TouchableOpacity onPress={() => setIsTopUpError(false)}>
+                  <Image
+                    style={styles.headerCancelButton}
+                    source={Images.cancelIcon}
+                  />
+                </TouchableOpacity>
+              </View>
+            )}
+
+            <View style={styles.breakLine} />
+
+            <View style={styles.willPayView}>
+              <Text>{translate('common.youWillPay')}</Text>
+              <Text style={styles.nftPrice}>
+                {modalVisible
+                  ? `${toFixCustom(offerData?.totalPrice) || 0} ${offerData?.receiveToken
                   }`
-                : `${toFixCustom(price)} ${tokenName}`}
-            </Text>
-          </View>
-
-          <View style={styles.breakLine} />
-
-          <View style={styles.checkBoxView}>
-            <Checkbox
-              isCheck={isCheckService}
-              iconSize={wp('7%')}
-              onChecked={() => {
-                setCheckService(!isCheckService);
-                setErrorMessage('');
-              }}
-            />
-            <Text style={styles.footerText}>
-              {translate('common.byCheckingTheBox')}{' '}
-              <Text style={styles.termsText}>
-                {translate('wallet.common.termsServices')}
-              </Text>
-            </Text>
-          </View>
-
-          {(errorMessage || offerData.error.totalPrice) !== '' && (
-            <View style={{marginTop: 10}}>
-              <Text style={styles.errorText}>
-                {errorMessage || offerData.error.totalPrice}
+                  : `${toFixCustom(price)} ${tokenName}`}
               </Text>
             </View>
-          )}
 
-          <View style={styles.makkeOfferGroupButtonView}>
-            <GroupButton
-              leftText={translate('common.Confirm')}
-              leftDisabled={modalVisible ? isChecking : isBuyLoading}
-              leftLoading={modalVisible ? isChecking : isBuyLoading}
-              onLeftPress={() => {
-                if (!isCheckService) {
-                  setErrorMessage(
-                    'Please tick to agree service button to send transaction.',
-                  );
+            <View style={styles.breakLine} />
 
-                  if (modalVisible) {
+            <View style={styles.checkBoxView}>
+              <Checkbox
+                isCheck={isCheckService}
+                iconSize={wp('7%')}
+                onChecked={() => {
+                  setCheckService(!isCheckService);
+                  setErrorMessage('');
+                }}
+              />
+              <Text style={styles.footerText}>
+                {translate('common.byCheckingTheBox')}{' '}
+                <Text style={styles.termsText}>
+                  {translate('wallet.common.termsServices')}
+                </Text>
+              </Text>
+            </View>
+
+            {(errorMessage || offerData.error.totalPrice) !== '' && (
+              <View style={{ marginTop: 10 }}>
+                <Text style={styles.errorText}>
+                  {errorMessage || offerData.error.totalPrice}
+                </Text>
+              </View>
+            )}
+
+            <View style={styles.makkeOfferGroupButtonView}>
+              <GroupButton
+                leftText={translate('common.Confirm')}
+                leftDisabled={modalVisible ? isChecking : isBuyLoading}
+                leftLoading={modalVisible ? isChecking : isBuyLoading}
+                onLeftPress={() => {
+                  if (!isCheckService) {
                     setErrorMessage(
-                      'This field is require. It must be greater than 0',
+                      'Please tick to agree service button to send transaction.',
                     );
-                  }
-                } else {
-                  if (modalVisible) {
-                    onMakeOffer();
+
+                    if (modalVisible) {
+                      setErrorMessage(
+                        'This field is require. It must be greater than 0',
+                      );
+                    }
                   } else {
-                    // handleBuyNft();
-                    dispatch(
-                      buyNFTApi(
-                        detailNFT?.saleData?.fixPrice?.id,
-                        currentNetwork,
-                        network,
-                        nftTokenId,
-                      ),
-                    );
+                    if (modalVisible) {
+                      onMakeOffer();
+                    } else {
+                      // handleBuyNft();
+                      dispatch(
+                        buyNFTApi(
+                          detailNFT?.saleData?.fixPrice?.id,
+                          currentNetwork,
+                          network,
+                          nftTokenId,
+                        ),
+                      );
+                    }
                   }
-                }
-              }}
-              rightText={translate('common.topUp')}
-              rightDisabled={false}
-              rightLoading={false}
-              onRightPress={() => {}}
-              rightStyle={styles.rightGroupButton}
-              rightTextStyle={styles.rightGroupButtonText}
-            />
+                }}
+                rightText={translate('common.topUp')}
+                rightDisabled={false}
+                rightLoading={false}
+                onRightPress={() => { }}
+                rightStyle={styles.rightGroupButton}
+                rightTextStyle={styles.rightGroupButtonText}
+              />
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      </Portal>
     );
   };
 
@@ -2556,10 +2232,7 @@ const DetailScreen = ({navigation, route}) => {
         method: 'POST',
         params: data,
       });
-      console.log(
-        '🚀 ~ file: detail.js ~ line 3104 ~  ~ cancelSellRes',
-        cancelSellRes,
-      );
+
 
       if (cancelSellRes) {
         const signData = cancelSellRes.dataReturn?.signData;
@@ -2579,13 +2252,11 @@ const DetailScreen = ({navigation, route}) => {
             network?.networkName,
           )
             .then(res => {
-              console.log('approve payByWallet 331', res);
-              // alertWithSingleBtn('',translate('common.tansactionSuccessFull'));
+              // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err, translate);
             });
@@ -2692,7 +2363,7 @@ const DetailScreen = ({navigation, route}) => {
     );
   };
 
-  const BidInfo = ({status}) => {
+  const BidInfo = ({ status }) => {
     const [isWaiting, setIsWaiting] = useState(false);
     const auction = detailNFT?.saleData?.auction;
     const startTime = auction?.startTime;
@@ -2725,7 +2396,7 @@ const DetailScreen = ({navigation, route}) => {
             digitTxtStyle={styles.countDownText}
             separatorStyle={styles.countDownText}
             timeToShow={['D', 'H', 'M', 'S']}
-            timeLabels={{d: null, h: null, m: null, s: null}}
+            timeLabels={{ d: null, h: null, m: null, s: null }}
             showSeparator
           />
         </View>
@@ -2773,10 +2444,10 @@ const DetailScreen = ({navigation, route}) => {
     };
 
     return (
-      <View style={{paddingTop: 5, paddingBottom: 10}}>
+      <View style={{ paddingTop: 5, paddingBottom: 10 }}>
         {renderCoundown()}
         {auction?.highestBidder ? (
-          <Text style={{paddingTop: SIZE(10)}}>
+          <Text style={{ paddingTop: SIZE(10) }}>
             {translate('common.highhestBidder')}:{' '}
             {auction?.highestBidder.slice(0, 7) + '...'}
           </Text>
@@ -2840,7 +2511,7 @@ const DetailScreen = ({navigation, route}) => {
               leftText={translate('common.auctionEnd')}
               leftDisabled={true}
               leftLoading={false}
-              onLeftPress={() => {}}
+              onLeftPress={() => { }}
               rightHide
             />
           </View>
@@ -2895,7 +2566,7 @@ const DetailScreen = ({navigation, route}) => {
   //         // if(price && price > 0){
   //         if (setNFTStatus() === 'buy') {
   //           // if (payableIn === translate('common.allowedcurrency')) {
-  //           //   alertWithSingleBtn(
+  //           //   modalAlert(
   //           //     translate('wallet.common.alert'),
   //           //     translate('common.Selectcurrencypopup'),
   //           //   );
@@ -2943,202 +2614,76 @@ const DetailScreen = ({navigation, route}) => {
   //   )
   // }
 
-  //===================== Render Bid History Function =======================
-  const noDataRender = history => {
+  //===================== Render Trading, Bid, Offer History Function ======================
+  const renderTradingHistory = () => {
     return (
-      <Cell
-        style={styles.emptyData(history)}
-        data={translate('common.noDataFound')}
-      />
-    );
-  };
-
-  const renderBidNTradingHistory = history => {
-    let listData =
-      history === 'bid'
-        ? sellDetails
-        : history === 'offers'
-        ? offerList
-        : tradingTableData;
-    return (
-      <NFTDetailDropdown
-        title={
-          history === 'bid'
-            ? translate('wallet.common.bidHistory')
-            : history === 'offers'
-            ? translate('common.offers')
-            : translate('common.tradingHistory')
-        }
-        containerChildStyles={{
-          height:
-            listData?.length === 0
-              ? history === 'trading'
-                ? hp(28)
-                : hp(19)
-              : listData?.length < 5
-              ? hp(16) +
-                hp(4) *
-                  (history === 'trading' && listData.length <= 3
-                    ? 3.4
-                    : listData?.length)
-              : hp(35.7),
+      <TradingHistory
+        tradingHistory={{
+          tradingTableData: tradingTableData,
+          filterTableValue: filterTableValue,
+          filterTableList: filterTableList,
+          role: detailNFT?.creator?.role
         }}
-        icon={
-          history === 'bid'
-            ? historyImg
-            : history === 'offers'
-            ? tradingImg
-            : detailsImg
-        }>
-        {history === 'trading' && (
-          <Filters
-            value={filterTableValue}
-            setValue={setFilterTableValue}
-            setData={setFilterTableList}
-            data={filterTableList}
-          />
-        )}
-        <ScrollView
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          // nestedScrollEnabled={true}
-          style={{marginVertical: hp(2)}}>
-          <Table borderStyle={styles.cellBorderStyle}>
-            <Row
-              data={
-                history === 'trading' ? tradingTableHead : bidHistoryTableHead
-              }
-              style={styles.head}
-              textStyle={styles.text}
-              widthArr={
-                history === 'trading'
-                  ? [200, 130, 180, 180, 200]
-                  : [130, 180, 180, 200]
-              }
-            />
-            {history === 'bid'
-              ? sellDetails?.length > 0
-                ? sellDetails?.map((rowData, rowIndex) => {
-                    return (
-                      <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
-                        {rowData?.map((cellData, cellIndex) => {
-                          return renderCell(cellIndex, cellData, rowIndex);
-                        })}
-                      </TableWrapper>
-                    );
-                  })
-                : noDataRender()
-              : history === 'offers'
-              ? offerList?.length > 0
-                ? offerList?.map((rowData, rowIndex) => {
-                    let temprowData = rowData.slice(0, 4);
-                    let iconUri = rowData.find((e, i) => i === 4);
-                    return (
-                      <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
-                        {temprowData?.map((cellData, cellIndex) => {
-                          return renderCell(
-                            cellIndex,
-                            cellData,
-                            rowIndex,
-                            iconUri,
-                          );
-                        })}
-                      </TableWrapper>
-                    );
-                  })
-                : noDataRender()
-              : tradingTableData.length > 0
-              ? tradingTableData?.map((rowData, rowIndex) => {
-                  return (
-                    <TableWrapper key={rowIndex} style={CommonStyles.flexRow}>
-                      {rowData?.map((cellData, cellIndex) => {
-                        let wid;
-                        if (cellIndex === 0) {
-                          wid = 200;
-                        }
-                        if (cellIndex === 1) {
-                          wid = 130;
-                        }
-                        if (cellIndex === 2) {
-                          wid = 180;
-                        }
-                        if (cellIndex === 3) {
-                          wid = 180;
-                        }
-                        if (cellIndex === 4) {
-                          wid = 200;
-                        }
-                        return (
-                          <Cell
-                            key={cellIndex}
-                            data={
-                              (cellIndex == 2 || cellIndex == 3) &&
-                              cellData !== 'Null Address'
-                                ? renderAddress(cellData)
-                                : cellData
-                            }
-                            textStyle={styles.text}
-                            width={wid}
-                          />
-                        );
-                      })}
-                    </TableWrapper>
-                  );
-                })
-              : noDataRender(history)}
-          </Table>
-        </ScrollView>
-      </NFTDetailDropdown>
-    );
-  };
-
-  const renderAddress = cellData => {
-    return (
-      <TouchableOpacity
-        disabled={!cellData}
-        onPress={() =>
-          navigation.push('Profile', {
-            id: cellData,
-            role: detailNFT?.creator?.role,
-          })
-        }>
-        <Text numberOfLines={1} style={[styles.text, styles.themeColor]}>
-          {formatAddress(cellData)}
-        </Text>
-      </TouchableOpacity>
-    );
-  };
-
-  const renderCell = (index, cellData, rowIndex, iconUri) => {
-    return (
-      <Cell
-        key={rowIndex}
-        data={
-          index === 0 && iconUri ? (
-            <View style={CommonStyles.rowAlign}>
-              <C_Image
-                uri={iconUri}
-                size={ImagekitType.AVATAR}
-                imageStyle={styles.networkIcon}
-              />
-              <Text>{cellData}</Text>
-            </View>
-          ) : index === 1 ? (
-            renderAddress(cellData)
-          ) : (
-            cellData
-          )
-        }
-        borderStyle={styles.cellBorderStyle}
-        textStyle={styles.text}
-        width={index === 0 ? 130 : index === 1 ? 180 : index === 2 ? 180 : 200}
+        setFilterTableValue={setFilterTableValue}
+        setFilterTableList={setFilterTableList}
+        isDropDownOpen={(v, t) => toggleDropDown(v, t)}
       />
-    );
-  };
+    )
+  }
+
+  const renderBidHistory = () => {
+    return (
+      <BidHistory
+        bidHistory={{
+          sellDetails: sellDetails,
+          role: detailNFT?.creator?.role
+        }}
+        isDropDownOpen={(v, t) => toggleDropDown(v, t)}
+      />
+    )
+  }
+
+  const renderOfferList = () => {
+    return (
+      <OfferList
+        offerHistory={{
+          offerList: offerList,
+          role: detailNFT?.creator?.role
+        }}
+        isDropDownOpen={(v, t) => toggleDropDown(v, t)}
+      />
+    )
+  }
 
   const showContractAddress = address => {
     return address?.substring(0, 6);
   };
+
+  const openURL = () => {
+    if (network?.networkName == 'BSC') {
+      Linking.openURL(`${environment.bscScanURL}address/${collectionAddress}`);
+    } else if (network?.networkName == 'Polygon') {
+      Linking.openURL(
+        `${environment.polygonScanURL}address/${collectionAddress}`,
+      );
+    } else if (network?.networkName == 'Ethereum') {
+      Linking.openURL(
+        `${environment.ethereumScanURL}address/${collectionAddress}`,
+      );
+    } else if (network?.networkName == 'XANACHAIN') {
+      Linking.openURL(`${environment.xanaScanURL}address/${collectionAddress}`);
+    }
+  };
+  const toggleDropDown = (v, t) => {
+    if (v && t === 'Trading History')
+      setDropDownOpen({ ...isDropDownOpen, TradingHistory: true, BidHistory: false, MoreCollection: false, OfferList: false })
+    if (v && t === 'Bid History')
+      setDropDownOpen({ ...isDropDownOpen, BidHistory: true, TradingHistory: false, MoreCollection: false, OfferList: false })
+    if (v && t === 'More NFTs')
+      setDropDownOpen({ ...isDropDownOpen, MoreCollection: true, BidHistory: false, TradingHistory: false, OfferList: false })
+    if (v && t === 'Offers')
+      setDropDownOpen({ ...isDropDownOpen, OfferList: true, MoreCollection: false, BidHistory: false, TradingHistory: false })
+  }
 
   //===================== Render Creator NFTDetailDropdown Function =======================
   const renderCreatorNFTDetailDropdown = () => {
@@ -3149,7 +2694,7 @@ const DetailScreen = ({navigation, route}) => {
         </TouchableOpacity>
 
         {detailNFT?.creator?.description ? (
-          <TextView style={[styles.rowText, {marginTop: SIZE(10)}]}>
+          <TextView style={[styles.rowText, { marginTop: SIZE(10) }]}>
             {detailNFT?.creator?.description}
           </TextView>
         ) : null}
@@ -3173,11 +2718,11 @@ const DetailScreen = ({navigation, route}) => {
         {detailNFT?.creator?.instagramLink ? (
           <TouchableOpacity
             hitSlop={hitSlop}
-            style={{marginRight: 6}}
+            style={{ marginRight: 6 }}
             onPress={() =>
               Linking.openURL(
                 'https://www.instagram.com/' +
-                  detailNFT?.creator?.instagramLink,
+                detailNFT?.creator?.instagramLink,
               )
             }>
             <InstagramIcon />
@@ -3200,11 +2745,13 @@ const DetailScreen = ({navigation, route}) => {
       <NFTDetailDropdown
         title={translate('wallet.common.detail')}
         icon={detailsImg}>
+          <TouchableOpacity onPress={openURL}>
         {renderDetail(
           'wallet.common.contractAddress',
           'address',
           showContractAddress(collectionAddress),
         )}
+        </TouchableOpacity>
         {renderDetail('common.TOKEN_ID', '', nftTokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
         {renderDetail(
@@ -3225,8 +2772,8 @@ const DetailScreen = ({navigation, route}) => {
             key === ''
               ? styles.rowText
               : key === 'blockChainType'
-              ? [styles.rowText]
-              : [styles.rowTextcontractaddress, {color: Colors.themeColor}]
+                ? [styles.rowText]
+                : [styles.rowTextcontractaddress, { color: Colors.themeColor }]
           }
           ellipsizeMode="middle"
           numberOfLines={1}>
@@ -3242,8 +2789,9 @@ const DetailScreen = ({navigation, route}) => {
       <NFTDetailDropdown
         title={translate('wallet.common.collectionHint')}
         icon={detailsImg}
-        containerStyles={{width: wp(100)}}
-        containerChildStyles={styles.containerChildStyles}>
+        containerStyles={{ width: wp(100) }}
+        containerChildStyles={styles.containerChildStyles}
+        isDropDownOpen={(v, t) => toggleDropDown(v, t)}>
         {moreData.length !== 0 ? (
           <>
             <FlatList
@@ -3257,7 +2805,7 @@ const DetailScreen = ({navigation, route}) => {
               leftText={translate('common.viewAllCollection')}
               style={styles.viewAllBtn}
               leftStyle={styles.viewAllBtnInner}
-              leftTextStyle={{color: Colors.BLUE4}}
+              leftTextStyle={{ color: Colors.BLUE4 }}
               onLeftPress={() =>
                 navigation.push('CollectionDetail', {
                   networkName: detailNFT?.network?.networkName,
@@ -3268,16 +2816,18 @@ const DetailScreen = ({navigation, route}) => {
               rightHide
             />
           </>
-        ) : (
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        )}
+        ) : isDropDownOpen.MoreCollection && moreData.length === 0 ?
+          <ActivityIndicator size="large" color={Colors.themeColor} />
+          : (
+            <View style={styles.sorryMessageCont}>
+              <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+            </View>
+          )}
       </NFTDetailDropdown>
     );
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({ item }) => {
     return (
       <NFTItem
         item={item}
@@ -3308,9 +2858,7 @@ const DetailScreen = ({navigation, route}) => {
         collectionAddress={collectionAddress}
         chain={networkName?.toLowerCase()}
         onRequestClose={() => {
-          console.log(
-            '🚀 ~ file: detail.js ~ line 3263 ~ renderPaymentMethod ~ onRequestClose',
-          );
+
           setShowPaymentMethod(false);
           // dispatch(setPaymentObject(null));
         }}
@@ -3356,165 +2904,6 @@ const DetailScreen = ({navigation, route}) => {
     );
   };
 
-  //=================== Other Functions =====================
-  // let disableCreator = false;
-
-  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  let ownerName = ownerDataN?.name?.trim()
-    ? ownerDataN.name
-    : ownerDataN?.address?.includes('0x')
-    ? ownerDataN.address.substring(0, 6)
-    : '---';
-
-  let creatorName = artistDetail?.name?.trim()
-    ? artistDetail.name
-    : artistDetail?.address?.includes('0x')
-    ? artistDetail.address.substring(0, 6)
-    : '---';
-
-  let collectionName = collectCreat?.name
-    ? collectCreat.name
-    : collectCreat?.address?.includes('0x')
-    ? collectCreat.address.substring(0, 6)
-    : '---';
-
-  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-  //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<   >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-  const getRealtedNFT = async () => {
-    let page = 1;
-    let limit = 6;
-    let networkId = network?.networkId;
-    let url = `${NEW_BASE_URL}/nfts/nfts-by-collection`;
-    sendRequest({
-      url,
-      method: 'GET',
-      params: {
-        page,
-        limit,
-        collectionAddress,
-        currentNftId: nftId,
-        userId,
-        networkId,
-      },
-    })
-      .then(res => {
-        if (res?.list?.length > 0) {
-          setMoreData(res?.list);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const getOfferList = () => {
-    let url = `${NEW_BASE_URL}/sale-nft/offer-list/${nftId}`;
-    sendRequest({
-      url,
-      method: 'GET',
-    })
-      .then(res => {
-        if (res?.length > 0) {
-          let tempList = [];
-
-          res?.map(item => {
-            let temp = [
-              `${Number(item?.price)} ${item?.receiveToken}`,
-              item.fromUser?.address,
-              getDateString(item.createdAt ? item.createdAt : Date.now()),
-              item.expired * 1000 > Date.now()
-                ? timeSince(new Date(item.expired * 1000))
-                : 'Expired',
-              item?.networkTokenIcon,
-            ];
-            tempList.push(temp);
-          });
-
-          setOfferList(tempList);
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
-  const getHistory = (history, sort) => {
-    let page = 1;
-    let limit = 5;
-    let bidSort = 3;
-    let payload =
-      history === 'bid'
-        ? {
-            url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
-            method: 'GET',
-          }
-        : {
-            url: `${NEW_BASE_URL}/sale-nft/trading-history`,
-            method: 'POST',
-            data: {
-              page: 1,
-              limit: 30,
-              nftId: nftId,
-              sort,
-            },
-          };
-    sendRequest(payload)
-      .then(res => {
-        if (res?.items?.length > 0) {
-          if (history === 'bid') {
-            let tempList = [];
-
-            res?.items?.map(item => {
-              let temp = [
-                `${Number(item?.price)} ${item?.receiveToken}`,
-                item?.fromUser?.userWallet?.address,
-                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
-                getExpirationDate(item?.expired),
-              ];
-              tempList.push(temp);
-            });
-
-            setSellDetails(tempList);
-          } else {
-            let tradingList = [];
-            let filterList = [];
-
-            res?.items?.map(item => {
-              let from = item?.fromUser?.userWallet?.address;
-              let to = item?.toUser?.userWallet?.address;
-
-              if (item.action === SORT_TRADING_HISTORY.BUY_NFT) {
-                from = item?.toUser?.userWallet?.address;
-                to = item?.fromUser?.userWallet?.address;
-              }
-              let temp = [
-                getEventByValue(item?.action),
-                item?.price && item?.receiveToken
-                  ? Number(item?.price) + ' ' + item?.receiveToken
-                  : '',
-                getFromAddress(from, item?.action),
-                getToAddress(to, item?.action),
-                moment(item?.createdAt).format('YYYY/MM/DD HH:mm:ss'),
-              ];
-              tradingList.push(temp);
-              filterList.push(getEventByValue(item?.action));
-            });
-            // console.log('🚀 ~ file: detail.js ~ line 1680 ~  ~ ', tradingList);
-
-            // setTradingList(res?.items);
-            setTradingTableData(tradingList);
-            // setTradingTableData1(tradingList)
-            // setFilterTableValue(FILTER_TRADING_HISTORY_OPTIONS)
-          }
-        }
-        setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
   //<<<<<<<<<<<<<<<<<<<<<<<<<<<<< Creator Profile Navigtaion >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
   const onProfile = () => {
     navigation.push('Profile', {
@@ -3532,29 +2921,6 @@ const DetailScreen = ({navigation, route}) => {
     // }
   };
 
-  const Filters = props => {
-    const [open, setOpen] = useState(false);
-    return (
-      <DropDownPicker
-        open={open}
-        value={props.value}
-        items={props.data}
-        multiple={true}
-        min={0}
-        mode={'BADGE'}
-        setOpen={setOpen}
-        setValue={props.setValue}
-        setItems={props.setData}
-        closeAfterSelecting={true}
-        style={styles.tokenPicker}
-        dropDownContainerStyle={styles.dropDownContainer}
-        placeholder={translate('wallet.common.filter')}
-        maxHeight={hp(20)}
-        listMode="SCROLLVIEW"
-      />
-    );
-  };
-
   const handleLikeMethod = async () => {
     const nftData = await handleLike(detailNFT);
     if (nftData) {
@@ -3565,10 +2931,7 @@ const DetailScreen = ({navigation, route}) => {
           isLike: nftData?.isLike,
           totalLike: nftData?.totalLike,
         };
-        console.log(
-          '@@@ On Detail screen, handle like method ==========>',
-          nftItem,
-        );
+
         setNftItem(nftItem);
       }
     }
@@ -3610,59 +2973,40 @@ const DetailScreen = ({navigation, route}) => {
           <ScrollView showsVerticalScrollIndicator={false} ref={scrollRef}>
             {renderBannerImageVideo()}
             {categoryType === CATEGORY_VALUE.movie
-              ? !playVideo && renderHeartIcon()
+              ? renderHeartIcon()
               : renderHeartIcon()}
             {!load && renderCreatorCollectionOwnerName()}
             {renderCreatorAndNFTName()}
             {renderDescription()}
             {renderNFTPriceNToken()}
-
             {false && (
               <View style={styles.bottomView}>
                 {!load && renderContentAction()}
               </View>
             )}
-
             {renderCreatorNFTDetailDropdown()}
             {renderDetailNFTDetailDropdown()}
-            {renderBidNTradingHistory('bid')}
-            {renderBidNTradingHistory('offers')}
-            {renderBidNTradingHistory('trading')}
+            {renderTradingHistory()}
+            {renderBidHistory()}
+            {renderOfferList()}
             {renderMoreCollection()}
-
             {editPriceModal()}
             {ModalBody()}
             {placeABidModal()}
             {sellNftModal()}
-
-            <TransactionPending
-              isVisible={openTransactionPending}
-              setVisible={setOpenTransactionPending}
+            <DetailModal
+              openTransactionPending={openTransactionPending}
+              cancelAuctionModal={cancelAuctionModal}
+              reclaimModal={reclaimModal}
+              cancelResellModal={cancelResellModal}
+              setOpenTransactionPending={setOpenTransactionPending}
+              modalClose={modalClose}
+              cancelAuctionApi={cancelAuctionApi}
+              closeReclaimModal={closeReclaimModal}
+              reClaimApi={reClaimApi}
+              closeCancelModal={closeCancelModal}
+              handleCancelSell={handleCancelSell}
             />
-            <ShowModal
-              isVisible={cancelAuctionModal}
-              title={translate('common.cancelAuction')}
-              description={translate('common.areYouWantCancelAuction')}
-              closeModal={modalClose}
-              onRightPress={cancelAuctionApi}
-            />
-            <ShowModal
-              isVisible={reclaimModal}
-              title={translate('common.reclaimNFT')}
-              description={translate('common.areYouWantReclaimNFT')}
-              closeModal={closeReclaimModal}
-              onRightPress={reClaimApi}
-            />
-            <ShowModal
-              isVisible={cancelResellModal}
-              title={translate('common.cancelResell')}
-              description={translate(
-                'common.cancellingYourlistingWillUnPublish',
-              )}
-              closeModal={closeCancelModal}
-              onRightPress={handleCancelSell}
-            />
-
             <DatePicker
               modal
               open={handleDate.open}
@@ -3671,8 +3015,8 @@ const DetailScreen = ({navigation, route}) => {
                 handleDate.for === 'open'
                   ? sellData.startTime
                   : handleDate.for === 'close'
-                  ? sellData.closeTime
-                  : offerData.expried
+                    ? sellData.closeTime
+                    : offerData.expried
               }
               onConfirm={handleConfirmDate}
               onCancel={() => {

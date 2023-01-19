@@ -4,7 +4,9 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
   FlatList,
+  ImageBackground,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -14,6 +16,10 @@ import {
   getChatBotHistory,
   ChatHistoryPageChange,
   chatHistoryLoading,
+  getAIBgImage,
+  getAIBackgroundImageReset,
+  uploadAIBgImage,
+  chatBotUpdate,
 } from '../../store/actions/chatAction';
 import {translate} from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
@@ -26,18 +32,32 @@ import moment from 'moment';
 import Toast from 'react-native-toast-message';
 import {Platform} from 'expo-modules-core';
 import {ImagekitType} from '../../common/ImageConstant';
+import ImagePicker from 'react-native-image-crop-picker';
+import {confirmationAlert} from '../../common/function';
+import {openSettings} from 'react-native-permissions';
+import axios from 'axios';
+import AppBackground from '../../components/appBackground';
+import BackIcon from 'react-native-vector-icons/MaterialIcons';
+import {colors} from '../../res';
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+} from 'react-native-popup-menu';
+const {ThreeDotsVerticalIcon} = SVGS;
 
-const {ChatDefaultProfile} = SVGS;
+const {ChatDefaultProfile, ChangeBackground} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
   const {nftDetail, nftImage} = route.params;
-  const NFTNAME = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
+  const bot_name = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
 
   //================== Components State Declaration ===================
-  const [message, setMessage] = useState('');
   const [chatBotData, setChatBotData] = useState([]);
-  const [contentBottom, setContentBottom] = useState(0);
+  const [bannerImage, setBannerImage] = useState(false);
 
+  const [editMessage, setEditMessage] = useState('');
   const flatList = React.useRef(null);
   const toastRef = useRef(null);
 
@@ -50,17 +70,49 @@ const ChatDetail = ({route, navigation}) => {
     isHistoryLoading,
     isHistoryNextPage,
     remainCount,
+    aiBgImageData,
+    aiBgImageLoading,
   } = useSelector(state => state.chatReducer);
   const {userData} = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const {reducerTabTitle} = useSelector(state => state.chatReducer);
+
+  const isOwnedTab = reducerTabTitle === 'Owned' ? true : false;
 
   //====================== UseEffect Call ===============================
   useEffect(() => {
     dispatch(chatHistoryLoading());
     getHistoryData(1);
     dispatch(ChatHistoryPageChange(1));
+
+    return () => {
+      dispatch(getAIBackgroundImageReset());
+    };
   }, []);
+
+  // useEffect(() => {
+  //   console.log(
+  //     aiBgImageLoading,
+  //     bannerImage,
+  //     '🚀 ~ file: ChatDetail.js:78 ~ ChatDetail ~ aiBgImageData',
+  //   );
+  //   if (!aiBgImageLoading) {
+  //     setBannerImage(!bannerImage);
+  //   }
+  // }, [aiBgImageLoading]);
+
+  useEffect(() => {
+    if (isOwnedTab) {
+      dispatch(
+        getAIBgImage(
+          userAdd,
+          nftDetail?.collection?.address,
+          nftDetail?.tokenId,
+        ),
+      );
+    }
+  }, [reducerTabTitle]);
 
   //================== Get History Data =================================
   const getHistoryData = page => {
@@ -87,10 +139,11 @@ const ChatDetail = ({route, navigation}) => {
 
             let receiver = {
               message: data.reply,
+              question: data?.question,
               type: 'receiver',
               time: timeConversion,
               receiverImage: nftImage,
-              receiverName: NFTNAME,
+              receiverName: bot_name,
             };
             // history.push(receiver, sender);
             setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
@@ -120,15 +173,48 @@ const ChatDetail = ({route, navigation}) => {
     }
   }, []);
 
+  const onEditMessage = update_msg => {
+    console.log(
+      '🚀 ~ file: ChatDetail.js:170 ~ onEditMessage ~ update_msg',
+      update_msg,
+    );
+    dispatch(
+      chatBotUpdate(bot_name, nftDetail?.tokenId, editMessage, update_msg),
+    );
+    setEditMessage('');
+  };
+
+  const renderEdit = item => {
+    return (
+      <View style={styles.threeDotView}>
+        <Menu
+          onSelect={() => {
+            setEditMessage(item?.message);
+            console.log(
+              '🚀 ~ file: ChatDetail.js:181 ~ renderEdit ~ item',
+              item,
+            );
+          }}>
+          <MenuTrigger children={<ThreeDotsVerticalIcon />} />
+          <MenuOptions optionsContainerStyle={styles.editPopupContainer}>
+            <MenuOption value={1}>
+              <Text>{translate('wallet.common.edit')}</Text>
+            </MenuOption>
+          </MenuOptions>
+        </Menu>
+      </View>
+    );
+  };
+
   //======================== Show Bubbles =============================
   const renderItem = ({item, index}) => {
     return (
       <View style={{marginVertical: 8}}>
         {item?.type == 'sender' ? (
           <View style={styles.rightBubbleContainer}>
-            <View style={styles.talkBubble}>
+            <View style={styles.talkBubble(false)}>
               <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}>{item?.senderName}</Text>
+                <Text style={styles.msgHolderName}>{senderName}</Text>
                 <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>
@@ -148,16 +234,62 @@ const ChatDetail = ({route, navigation}) => {
               />
               <Text style={styles.statusText}>{item?.time}</Text>
             </View>
-            <View style={styles.talkBubble}>
+
+            <View style={styles.talkBubble(isOwnedTab)}>
               <View style={styles.textContainer}>
                 <Text style={styles.msgHolderName}>{item?.receiverName}</Text>
                 <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>
+
+            {/* {isOwnedTab && renderEdit(item)} */}
           </View>
         )}
       </View>
     );
+  };
+
+  const openImagePicker = async () => {
+    ImagePicker.openPicker({
+      mediaType: 'photo',
+    })
+      .then(image => {
+        let filename =
+          Platform.OS === 'android'
+            ? image.path.substring(image.path.lastIndexOf('/') + 1)
+            : image.filename;
+
+        let uri = Platform.OS === 'android' ? image.path : image.sourceURL;
+        let temp = {
+          path: image.path,
+          uri: uri,
+          type: image.mime,
+          fileName: filename,
+          image: image,
+        };
+        dispatch(
+          uploadAIBgImage(
+            temp,
+            nftDetail?.collection?.address,
+            nftDetail?.tokenId,
+          ),
+        );
+      })
+      .catch(async e => {
+        if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
+          // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
+          // if (isGranted === false) {
+          confirmationAlert(
+            translate('wallet.common.storagePermissionHeader'),
+            translate('wallet.common.storagePermissionMessage'),
+            translate('common.Cancel'),
+            translate('wallet.common.settings'),
+            () => openSettings(),
+            () => null,
+          );
+          // }
+        }
+      });
   };
 
   //=========================Toast Message=================================
@@ -187,7 +319,7 @@ const ChatDetail = ({route, navigation}) => {
       dispatch(
         getAiChat(
           userData?.userWallet?.address,
-          NFTNAME,
+          bot_name,
           nftDetail?.collection?.address,
           selectedLanguageItem?.language_name,
           nftDetail?.id,
@@ -204,16 +336,13 @@ const ChatDetail = ({route, navigation}) => {
               type: 'receiver',
               time: timeConversion,
               receiverImage: nftImage,
-              receiverName: NFTNAME,
+              receiverName: bot_name,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
           }
         })
-        .catch(err => {
-          console.log('Error Chat : ', err);
-        });
+        .catch(err => {});
     }
-    setMessage('');
   };
 
   //==================== On Scroll-to-Top ===========================
@@ -247,7 +376,7 @@ const ChatDetail = ({route, navigation}) => {
             />
           </View>
           <View style={{paddingStart: 10}}>
-            <Text style={styles.headerNftName}>{NFTNAME}</Text>
+            <Text style={styles.headerNftName}>{bot_name}</Text>
             <View style={{flexDirection: 'row'}}>
               <View style={styles.typingContainer}>
                 {isChatLoading && (
@@ -279,15 +408,6 @@ const ChatDetail = ({route, navigation}) => {
   //=====================(Main return Function)=============================
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.goBack();
-          dispatch(chatLoadingSuccess(''));
-        }}
-        style={styles.backButtonWrap}>
-        <Image style={styles.backIcon} source={ImageSrc.backArrow} />
-      </TouchableOpacity>
-
       <KeyboardAwareScrollView
         contentContainerStyle={{
           flex: 1,
@@ -299,7 +419,7 @@ const ChatDetail = ({route, navigation}) => {
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
-            <Text style={styles.nftName}>{NFTNAME}</Text>
+            <Text style={styles.nftName}>{bot_name}</Text>
             <View style={[styles.separator, {width: '80%'}]} />
             {!chatBotData?.response ? (
               <View>
@@ -311,14 +431,42 @@ const ChatDetail = ({route, navigation}) => {
               </View>
             ) : null}
           </View>
-          <View style={styles.bannerImgContainer}>
+
+          <ImageBackground
+            // key={bannerImage}
+            style={styles.bannerImgContainer}
+            source={{uri: aiBgImageData?.background_image}}>
             <C_Image
               uri={nftDetail?.smallImage}
               size={ImagekitType.FULLIMAGE}
               imageStyle={styles.bannerImage}
             />
+          </ImageBackground>
+
+          <View style={styles.backBtnContainer}>
+            <TouchableOpacity
+              style={styles.backButtonWrap}
+              onPress={() => {
+                navigation.goBack();
+                dispatch(chatLoadingSuccess(''));
+              }}>
+              <BackIcon
+                name={'keyboard-backspace'}
+                color={colors.white}
+                size={SIZE(22)}
+              />
+            </TouchableOpacity>
+
+            {/* {isOwnedTab && (
+              <TouchableOpacity
+                style={styles.imageViewWrap}
+                onPress={() => openImagePicker()}>
+                <ChangeBackground width={SIZE(24)} height={SIZE(24)} />
+              </TouchableOpacity>
+            )} */}
           </View>
         </View>
+
         <View style={{flex: 0.6}}>
           <ListHeader />
           <View style={styles.chatContainer}>
@@ -337,14 +485,25 @@ const ChatDetail = ({route, navigation}) => {
               extraData={chatBotData}
             />
           </View>
+
           <MessageInput
-            placeholder={translate('common.enterMessage')}
-            value={message}
-            onChangeText={text => setMessage(text)}
-            onPress={() => {
-              sendMessage(message, new Date());
-              chatBotData.length > 0 &&
-                flatList.current.scrollToIndex({animated: true, index: 0});
+            message={editMessage ? editMessage : ''}
+            onPressCancel={() => {
+              setEditMessage('');
+            }}
+            onPress={message => {
+              console.log(
+                '🚀 ~ file: ChatDetail.js:523 ~ ChatDetail ~ message',
+                message,
+              );
+
+              if (editMessage) {
+                onEditMessage(message);
+              } else {
+                sendMessage(message, new Date());
+                chatBotData.length > 0 &&
+                  flatList.current.scrollToIndex({animated: true, index: 0});
+              }
             }}
           />
         </View>

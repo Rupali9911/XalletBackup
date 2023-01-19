@@ -7,12 +7,10 @@ import { useSelector } from 'react-redux';
 import Share from 'react-native-share';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { BlurView } from "@react-native-community/blur";
-
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import { translate } from '../../walletUtils';
-import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
@@ -24,6 +22,7 @@ import ImagesSrc from '../../constants/Images';
 import { Button } from 'react-native-paper';
 import VerticalSeparator from '../../components/verticalSeparator';
 import Separator from '../../components/separator';
+import { Portal } from '@gorhom/portal';
 
 // import { PaymentField } from './screenComponents';
 // import { alertWithSingleBtn } from "./commonFunction";
@@ -34,9 +33,6 @@ const QRScreen = () => {
     const route = useRoute();
 
     const { item } = route.params;
-
-    // console.log('item', item);
-
     const { userData } = useSelector((state) => state.UserReducer);
     const wallet = userData?.userWallet;
 
@@ -44,6 +40,7 @@ const QRScreen = () => {
     const [showShare, setShowShare] = useState(false);
     const [qrData, setQrData] = useState(wallet?.address);
     const [modalVisible, setModalVisible] = useState(false);
+    const [copyAddress, setCopyAddress] = useState(false);
 
     useEffect(() => {
         setQrData(wallet?.address + ' ');
@@ -58,7 +55,6 @@ const QRScreen = () => {
 
     const onSharing = () => {
         qrRef && qrRef.capture().then(uri => {
-            // console.log("do something with ", uri);
             let options = {
                 title: "Share code",
                 url: `${uri}`,
@@ -66,17 +62,19 @@ const QRScreen = () => {
 
             Share.open(options)
                 .then((res) => {
-                    // console.log(res);
                 })
                 .catch((err) => {
-                    err && console.log(err);
+
                 });
         });
     }
 
     const copyToClipboard = () => {
         Clipboard.setString(wallet?.address);
-        alertWithSingleBtn(translate("wallet.common.copied"))
+        setCopyAddress(true);
+        setTimeout(() => {
+            setCopyAddress(false);
+        }, 700);
     }
 
     return (
@@ -108,6 +106,7 @@ const QRScreen = () => {
                         bgColor={Colors.headerIconBg2}
                         labelStyle={styles.btnLabel}
                         onPress={() => copyToClipboard()}
+                        copyAddress={copyAddress}
                     />
                     <HeaderBtns
                         image={ImagesSrc.receive}
@@ -137,58 +136,59 @@ const QRScreen = () => {
                 <AppButton label={translate("wallet.common.share")} containerStyle={[CommonStyles.button, styles.shareBtn]} labelStyle={CommonStyles.buttonLabel}
                     onPress={() => onSharing()} />
             }
-            <Modal
-                visible={modalVisible}
-                transparent
-            >
-                <BlurView
-                    style={styles.absolute}
-                    blurType="light"
-                    blurAmount={10}
+            <Portal>
+                <Modal
+                    visible={modalVisible}
+                    transparent
                 >
-                    <KeyboardAwareScrollView contentContainerStyle={styles.modalContent}>
-                        <View style={styles.setAmountContainer}>
-                            <TextView style={styles.title}>{translate("wallet.common.enterAmount")}</TextView>
-                            <TextInput
-                                style={styles.amountInput}
-                                onChangeText={(e) => {
-                                    const reg = /^\d+(\.\d{0,8})?$/
-                                    if (e.length > 0 && reg.test(e)) {
-                                        setPrice(e)
-                                    } else if (e.length == 1 && e === '.') {
-                                        setPrice('0.')
-                                    } else if (e.length == 0) {
-                                        setPrice(e)
-                                    }
-                                }}
-                                value={price}
-                                maxLength={10}
-                                keyboardType={'numeric'}
-                            />
-                            <Separator style={styles.separator} />
-                            <View style={styles.optionContainer}>
-                                <Button
-                                    color={Colors.headerIcon2}
-                                    style={styles.optionButton}
-                                    labelStyle={styles.optionLabel}
-                                    uppercase={false}
-                                    onPress={() => {
-                                        setModalVisible(false)
-                                        setPrice("")
-                                    }}>{translate("wallet.common.cancel")}</Button>
-                                <VerticalSeparator />
-                                <Button
-                                    color={Colors.headerIcon2}
-                                    style={styles.optionButton}
-                                    labelStyle={styles.optionLabel}
-                                    uppercase={false}
-                                    onPress={() => setModalVisible(false)}>{translate("wallet.common.confirm")}</Button>
+                    <BlurView
+                        style={styles.absolute}
+                        blurType="light"
+                        blurAmount={10}
+                    >
+                        <KeyboardAwareScrollView contentContainerStyle={styles.modalContent}>
+                            <View style={styles.setAmountContainer}>
+                                <TextView style={styles.title}>{translate("wallet.common.enterAmount")}</TextView>
+                                <TextInput
+                                    style={styles.amountInput}
+                                    onChangeText={(e) => {
+                                        const reg = /^\d+(\.\d{0,8})?$/
+                                        if (e.length > 0 && reg.test(e)) {
+                                            setPrice(e)
+                                        } else if (e.length == 1 && e === '.') {
+                                            setPrice('0.')
+                                        } else if (e.length == 0) {
+                                            setPrice(e)
+                                        }
+                                    }}
+                                    value={price}
+                                    maxLength={10}
+                                    keyboardType={'numeric'}
+                                />
+                                <Separator style={styles.separator} />
+                                <View style={styles.optionContainer}>
+                                    <Button
+                                        color={Colors.headerIcon2}
+                                        style={styles.optionButton}
+                                        labelStyle={styles.optionLabel}
+                                        uppercase={false}
+                                        onPress={() => {
+                                            setModalVisible(false)
+                                            setPrice("")
+                                        }}>{translate("wallet.common.cancel")}</Button>
+                                    <VerticalSeparator />
+                                    <Button
+                                        color={Colors.headerIcon2}
+                                        style={styles.optionButton}
+                                        labelStyle={styles.optionLabel}
+                                        uppercase={false}
+                                        onPress={() => setModalVisible(false)}>{translate("wallet.common.confirm")}</Button>
+                                </View>
                             </View>
-                        </View>
-                    </KeyboardAwareScrollView>
-                </BlurView>
-            </Modal>
-
+                        </KeyboardAwareScrollView>
+                    </BlurView>
+                </Modal>
+            </Portal>
         </View>
     )
 };
