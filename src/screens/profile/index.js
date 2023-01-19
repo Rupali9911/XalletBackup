@@ -400,23 +400,19 @@ function Profile({navigation, connector, route}) {
     return <VerficationIcon width={SIZE(25)} height={SIZE(25)} />;
   };
   const renderBannerImage = () => {
-    const renderBanner = () => {
-      if (userDetails?.banner && !imageBannerLoading) {
-        return (
-          <C_Image
-            size={ImagekitType.FULLIMAGE}
-            uri={userDetails?.banner}
-            imageStyle={styles.collectionListImage}
-          />
-        );
-      } else if (!imageBannerLoading && !userDetails?.banner) {
-        return <View style={styles.collectionWrapper}></View>;
-      } else if (imageBannerLoading) {
-        return <LoadingView />;
-      } else return null;
-    };
-
-    return renderBanner();
+    if (userDetails?.banner && !imageBannerLoading) {
+      return (
+        <C_Image
+          size={ImagekitType.FULLIMAGE}
+          uri={userDetails?.banner}
+          imageStyle={styles.collectionListImage}
+        />
+      );
+    } else if (!imageBannerLoading && !userDetails?.banner) {
+      return <View style={styles.collectionWrapper}></View>;
+    } else if (imageBannerLoading) {
+      return <LoadingView />;
+    } else return null;
   };
 
   const renderIconImage = () => {
@@ -513,20 +509,19 @@ function Profile({navigation, connector, route}) {
   const RenderHeader = () => {
     return (
       <View
-        style={
-          {
-            // flex: socialSite ? 0.6 : 0.55,
-            position: 'relative',
-            paddingBottom: SIZE(10),
-          }
-        }
+        style={{
+          // flex: socialSite ? 0.6 : 0.55,
+          position: 'relative',
+          paddingBottom: SIZE(10),
+        }}
+        pointerEvents="box-none"
         // onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}
       >
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
         )}
-        <View>
+        <View pointerEvents="box-none">
           {!route.params && (
             <TouchableOpacity
               style={styles.settings}
@@ -536,7 +531,9 @@ function Profile({navigation, connector, route}) {
               <SettingIcon width={SIZE(23)} height={SIZE(23)} />
             </TouchableOpacity>
           )}
-          <View style={styles.collectionWrapper}>{renderBannerImage()}</View>
+          <View style={styles.collectionWrapper} pointerEvents="box-none">
+            {renderBannerImage()}
+          </View>
           {!route.params && (
             <TouchableOpacity
               style={styles.editImage}
@@ -555,24 +552,25 @@ function Profile({navigation, connector, route}) {
             />
             <CopyProfile width={SIZE(12)} height={SIZE(12)} />
           </TouchableOpacity>
-          <View style={styles.iconWrapper}>
+          <View style={styles.iconWrapper} pointerEvents="box-none">
             <View
               style={[
                 styles.iconBadgeVw,
                 route?.params?.role === 4
                   ? styles.borderBtnColor
                   : styles.borderTrans,
-              ]}>
+              ]}
+              pointerEvents="box-none">
               {renderIconImage()}
               {route?.params?.role === 4 ? (
                 <View style={styles.markIconView}>{renderVerifiedIcon()}</View>
               ) : null}
             </View>
           </View>
-          <View style={styles.userDetailsWrapper}>
+          <View style={styles.userDetailsWrapper} pointerEvents="box-none">
             {renderProfileNameAndId()}
           </View>
-          <View style={styles.socialSiteView}>
+          <View style={styles.socialSiteView} pointerEvents="box-none">
             {userDetails?.twitterSite ? (
               <TouchableOpacity onPress={() => LinkingUrl('twitterSite')}>
                 <Twitter width={SIZE(35)} height={SIZE(35)} />
