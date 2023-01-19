@@ -1,19 +1,19 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {ActivityIndicator, FlatList, Text, View} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
+import React, {useCallback, useEffect} from 'react';
+import {ActivityIndicator, Text, View} from 'react-native';
+import {Tabs} from 'react-native-collapsible-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
 import {Loader} from '../../components';
 import NFTItem from '../../components/NFTItem';
 import {colors} from '../../res';
-import {translate} from '../../walletUtils';
 import {
   myNftCreatedListingReset,
   myNftCreatedPageChange,
   myNFTList,
   myNftLoadFail,
 } from '../../store/actions/myNFTaction';
+import {translate} from '../../walletUtils';
 import styles from './styles';
-import {Tabs} from 'react-native-collapsible-tab-view';
 
 const NFTCreated = props => {
   const {MyNFTReducer} = useSelector(state => state);
@@ -55,6 +55,14 @@ const NFTCreated = props => {
     return null;
   };
 
+  const renderEmptyComponent = () => {
+    return (
+      <View style={styles.sorryMessageCont}>
+        <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+      </View>
+    );
+  };
+
   const renderItem = ({item, index}) => {
     return (
       <NFTItem
@@ -86,7 +94,7 @@ const NFTCreated = props => {
             <Loader />
           </View>
         </Tabs.ScrollView>
-      ) : MyNFTReducer.myNftCreatedList.length > 0 ? (
+      ) : (
         <Tabs.FlatList
           key={1}
           data={MyNFTReducer?.myNftCreatedList}
@@ -107,17 +115,12 @@ const NFTCreated = props => {
           }}
           onEndReachedThreshold={0.4}
           ListFooterComponent={renderFooter}
+          ListEmptyComponent={renderEmptyComponent}
           onRefresh={handlePullRefresh}
           refreshing={
             MyNFTReducer.myNftCreatedListPage === 1 &&
             MyNFTReducer.myNftCreatedListLoading
           }></Tabs.FlatList>
-      ) : (
-        <Tabs.ScrollView>
-          <View style={styles.sorryMessageCont}>
-            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-          </View>
-        </Tabs.ScrollView>
       )}
     </View>
   );

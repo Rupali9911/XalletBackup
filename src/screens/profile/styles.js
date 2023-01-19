@@ -9,7 +9,6 @@ const styles = StyleSheet.create({
     marginTop: height / 6.5,
     justifyContent: 'center',
     alignItems: 'center',
- 
   },
   sorryMessage: {
     fontSize: 15,
