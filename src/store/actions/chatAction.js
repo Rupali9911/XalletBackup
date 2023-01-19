@@ -42,8 +42,9 @@ import {
   GET_AI_BG_IMAGE_RESET,
 } from '../types';
 import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
-import RNFetchBlob from 'rn-fetch-blob';
-import {convertImageToArrayBuffer} from '../../utils/uploadMediaS3';
+
+//=====================Xana Chat Base Url=====================
+const xana_base_url = `https://prod-backend.xanalia.com/xana-genesis-chat`;
 
 //=====================Chat=====================
 export const chatLoadingStart = data => ({
@@ -239,8 +240,10 @@ export const getNftCollections =
   (page, address, tabTitle) => (dispatch, getState) => {
     dispatch(setTabTitle(tabTitle));
     const {ownerList, otherList} = getState().chatReducer;
-    let url = `https://prod-backend.xanalia.com/xana-genesis-chat`;
-    url = tabTitle === 'Owned' ? `${url}/my-data` : `${url}/other-data`;
+    let url =
+      tabTitle === 'Owned'
+        ? `${xana_base_url}/my-data`
+        : `${xana_base_url}/other-data`;
 
     const data = {
       cursor: '',
@@ -248,9 +251,6 @@ export const getNftCollections =
       page: page,
       limit: 50,
     };
-    // const headers = {
-    //   Authorization: `Bearer dfsdfsfsfsdfsddfsdfdjsldjflsjdlfj`,
-    // };
 
     (tabTitle === 'Owned'
       ? sendRequest({
@@ -298,7 +298,7 @@ export const getNftCollections =
 //=====================Search=====================
 export const getSearchResult = (text, address) => dispatch => {
   return new Promise((resolve, reject) => {
-    let url = `https://prod-backend.xanalia.com/xana-genesis-chat/search-nfts`;
+    let url = `${xana_base_url}/search-nfts`;
     let data = {
       owner: address,
       searchValue: text,
@@ -325,7 +325,7 @@ export const getChatBotHistory =
     return new Promise((resolve, reject) => {
       let limit = 5;
       sendRequest({
-        url: `https://prod-backend.xanalia.com/xana-genesis-chat/chat-bot-history`,
+        url: `${xana_base_url}/chat-bot-history`,
         method: 'GET',
         params: {
           page,
@@ -351,148 +351,79 @@ export const getChatBotHistory =
   };
 
 //==================================Owned-Other==============================
-// export const uploadBgImage =
 export const uploadAIBgImage =
-  (file, address, collections_address, token_id) => async dispatch => {
-    // console.log(
-    //   '🚀 ~ file: chatAction.js:355 ~ ',
-    //   file,
-    //   address,
-    //   collections_address,
-    //   token_id,
-    // );
-    let url = `https://prod-backend.xanalia.com/xana-genesis-chat/upload-s3`;
+  (file, collections_address, token_id) => async (dispatch, getState) => {
+    dispatch(getAIBackgroundImageStart());
+
+    let url = `${xana_base_url}/upload-s3`;
+    const {address} = getState().UserReducer?.userData?.userWallet;
     const token = await getAccessToken('ACCESS_TOKEN');
-    // const token =
-    //   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOjExNDEwMiwicm9sZSI6MSwidXNlcm5hbWUiOiIweDIzOGZkRkJiYkEwMjUwY0ExOTQzNDMyMTg5NUYwZGQ4MjA1RDYwQjYiLCJ3YWxsZXRUeXBlIjoxLCJub25jZSI6MCwiaWF0IjoxNjczODcyMjI1LCJleHAiOjE2NzM4NzU4MjV9.xOO7xWhP4MpQ0Th6DFtQOoCu-WQAflzt75BZclBII8Y';
-    RNFetchBlob.fs.readFile(file.path, 'base64').then(async data => {
-      var Buffer = require('buffer/').Buffer;
-      const imageData = await Buffer.from(data, 'base64');
-      console.log(
-        '🚀 ~ file: chatAction.js:367 ~ RNFetchBlob.fs.readFile ~ imageData',
-        imageData,
-      );
 
-      // let newPath = file.path.replace('file://', '');
-      // const imageData = await convertImageToArrayBuffer(newPath);
-      // formData.append('file', imageData);
-      // formData.append('file', {
-      //   uri: file.path,
-      //   type: file.type,
-      //   name: file.fileName,
-      // });
+    const imageData = {
+      name: file.fileName,
+      type: file.type,
+      uri:
+        Platform.OS === 'android'
+          ? file.path
+          : file.path.replace('file://', ''),
+    };
+    const formData = new FormData();
+    formData.append('address', address);
+    formData.append('token_id', token_id);
+    formData.append('collections_address', collections_address);
+    formData.append('file', imageData);
 
-      // const file = e.target.files[0];
-      // if (file?.name?.match(/\.(jpg|jpeg|png)$/)) {
-      //   const data = ownedData;
-      //   const CollectionAddress = data?.filter(data => {
-      //     return data.tokenId === chatUserData.token_id;
-      //   });
-      //   const formDataFileImg = new FormData();
-      //   formDataFileImg.append('file', file);
-      //   formDataFileImg.append('address', addresses);
-      //   formDataFileImg.append('token_id', CollectionAddress[0].tokenId);
-      //   formDataFileImg.append(
-      //     'collections_address',
-      //     CollectionAddress[0].collection.address,
-      //   );
-      // }
+    sendRequest({
+      url: url,
+      method: 'POST',
+      data: formData,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        Accept: 'application/json',
+        Authorization: 'Bearer ' + token,
+      },
+    })
+      .then(res => {
+        console.log('🚀 ~ file: uploadAIBgImage.js:383 ~ res', res);
+        const data = {
+          address,
+          image_url: res?.url,
+          collections_address,
+          token_id,
+        };
 
-      let formData = new FormData();
-      formData.append('file', file.image);
-      formData.append('address', address);
-      formData.append('token_id', token_id);
-      formData.append('collections_address', collections_address);
-
-      // const path = file.uri.replace('file://', '');
-      // const Data1 = new FormData();
-      // Data1.append('file', RNFetchBlob.wrap(path));
-      // Data1.append('address', address);
-      // Data1.append('token_id', token_id);
-      // Data1.append('collections_address', collections_address);
-
-      console.log('🚀 ~ file: chatAction.js:388 ~ ', file);
-
-      try {
-        const userProfileResponse = await sendRequest({
-          url: url,
-          method: 'POST',
-          data: formData,
-          headers: {
-            // Accept: 'application/json',
-            'Content-Type': 'multipart/form-data',
-            Authorization: 'Bearer ' + token,
-          },
-        });
-        console.log(
-          '🚀 ~ file: chatAction.js:403 ~ RNFetchBlob.fs.readFile ~ userProfileResponse',
-          userProfileResponse,
-        );
-        // var requestOptions = {
-        //   method: 'POST',
-        //   headers: {
-        //     Authorization: 'Bearer ' + token,
-        //     'Content-Type': 'multipart/form-data',
-        //   },
-        //   body: formData,
-        // };
-        // fetch(
-        //   'https://prod-backend.xanalia.com/xana-genesis-chat/upload-s3',
-        //   requestOptions,
-        // )
-        //   .then(response => response.text())
-        //   .then(result => console.log(result))
-        //   .catch(error => console.log('error', error));
-      } catch (error) {
-        // dispatch(endLoadingImage());
-        console.log('@@@ error ', error);
-      }
-    });
+        dispatch(uploadAIBgImageData(data));
+      })
+      .catch(err => {
+        console.log('🚀 ~ file: chatAction.js:388 ~ err', err);
+        dispatch(getAIBackgroundImageFail());
+      });
   };
 
-// export const uploadAIBgImage = (
-//   file,
-//   address,
-//   collections_address,
-//   token_id,
-// ) => {
-//   return async (dispatch, getState) => {
-//     // const image_url = await uploadBgImage(
-//     //   file,
-//     //   address,
-//     //   collections_address,
-//     //   token_id,
-//     // );
-//     const token = await getAccessToken('ACCESS_TOKEN');
-//     console.log('🚀 ~ file: chatAction.js:491 ~ Start', token, image_url);
-//     dispatch(getAIBackgroundImageStart());
-//     let url = `https://prod-backend.xanalia.com/xana-genesis-chat/upload-background-image`;
-//     sendRequest({
-//       url,
-//       method: 'POST',
-//       data: {
-//         address,
-//         image_url:
-//           'https://xana-genesis.s3.ap-southeast-1.amazonaws.com/1991-0x5b5cf41d9EC08D101ffEEeeBdA411677582c9448',
-//         collections_address,
-//         token_id,
-//       },
-//     })
-//       .then(data => {
-//         dispatch(getAIBackgroundImageSuccess(data));
-//         console.log('🚀 ~ file: chatAction.js:510 ~ ~ data', data);
-//       })
-//       .catch(err => {
-//         console.log('🚀 ~ file: chatAction.js:513 ~ return ~ err', err);
-//         dispatch(getAIBackgroundImageFail());
-//       });
-//   };
-// };
+export const uploadAIBgImageData = data => {
+  return async (dispatch, getState) => {
+    const token = await getAccessToken('ACCESS_TOKEN');
+    let url = `${xana_base_url}/upload-background-image`;
+    sendRequest({
+      url,
+      method: 'POST',
+      data: data,
+    })
+      .then(res => {
+        dispatch(getAIBackgroundImageSuccess(res));
+        console.log('🚀 ~ file: uploadAIBgImageData.js:510 ~ ~ res', res);
+      })
+      .catch(err => {
+        console.log('🚀 ~ file: chatAction.js:513 ~ return ~ err', err);
+        dispatch(getAIBackgroundImageFail());
+      });
+  };
+};
 
 export const getAIBgImage = (address, collections_address, token_id) => {
   return (dispatch, getState) => {
     dispatch(getAIBackgroundImageStart());
-    let url = `https://prod-backend.xanalia.com/xana-genesis-chat/get-background-image`;
+    let url = `${xana_base_url}/get-background-image`;
     sendRequest({
       url,
       method: 'POST',
@@ -502,12 +433,42 @@ export const getAIBgImage = (address, collections_address, token_id) => {
         token_id,
       },
     })
-      .then(data => {
-        dispatch(getAIBackgroundImageSuccess(data));
+      .then(res => {
+        dispatch(getAIBackgroundImageSuccess(res));
       })
       .catch(err => {
         console.log('🚀 ~ file: chatAction.js:538 ~ return ~ err', err);
         dispatch(getAIBackgroundImageFail());
+      });
+  };
+};
+
+export const chatBotUpdate = (botName, tokenId, previous_msg, update_msg) => {
+  return (dispatch, getState) => {
+    const {language_name} = getState().LanguageReducer?.selectedLanguageItem;
+    const {address} = getState().UserReducer?.userData?.userWallet;
+    let bot_name = botName?.split(' ').slice?.(1)?.[0]
+      ? botName?.split(' ').slice?.(1)?.[0]
+      : botName;
+    let url = `${xana_base_url}/chat-bot-update`;
+    sendRequest({
+      url,
+      method: 'POST',
+      data: {
+        address,
+        bot_name,
+        locale: language_name,
+        text: previous_msg,
+        tokenId,
+        update_msg,
+      },
+    })
+      .then(res => {
+        console.log('🚀 ~ file: chatAction.js:550 ~ return ~ res', res);
+        dispatch(remainWordCountData(res?.remainWordLimit?.userWordLimit));
+      })
+      .catch(err => {
+        console.log('🚀 ~ file: chatAction.js:538 ~ return ~ err', err);
       });
   };
 };

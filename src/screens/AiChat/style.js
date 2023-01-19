@@ -23,18 +23,18 @@ const styles = StyleSheet.create({
     marginHorizontal: SIZE(10),
     alignSelf: 'center',
   },
-  input: {
+  input: message => ({
     paddingHorizontal: 15,
     height: hp(5),
     borderColor: '#ced4da',
     borderWidth: 2,
-    width: '80%',
-    borderRightColor: '#3c7bde',
-    borderRightWidth: 0,
-  },
+    width: message ? '100%' : '80%',
+    borderRightColor: message ? '#ced4da' : '#3c7bde',
+    borderRightWidth: message ? 2 : 0,
+  }),
   sendBtn: {
     paddingHorizontal: 15,
-    height: Platform.OS === 'ios' ? hp(5) : hp(5),
+    height: hp(5),
     backgroundColor: '#3c7bde',
     justifyContent: 'center',
     alignItems: 'center',
@@ -47,10 +47,10 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: 'black',
   },
-  talkBubble: {
+  talkBubble: ownerTittle => ({
     justifyContent: 'flex-end',
-    maxWidth: '80%',
-  },
+    maxWidth: ownerTittle ? '72%' : '80%',
+  }),
   statusText: {
     color: '#888',
     fontSize: 10,
@@ -303,6 +303,46 @@ const styles = StyleSheet.create({
     position: 'absolute',
     left: 25,
     transform: [{rotate: '36deg'}],
+  },
+  editButtonView: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginRight: 15,
+  },
+  cancelButton: {
+    backgroundColor: '#ebecf0',
+    marginRight: 10,
+    borderWidth: 0,
+    borderRadius: 5,
+    borderBottomRightRadius: 5,
+    borderTopRightRadius: 5,
+    height: hp(5),
+  },
+  cancelLabel: {
+    color: 'black',
+    fontWeight: 'normal',
+  },
+  saveButton: {
+    borderRadius: 5,
+    borderBottomRightRadius: 6,
+    borderTopRightRadius: 5,
+  },
+  threeDotView: {
+    alignSelf: 'center',
+    backgroundColor: '#ebecf0',
+    borderRadius: 90,
+    padding: 4,
+    marginLeft: 10,
+  },
+  editPopupContainer: {
+    marginTop: SIZE(25),
+    width: wp(15),
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 10,
+    backgroundColor: 'white',
+    borderWidth: 0.5,
+    borderColor: '#ebecf0',
   },
 });
 
