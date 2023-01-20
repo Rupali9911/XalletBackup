@@ -105,12 +105,11 @@ const NFTOwned = props => {
           onEndReached={() => {
             if (
               !MyNFTReducer.myNftOwnedListLoading &&
-              MyNFTReducer.myNftOwnedList.length !=
+              MyNFTReducer.myNftOwnedList.length !==
                 MyNFTReducer.myNftOwnedTotalCount
             ) {
               let num = MyNFTReducer.myNftOwnedListPage + 1;
-              getNFTlist(num, 10, props.id, 1);
-              dispatch(myNftOwnedPageChange(num));
+              getNFTlist(num, 10, props.id, 2);
             }
           }}
           onEndReachedThreshold={0.4}

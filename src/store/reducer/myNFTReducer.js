@@ -70,17 +70,19 @@ export default function MyNFTReducer(state = initialState, action) {
           myNftCreatedTotalCount: action.payload.count,
           // myNftListLoading: false,
           myNftCreatedListLoading: false,
+          myNftCreatedListPage: action.payload.pageNumber,
         });
       } else if (action.payload.tabTitle === 2) {
         return (state = {
           ...state,
-          myNftCreatedList: [...state.myNftCreatedList],
+          // myNftCreatedList: [...state.myNftCreatedList],
           myNftOwnedList: [...state.myNftOwnedList, ...action.payload.list],
           myList: [...state.myList, ...action.payload.list],
           myNftOwnedTotalCount: action.payload.count,
           // myNftTotalCount: action.payload.count,
           // myNftListLoading: false,
           myNftOwnedListLoading: false,
+          myNftOwnedListPage: action.payload.pageNumber,
         });
       } else {
         return (state = {
