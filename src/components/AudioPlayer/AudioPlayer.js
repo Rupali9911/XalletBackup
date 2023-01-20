@@ -2,7 +2,7 @@ import Slider from '@react-native-community/slider';
 import React, {useEffect, useRef, useState} from 'react';
 import {Platform, Text, TouchableOpacity, View} from 'react-native';
 import {ActivityIndicator} from 'react-native-paper';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
 import Sound from 'react-native-sound';
 import {
   default as PlayPause,

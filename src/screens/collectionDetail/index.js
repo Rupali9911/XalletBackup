@@ -35,7 +35,7 @@ import TabViewScreen from '../../components/TabView/TabViewScreen';
 import {useDispatch, useSelector} from 'react-redux';
 import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
 import SocialMediaLinks from '../../components/SocialMediaLinks'
 
 const {height} = Dimensions.get('window');

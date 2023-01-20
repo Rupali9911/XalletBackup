@@ -11,7 +11,7 @@ import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {openSettings} from 'react-native-permissions';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
 import {useDispatch, useSelector} from 'react-redux';
 import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
@@ -76,8 +76,8 @@ function Profile({navigation, connector, route}) {
   const {UserReducer} = useSelector(state => state);
 
   //================== Components State Defination ===================
-  const [openDial1, setOpenDial1] = useState(false);
-  const [openDial2, setOpenDial2] = useState(false);
+  const [userCopyAddress, setUserCopyAddress] = useState(false);
+  const [bannerCopyAddress, setBannerCopyAddress] = useState(false);
   const [childScroll, setChildScroll] = useState(0);
   const [profileScroll, setProfileScroll] = useState(false);
   const [profilePScroll, setProfilePScroll] = useState(0);
@@ -141,17 +141,17 @@ function Profile({navigation, connector, route}) {
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
-    setOpenDial1(true);
+    setUserCopyAddress(true);
     setTimeout(() => {
-      setOpenDial1(false);
+      setUserCopyAddress(false);
     }, 500);
   };
 
   const copyProfileToClipboard = () => {
     Clipboard.setString(`${XANALIA_WEB}/profile/${id}`);
-    setOpenDial2(true);
+    setBannerCopyAddress(true);
     setTimeout(() => {
-      setOpenDial2(false);
+      setBannerCopyAddress(false);
     }, 500);
   };
 
@@ -430,6 +430,17 @@ function Profile({navigation, connector, route}) {
 
   const hideDialog = () => setVisible(false);
 
+  const HandleAddress = opened => {
+    return (
+      <PopupMenu
+        opened={opened}
+        items={[{label: `${translate('common.Copied')}!`}]}
+        containerStyle={{...CommonStyles.containerStyle}}
+        textStyle={{...CommonStyles.textStyle}}
+      />
+    );
+  };
+  
   const renderProfileNameAndId = () => {
     return (
       <View style={styles.profileInfo}>
@@ -447,12 +458,7 @@ function Profile({navigation, connector, route}) {
             )}
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
-            <PopupMenu
-              opened={openDial1}
-              items={[{label: `${translate('common.Copied')}!`}]}
-              containerStyle={{...CommonStyles.containerStyle}}
-              textStyle={{...CommonStyles.textStyle}}
-            />
+            {userCopyAddress && <HandleAddress open={userCopyAddress} />}
             <CopyToClipboard
               // onPress={() => copyToClipboard()}
               style={{marginLeft: SIZE(6)}}
@@ -498,12 +504,7 @@ function Profile({navigation, connector, route}) {
           <TouchableOpacity
             style={styles.copyProfile}
             onPress={() => copyProfileToClipboard()}>
-            <PopupMenu
-              opened={openDial2}
-              items={[{label: `${translate('common.Copied')}!`}]}
-              containerStyle={{...CommonStyles.containerStyle}}
-              textStyle={{...CommonStyles.textStyle}}
-            />
+            {bannerCopyAddress && <HandleAddress open={bannerCopyAddress} />}
             <CopyProfile width={SIZE(12)} height={SIZE(12)} />
           </TouchableOpacity>
           <View style={styles.iconWrapper}>
@@ -719,7 +720,7 @@ const styles = StyleSheet.create({
     top: SIZE(150),
     right: SIZE(10),
   },
- 
+
   tabView: {
     height: height / 1.5,
     marginTop: SIZE(10),
