@@ -101,12 +101,11 @@ const NFTCreated = props => {
           onEndReached={() => {
             if (
               !MyNFTReducer.myNftCreatedListLoading &&
-              MyNFTReducer.myNftCreatedList.length !=
+              MyNFTReducer.myNftCreatedList.length !==
                 MyNFTReducer.myNftCreatedTotalCount
             ) {
               let num = MyNFTReducer.myNftCreatedListPage + 1;
               getNFTlist(num, 10, props.id, 1);
-              dispatch(myNftCreatedPageChange(num));
             }
           }}
           onEndReachedThreshold={0.4}
