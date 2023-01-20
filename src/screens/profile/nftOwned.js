@@ -14,7 +14,6 @@ import {
 } from '../../store/actions/myNFTaction';
 import {translate} from '../../walletUtils';
 import styles from './styles';
-import {Tabs} from 'react-native-collapsible-tab-view';
 
 const NFTOwned = props => {
   const {MyNFTReducer} = useSelector(state => state);

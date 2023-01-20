@@ -26,6 +26,7 @@ import {
 import {AppHeader, C_Image} from '../../components';
 import TabViewScreen from '../../components/TabView/TabViewScreen';
 import Colors from '../../constants/Colors';
+import CommonStyles from '../../constants/styles';
 import {fonts} from '../../res';
 import colors from '../../res/colors';
 import {
@@ -46,6 +47,7 @@ import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
 import * as Tabs from 'react-native-collapsible-tab-view';
+import {SocketHandler} from './socketHandler';
 
 const {
   ConnectSmIcon,
