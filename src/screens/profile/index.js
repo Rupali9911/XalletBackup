@@ -73,12 +73,10 @@ function Profile({navigation, connector, route}) {
   } = useSelector(state => state.UserReducer);
 
   //================== Components State Defination ===================
-  const [userCopyAddress, setUserCopyAddress] = useState(false);
-  const [bannerCopyAddress, setBannerCopyAddress] = useState(false);
-  const [childScroll, setChildScroll] = useState(0);
-  const [profileScroll, setProfileScroll] = useState(false);
-  const [profilePScroll, setProfilePScroll] = useState(0);
-  const [layout, setLayout] = useState(0);
+  const [openDial, setOpenDial] = useState({
+    address: false,
+    webLink: false,
+  });
   const [userDetails, setUserDetails] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
   const [options, setOptions] = useState([]);
@@ -155,17 +153,17 @@ function Profile({navigation, connector, route}) {
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
-    setUserCopyAddress(true);
+    setOpenDial({...openDial, address: true});
     setTimeout(() => {
-      setUserCopyAddress(false);
+      setOpenDial({...openDial, address: false});
     }, 500);
   };
 
   const copyProfileToClipboard = () => {
     Clipboard.setString(`${XANALIA_WEB}/profile/${id}`);
-    setBannerCopyAddress(true);
+    setOpenDial({...openDial, webLink: true});
     setTimeout(() => {
-      setBannerCopyAddress(false);
+      setOpenDial({...openDial, webLink: false});
     }, 500);
   };
 
@@ -486,7 +484,12 @@ function Profile({navigation, connector, route}) {
             )}
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
-            {userCopyAddress && <HandleAddress open={userCopyAddress} />}
+            <PopupMenu
+              opened={openDial.address}
+              items={[{label: `${translate('common.Copied')}!`}]}
+              containerStyle={{...CommonStyles.containerStyle}}
+              textStyle={{...CommonStyles.textStyle}}
+            />
             <CopyToClipboard
               // onPress={() => copyToClipboard()}
               style={{marginLeft: SIZE(6)}}
@@ -535,7 +538,12 @@ function Profile({navigation, connector, route}) {
           <TouchableOpacity
             style={styles.copyProfile}
             onPress={() => copyProfileToClipboard()}>
-            {bannerCopyAddress && <HandleAddress open={bannerCopyAddress} />}
+            <PopupMenu
+              opened={openDial.webLink}
+              items={[{label: `${translate('common.Copied')}!`}]}
+              containerStyle={{...CommonStyles.containerStyle}}
+              textStyle={{...CommonStyles.textStyle}}
+            />
             <CopyProfile width={SIZE(12)} height={SIZE(12)} />
           </TouchableOpacity>
           <View style={styles.iconWrapper} pointerEvents="box-none">
