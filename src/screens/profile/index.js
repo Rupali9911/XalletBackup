@@ -23,7 +23,6 @@ import {
 } from '../../common/responsiveFunction';
 import {AppHeader, C_Image} from '../../components';
 import Colors from '../../constants/Colors';
-import CommonStyles from '../../constants/styles';
 import {fonts} from '../../res';
 import colors from '../../res/colors';
 import {
