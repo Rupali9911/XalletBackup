@@ -78,9 +78,10 @@ function Profile({navigation, connector, route}) {
   } = useSelector(state => state.UserReducer);
 
   //================== Components State Defination ===================
-
-  const [openDial1, setOpenDial1] = useState(false);
-  const [openDial2, setOpenDial2] = useState(false);
+  const [openDial, setOpenDial] = useState({
+    address: false,
+    webLink: false,
+  });
   const [userDetails, setUserDetails] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
   const [options, setOptions] = useState([]);
@@ -157,17 +158,17 @@ function Profile({navigation, connector, route}) {
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
-    setOpenDial1(true);
+    setOpenDial({...openDial, address: true});
     setTimeout(() => {
-      setOpenDial1(false);
+      setOpenDial({...openDial, address: false});
     }, 500);
   };
 
   const copyProfileToClipboard = () => {
     Clipboard.setString(`${XANALIA_WEB}/profile/${id}`);
-    setOpenDial2(true);
+    setOpenDial({...openDial, webLink: true});
     setTimeout(() => {
-      setOpenDial2(false);
+      setOpenDial({...openDial, webLink: false});
     }, 500);
   };
 
@@ -478,7 +479,7 @@ function Profile({navigation, connector, route}) {
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
             <PopupMenu
-              opened={openDial1}
+              opened={openDial.address}
               items={[{label: `${translate('common.Copied')}!`}]}
               containerStyle={{...CommonStyles.containerStyle}}
               textStyle={{...CommonStyles.textStyle}}
@@ -532,7 +533,7 @@ function Profile({navigation, connector, route}) {
             style={styles.copyProfile}
             onPress={() => copyProfileToClipboard()}>
             <PopupMenu
-              opened={openDial2}
+              opened={openDial.webLink}
               items={[{label: `${translate('common.Copied')}!`}]}
               containerStyle={{...CommonStyles.containerStyle}}
               textStyle={{...CommonStyles.textStyle}}
