@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-  ScrollView,
 } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -24,7 +23,6 @@ import {
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
 import {AppHeader, C_Image} from '../../components';
-import TabViewScreen from '../../components/TabView/TabViewScreen';
 import Colors from '../../constants/Colors';
 import CommonStyles from '../../constants/styles';
 import {fonts} from '../../res';
@@ -33,7 +31,6 @@ import {
   endLoadingBanner,
   endLoadingImage,
   getUserData,
-  loadProfileFromAsync,
   startLoadingBanner,
   startLoadingImage,
   updateAvtar,
@@ -51,12 +48,10 @@ import * as Tabs from 'react-native-collapsible-tab-view';
 import {SocketHandler} from './socketHandler';
 
 const {
-  ConnectSmIcon,
   SettingIcon,
   CopyToClipboard,
   EditImage,
   CopyProfile,
-  SettingIconBlack,
   DefaultProfile,
   YouTubeIcon,
   WebIcon,
@@ -70,7 +65,6 @@ const {height} = Dimensions.get('window');
 
 function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
-  const scrollRef = useRef(null);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
@@ -82,22 +76,15 @@ function Profile({navigation, connector, route}) {
     imageBannerLoading,
     userData,
   } = useSelector(state => state.UserReducer);
-  const {UserReducer} = useSelector(state => state);
 
   //================== Components State Defination ===================
 
   const [openDial1, setOpenDial1] = useState(false);
   const [openDial2, setOpenDial2] = useState(false);
-  const [childScroll, setChildScroll] = useState(0);
-  const [profileScroll, setProfileScroll] = useState(false);
-  const [profilePScroll, setProfilePScroll] = useState(0);
-  const [layout, setLayout] = useState(0);
   const [userDetails, setUserDetails] = useState(null);
-  const [index, setIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState('');
   const [options, setOptions] = useState([]);
-  const [currentTabIndex, setCurrentTabIndex] = React.useState(0);
-  // const [id, setId] = useState();
+
   const id = route?.params?.id
     ? route?.params?.id
     : userData?.userWallet?.address;
@@ -516,9 +503,7 @@ function Profile({navigation, connector, route}) {
           position: 'relative',
           paddingBottom: SIZE(10),
         }}
-        pointerEvents="box-none"
-        // onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}
-      >
+        pointerEvents="box-none">
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
@@ -634,30 +619,6 @@ function Profile({navigation, connector, route}) {
     );
   };
 
-  const TabBarComponent = React.useCallback(
-    props => (
-      <Tabs.MaterialTabBar
-        {...props}
-        scrollEnabled
-        tabStyle={{
-          width: wp('50%'),
-          paddingHorizontal: wp('1%'),
-          justifyContent: 'center',
-        }}
-        activeColor={COLORS.BLUE2}
-        inactiveColor={COLORS.BLACK5}
-        labelStyle={{
-          fontSize: RF(1.6),
-          fontFamily: 'Arial',
-          textTransform: 'none',
-        }}
-        index={currentTabIndex}
-        width={'100%'}
-      />
-    ),
-    [],
-  );
-
   return (
     <AppBackground>
       {/* <ScrollView
@@ -693,9 +654,7 @@ function Profile({navigation, connector, route}) {
         initialTabName={translate('wallet.common.profileCreated')}
         // revealHeaderOnScroll
         // snapThreshold={0.5}
-        onIndexChange={index => {
-          setCurrentTabIndex(index);
-        }}>
+      >
         <Tabs.Tab
           name={translate('wallet.common.profileCreated')}
           key={'profileCreated'}>

@@ -98,10 +98,10 @@ const NFTCreated = props => {
         <Tabs.FlatList
           key={1}
           data={MyNFTReducer?.myNftCreatedList}
-          renderItem={renderItem}
           numColumns={2}
-          keyExtractor={(v, i) => 'item_' + i}
+          keyExtractor={(v, i) => 'created_item' + i}
           initialNumToRender={10}
+          renderItem={renderItem}
           onEndReached={() => {
             if (
               !MyNFTReducer.myNftCreatedListLoading &&
@@ -112,14 +112,16 @@ const NFTCreated = props => {
               getNFTlist(num, 10, props.id, 1);
             }
           }}
-          onEndReachedThreshold={0.4}
-          ListFooterComponent={renderFooter}
-          ListEmptyComponent={renderEmptyComponent}
+          onEndReachedThreshold={0.01}
           onRefresh={handlePullRefresh}
           refreshing={
             MyNFTReducer.myNftCreatedListPage === 1 &&
             MyNFTReducer.myNftCreatedListLoading
-          }></Tabs.FlatList>
+          }
+          ListFooterComponent={renderFooter}
+          ListEmptyComponent={renderEmptyComponent}
+          removeClippedSubviews={true}
+        />
       )}
     </View>
   );
