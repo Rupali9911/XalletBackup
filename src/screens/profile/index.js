@@ -69,7 +69,6 @@ const {
 const {height} = Dimensions.get('window');
 
 function Profile({navigation, connector, route}) {
-  console.log('@@@ Profile Screen (Tab) =========>');
   const actionSheetRef = useRef(null);
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
@@ -691,7 +690,9 @@ function Profile({navigation, connector, route}) {
         renderHeader={RenderHeader}
         lazy={true}
         cancelLazyFadeIn={true}
-        renderTabBar={TabBarComponent}
+        initialTabName={translate('wallet.common.profileCreated')}
+        // revealHeaderOnScroll
+        // snapThreshold={0.5}
         onIndexChange={index => {
           setCurrentTabIndex(index);
         }}>
