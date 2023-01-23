@@ -377,9 +377,9 @@ const ChatDetail = ({route, navigation}) => {
               imageStyle={styles.cImageContainer}
             />
           </View>
-          <View style={{paddingStart: 10}}>
+          <View style={styles.mainView}>
             <Text style={styles.headerNftName}>{bot_name}</Text>
-            <View style={{flexDirection: 'row'}}>
+            <View style={styles.remainWordCountView}>
               <View style={styles.typingContainer}>
                 {isChatLoading && (
                   <Text style={styles.typingMessage}>
@@ -387,14 +387,9 @@ const ChatDetail = ({route, navigation}) => {
                   </Text>
                 )}
               </View>
-
               {remainCount > 0 && (
                 <Text style={styles.remainWordText}>
-                  {translate('common.remainWordCount')}
-                  <Text style={styles.remainWordCount}>
-                    {' '}
-                    {parseInt(remainCount)}
-                  </Text>
+                  {translate('common.remainWordCount')} {parseInt(remainCount)}
                 </Text>
               )}
             </View>
