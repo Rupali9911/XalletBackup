@@ -66,13 +66,13 @@ import sendRequest from '../../helpers/AxiosApiRequest';
 import useValidate from '../../hooks/useValidate';
 import { buyNFTApi } from '../../store/actions/detailsNFTAction';
 import { setPaymentObject } from '../../store/reducer/paymentReducer';
-import {numberWithCommas } from '../../utils';
-import {modalAlert} from '../../common/function';
+import { numberWithCommas } from '../../utils';
+import { modalAlert } from '../../common/function';
 
 import { collectionClick } from '../../utils/detailHelperFunctions';
 import { getTokenNameFromId } from '../../utils/nft';
 import { getDefaultToken, getERC20Tokens } from '../../utils/token';
-import { translate, environment} from '../../walletUtils';
+import { translate, environment } from '../../walletUtils';
 import { toFixCustom } from '../createNFTScreen/helperFunction';
 import { handleLike } from '../../utils/handleLikeFunction';
 import {
@@ -449,9 +449,7 @@ const DetailScreen = ({ navigation, route }) => {
         }
         setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => { });
   };
 
   //===================== Get More collection data API Call Functions =========================
@@ -477,9 +475,7 @@ const DetailScreen = ({ navigation, route }) => {
           setMoreData(res?.list);
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => { });
   };
 
   //===================== Offer List History API Call Functions =========================
@@ -509,9 +505,7 @@ const DetailScreen = ({ navigation, route }) => {
           setOfferList(tempList);
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => { });
   };
 
   //====================== Render App Header Function =========================
@@ -732,9 +726,8 @@ const DetailScreen = ({ navigation, route }) => {
   //====================Convert Price====================
 
   const convertPrice = val => {
-    console.log('Value', val)
     let price = val;
-    if(val){
+    if (val) {
       let priceArr = price?.split('.');
       if (priceArr[1]?.length < 6) price = parseFloat(price?.toString());
       else price = parseFloat(Number(price).toFixed(8));
@@ -2745,12 +2738,12 @@ const DetailScreen = ({ navigation, route }) => {
       <NFTDetailDropdown
         title={translate('wallet.common.detail')}
         icon={detailsImg}>
-          <TouchableOpacity onPress={openURL}>
-        {renderDetail(
-          'wallet.common.contractAddress',
-          'address',
-          showContractAddress(collectionAddress),
-        )}
+        <TouchableOpacity onPress={openURL}>
+          {renderDetail(
+            'wallet.common.contractAddress',
+            'address',
+            showContractAddress(collectionAddress),
+          )}
         </TouchableOpacity>
         {renderDetail('common.TOKEN_ID', '', nftTokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}

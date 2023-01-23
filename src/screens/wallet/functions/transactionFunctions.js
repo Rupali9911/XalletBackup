@@ -1,6 +1,6 @@
 import Common from 'ethereumjs-common';
 import { getWallet } from '../../../helpers/AxiosApiRequest';
-import {modalAlert} from '../../../common/function';
+import { modalAlert } from '../../../common/function';
 
 import { translate, IsTestNet } from '../../../walletUtils';
 import { blockChainConfig } from '../../../web3/config/blockChainConfig';
@@ -44,7 +44,6 @@ export const estimateGasTransactions = async (transaction, rpcURL) => {
       gasPrice: Number(gasPrice),
     };
   } catch (error) {
-    console.log('@@@ error gas limit ===>', error);
   }
 };
 
@@ -136,21 +135,16 @@ const transactionProcessing = async (
         if (txHash) {
           // resolve({ success: true, status: 200, data: txHash });
         } else if (err) {
-          console.log(err);
           reject(err.message);
         }
       })
       .once('receipt', receipt => {
         resolve({ success: true, status: 200, data: receipt });
-        console.log('470 - resolve');
       })
       .catch(e => {
-        console.log('Catch 472', e);
         reject(e);
       });
-  } catch (error) {
-    console.log('@@@ transaction processing error =============>', error);
-  }
+  } catch (error) { }
 };
 
 //=========================== Send Custom Transaction Function ===============================
@@ -167,7 +161,6 @@ export const sendCustomTransaction = async (
       const config = getConfigDetails(chainType);
 
       if (config.error === 'invalid chainType') {
-        console.log('invalid chainType');
         reject('invalid chainType');
         return;
       }
@@ -250,25 +243,19 @@ export const sendCustomTransaction = async (
       await web3.eth
         .sendSignedTransaction(raw, async (err, txHash) => {
           if (txHash) {
-            console.log('461 resp crypto function', new Date().getTime());
             // resolve({ success: true, status: 200, data: txHash });
           } else if (err) {
-            console.log(err);
             reject(err.message);
           }
         })
         .once('receipt', receipt => {
           resolve({ success: true, status: 200, data: receipt });
-          console.log('470 - resolve');
         })
         .catch(e => {
-          console.log('Catch 472', e);
           reject(e);
         });
     });
-  } catch (error) {
-    console.log('🚀 ~ file: transactionFunctions.js ~ line 228 ~ error', error);
-  }
+  } catch (error) { }
 };
 
 //============================== Get SignData =======================================
@@ -287,7 +274,6 @@ const getConvertedDecimalValue = (type, convertto6decimal, web3) => {
       return web3.utils.toWei(convertto6decimal.toString(), 'ether');
     }
   } catch (error) {
-    console.log('@@@ Get ConvertedDecimalValue error =============>', error);
     reject(error);
   }
 };
@@ -333,7 +319,6 @@ export const getSignData = (transferParameters, config, web3, reject) => {
         web3,
         reject,
       );
-      // console.log("@@@ Get signData (convertTo6Decimal) =========>", convertto6decimal);
 
       signData = contract.methods
         .transfer(
@@ -345,7 +330,6 @@ export const getSignData = (transferParameters, config, web3, reject) => {
 
     return signData;
   } catch (error) {
-    console.log('@@@ Get signData error =============>', error);
     reject(error);
   }
 };
@@ -444,10 +428,6 @@ export const balanceTransfer = async (transferParameters, config) => {
       }
     });
   } catch (error) {
-    console.log(
-      '@@@ balance transfer function =============================>',
-      error,
-    );
     reject(error);
   }
 };
@@ -455,11 +435,6 @@ export const balanceTransfer = async (transferParameters, config) => {
 
 //=========================== Handle Transaction Error Function ===============================
 export const handleTransactionError = error => {
-  console.log(
-    '🚀 ~ file: transactionFunctions.js ~ line 192 ~ handleTransactionError ~ error',
-    error,
-  );
-
   if (
     typeof error === 'string' &&
     (error.includes('transaction underpriced') ||

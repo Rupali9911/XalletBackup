@@ -402,9 +402,7 @@ const SendScreen = React.memo(props => {
             setGasFee(finalGasFee.toString());
           }
         });
-      } catch (error) {
-        console.log('@@@ Getting Sign data error 1111 ============>', error);
-      }
+      } catch (error) { }
     }, 1000);
 
     return () => clearTimeout(timerAmountOut);
@@ -417,7 +415,6 @@ const SendScreen = React.memo(props => {
         getTokenBalance() === 0 ||
         Number(amount) >= Number(getTokenBalance())
       ) {
-        console.log('@@@ Alert message (Self) 1111 ===========>');
         setAlertMessage({
           ...alertMessage,
           isInsufficientFund: true,
@@ -428,7 +425,6 @@ const SendScreen = React.memo(props => {
         Number(gasFee) + Number(amount) > getTokenBalance() ||
         Number(gasFee) > getTokenBalance()
       ) {
-        console.log('@@@ Alert message (Self) 2222 1111===========>');
         setAlertMessage({
           ...alertMessage,
           gasFeeAlert: true,
@@ -442,7 +438,6 @@ const SendScreen = React.memo(props => {
         Number(amount) < getTokenBalance() &&
         !alertMessage.gasFeeAlert
       ) {
-        console.log('@@@ Alert message (Self) 3333 ===========>',);
         setAlertMessage({
           ...alertMessage,
           networkFeeShow: true,
@@ -454,7 +449,6 @@ const SendScreen = React.memo(props => {
         Number(amount) < getTokenBalance() &&
         !alertMessage.gasFeeAlert
       ) {
-        console.log('@@@ Alert message (Self) 4444 ===========>');
         setAlertMessage({
           ...alertMessage,
           networkFeeShow: true,
@@ -462,7 +456,6 @@ const SendScreen = React.memo(props => {
           isButtonDisable: true,
         });
       } else if (!address || Number(amount) === 0) {
-        console.log('@@@ Alert message (Self) 5555 ===========>');
         setGasFee(0)
         setAlertMessage({
           ...alertMessage,
@@ -483,7 +476,6 @@ const SendScreen = React.memo(props => {
         getTokenBalance() === 0 ||
         Number(amount) > Number(getTokenBalance())
       ) {
-        console.log('@@@ Alert message (ERC-20) 1111 ===========>');
         setAlertMessage({
           ...alertMessage,
           isInsufficientFund: true,
@@ -494,7 +486,6 @@ const SendScreen = React.memo(props => {
         Number(getSelfTokenBalance(item?.network)) === 0 ||
         Number(gasFee) > getSelfTokenBalance(item?.network)
       ) {
-        console.log('@@@ Alert message (ERC-20) 2222 ===========>');
         setAlertMessage({
           ...alertMessage,
           gasFeeAlert: true,
@@ -509,7 +500,6 @@ const SendScreen = React.memo(props => {
         Number(amount) <= Number(getTokenBalance()) &&
         !alertMessage.gasFeeAlert
       ) {
-        console.log('@@@ Alert message (ERC-20) 3333 ===========>');
         setAlertMessage({
           ...alertMessage,
           networkFeeShow: true,
@@ -521,7 +511,6 @@ const SendScreen = React.memo(props => {
         Number(amount) <= Number(getTokenBalance()) &&
         !alertMessage.gasFeeAlert
       ) {
-        console.log('@@@ Alert message (ERC-20) 4444 ===========>');
         setAlertMessage({
           ...alertMessage,
           networkFeeShow: true,
@@ -529,7 +518,6 @@ const SendScreen = React.memo(props => {
           isButtonDisable: true,
         });
       } else if (!address || Number(amount) === 0) {
-        console.log('@@@ Alert message (ERC-20) 5555 ===========>');
         setGasFee(0)
         setAlertMessage({
           ...alertMessage,
@@ -572,56 +560,41 @@ const SendScreen = React.memo(props => {
     let totalValue = 0;
     if (item.type == 'ETH' && item.network !== 'Polygon') {
       let value = parseFloat(ethBalance);
-      // console.log('Eth value', value, ethBalance);
       totalValue = value;
     } else if (item.type == 'BNB') {
       let value = parseFloat(bnbBalance);
-      // console.log('BNB value', value, bnbBalance);
       totalValue = value;
     } else if (item.type == 'BUSD') {
       let value = parseFloat(busdBalance);
-      // console.log('BUSD value', value, busdBalance);
       totalValue = value;
     } else if (item.type == 'USDT') {
       let value = parseFloat(usdtBalance);
-      // console.log('USDT value', value, usdtBalance);
       totalValue = value;
     } else if (item.type == 'Matic') {
       let value = parseFloat(maticBalance);
-      // console.log('Matic value', value, maticBalance);
       totalValue = value;
     } else if (item.type == 'TNFT') {
       let value = parseFloat(tnftBalance);
-      // console.log('Polygon value', value);
       totalValue = value;
     } else if (item.type == 'TAL') {
       let value = parseFloat(talBalance);
-      // console.log('Polygon value', value);
       totalValue = value;
     } else if (item.type == 'USDC') {
       let value = parseFloat(usdcBalance);
-      // console.log('USDC value', value, usdcBalance);
       totalValue = value;
     } else if (item.type == 'WETH' && item.network === 'Polygon') {
       let value = parseFloat(wethBalance);
-      // console.log('Polygon value', value);
       totalValue = value;
     } else if (item.network === 'BSC' && item.type == 'ALIA') {
-      // console.log("Item network", item.network)
       let value = parseFloat(tnftBalance);
       totalValue = value;
     } else if (item.network === 'Polygon' && item.type == 'ALIA') {
-      // console.log("Item network", item.network)
       let value = parseFloat(talBalance);
       totalValue = value;
-      // console.log("Total value is ", totalValue)
     } else if (item.network === 'XANACHAIN' && item.type == 'XETA') {
-      // console.log("Item network", item.network)
       let value = parseFloat(xetaBalance);
       totalValue = value;
-      // console.log("Xeta ", totalValue, xetaBalance)
     }
-    // console.log("@@@ Get token balance func =======>", ethBalance, typeof totalValue, Number(totalValue.toFixed(8)), typeof Number(totalValue.toFixed(8)))
     return Number(totalValue.toFixed(8));
   };
 
@@ -650,7 +623,6 @@ const SendScreen = React.memo(props => {
         }
       })
       .catch(err => {
-        console.log('@@@ balance transfrer error =====>', err);
         setLoading(false);
         handleTransactionError(err);
       });

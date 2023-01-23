@@ -207,7 +207,6 @@ const UploadNFT = ({
             })
             .catch(e => {
                 changeLoadingState(false);
-                console.log(e.response, "nftlist collectionList error");
                 // modalAlert(
                 //   translate("wallet.common.alert"),
                 //   translate("wallet.common.error.networkFailed")
@@ -296,7 +295,6 @@ const UploadNFT = ({
     //             collectionId: id,
     //         };
     //         let result = await axios.post(url, dataToSend, { headers: headers });
-    //         // console.log(result, "get filter list")
     //         if (result?.data?.success) {
     //             let returnedArr = setMainFiltersData(result?.data?.data);
     //             let key = 'name';
@@ -306,7 +304,6 @@ const UploadNFT = ({
     //             setFilterList(uniqueArr);
     //         }
     //     } catch (err) {
-    //         console.log('err in getFiltersList', err);
     //     }
     //     changeLoadingState(false)
     // }
@@ -334,7 +331,6 @@ const UploadNFT = ({
             }
         })
             .catch((err => {
-                console.log("@@@ image picker error =======>", err.code)
                 err.code !== 'E_PICKER_CANCELLED' && setImageError("Invalid Format")
             }))
     }
@@ -350,9 +346,7 @@ const UploadNFT = ({
             res['mime'] = res.type;
             res['path'] = res.fileCopyUri;
             handleAudioFile(res);
-        } catch (error) {
-            console.log("@@@ Document picker error ======>", error)
-        }
+        } catch (error) { }
     }
 
     const validMediaType = (type) => {
@@ -424,7 +418,6 @@ const UploadNFT = ({
                 } else {
                     //  space for video croping code
                     setImageError("Thumbnail supports( *.png, *.jpeg,* .jpg) files only")
-                    console.log("@@@ onPhoto func res ========>", res)
                 }
             }
         });
@@ -448,7 +441,7 @@ const UploadNFT = ({
             .then(response => {
                 cropImage(response)
             })
-            .catch(err => console.log({ err }));
+            .catch(err => { });
     }
     //====================================================================
 
@@ -478,7 +471,6 @@ const UploadNFT = ({
 
     //         let responseSend = await axios.post(`${BASE_URL}/xanalia/uploadS3`, formData)
     //             .then(async res => {
-    //                 console.log("upload image nft", res)
     //                 if (res.data.success) {
 
     //                     let thumbnailDataFile = new FormData();
@@ -504,7 +496,6 @@ const UploadNFT = ({
     //                                     image1: res.data.data,
     //                                     image2: res2.data.data
     //                                 };
-    //                                 console.log(datares, "thumbnail url")
     //                                 return datares;
     //                             } else {
     //                                 changeLoadingState(false);
@@ -577,14 +568,12 @@ const UploadNFT = ({
     //         // changeLoadingState(true);
 
     //         const imageRes = await uploadImageToStorage();
-    //         console.log("+_+_+_+_+_+_+_+imageRes+_+_+_+_+_+_+_+", imageRes)
     //         if (imageRes) {
 
     //             const infuraRes = await handleInfura(imageRes.image1, imageRes.image2);
 
     //             if (infuraRes) {
     //                 let hashResp = infuraRes.data;
-    //                 console.log("#@#@#@#@#@#@ infura res #@#@#@#@#@#@#@", hashResp)
     //                 let web3 = new Web3(providerUrl);
 
     //                 let approvalCheckContract = new web3.eth.Contract(
@@ -594,8 +583,6 @@ const UploadNFT = ({
     //                 approvalCheckContract.methods
     //                     .isApprovedForAll(wallet?.address, MarketContractAddress)
     //                     .call((err, res) => {
-    //                         console.log(res, ":::::::approval response")
-    //                         console.log(err, ":::::::error")
     //                         if (!err) {
 
     //                             if (!res) {
@@ -610,9 +597,6 @@ const UploadNFT = ({
     //                                     collection.collectionAddress
     //                                     , 10, 6000000)
     //                                     .then((_) => {
-    //                                         console.log(_, "__approval set__")
-    //                                         console.log("####################toggleButton#################", toggleButton)
-
     //                                         if (toggleButton == "fixPrice") {
     //                                             putNftOnSale(hashResp);
     //                                         } else {
@@ -629,8 +613,6 @@ const UploadNFT = ({
     //                                     });
 
     //                             } else {
-    //                                 console.log("####################toggle Button#################", toggleButton)
-
     //                                 if (toggleButton === "fixPrice") {
     //                                     putNftOnSale(hashResp);
     //                                 } else {
@@ -641,7 +623,6 @@ const UploadNFT = ({
 
     //                         } else {
     //                             changeLoadingState(false);
-    //                             console.log("@#@#@#@#@#@#@#@ err in balanceOf @#@#@#@#@#@#@#@#@#", err);
     //                         }
     //                     })
     //             }
@@ -751,15 +732,12 @@ const UploadNFT = ({
     //                         transctionHash: transRes.data.transactionHash,
     //                         chainType: networkType.value
     //                     };
-    //                     console.log(changeStatusData, "changeStatusData")
     //                     let url = `${BASE_URL}/user/change-status-draft`
     //                     axios.defaults.headers.post['Content-Type'] = 'application/json';
 
     //                     axios.post(url, changeStatusData)
     //                         .then(res => {
     //                             changeLoadingState(false);
-    //                             console.log(res, "__draft status updated__")
-
     //                         })
     //                         .catch(err => {
     //                             errorMethod(err, "error from delete draft catch")
@@ -834,9 +812,6 @@ const UploadNFT = ({
 
     //     axios.post(url, dataToSend)
     //         .then(draftRes => {
-
-    //             console.log(draftRes, "draftRes")
-
     //             if (draftRes.data.success) {
     //                 cleanAll();
     //                 switchToNFTList("draft", collection)
@@ -938,7 +913,6 @@ const UploadNFT = ({
                         })
                     }
                 } else {
-                    console.log("@@@ image type is normal last condition=========>")
                     // upload normal image
                     const resPresign = await getUploadData({
                         mediaFile: mainFile,
@@ -1025,14 +999,11 @@ const UploadNFT = ({
                     networkType?.name,
                 )
             }
-            console.log("@@@ payment done ==========>");
             setOpenTransactionPending(false);
             cleanAll();
             modalAlert('', translate('common.tansactionSuccessFull'));
         } catch (error) {
             setOpenTransactionPending(false);
-            console.log(error.code)
-            console.log(error.message)
             // handleTransactionError(error, t)
         }
     }
@@ -1084,7 +1055,6 @@ const UploadNFT = ({
                                                     playInBackground={false}
                                                     paused={playVideo}
                                                     onError={error => {
-                                                        console.log("@@@ loaded error =========>", error);
                                                         // setVideoLoadErr(true);
                                                     }}
                                                     onReadyForDisplay={() => {

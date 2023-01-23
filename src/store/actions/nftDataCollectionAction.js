@@ -139,7 +139,6 @@ export const activityHistoryList = (
   tabTitle,
   sort,
 ) => {
-  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64, ~ nftDataCollectionList ~ ", page, collectionId, limit)
   return dispatch => {
     let data = {
       page,
@@ -208,8 +207,6 @@ export const nftDataCollectionList = (
   launchpadId,
   sortFilter = 0,
 ) => {
-  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 64 ~ nftDataCollectionList ~ ", page, collectionAddress, type, collectionId, isStore, manualColl, seriesInfoId)
-
   return dispatch => {
     let limit = 10;
     if (isLaunchPad) {
@@ -272,12 +269,10 @@ const handleCollectionList = (url, collectionType, req_body) => {
       cancelToken: global.cancelToken.token,
     })
       .then(result => {
-        // console.log("🚀 ~ line 230 ~ returnnewPromise ~ result", result.data.data)
         resolve(result);
         // return result;
       })
       .catch(error => {
-        // console.log("🚀 ~ line 234 ~ returnnewPromise ~ error", error)
         reject('result error', error);
       });
   });
@@ -289,11 +284,9 @@ export const nftBlindDataCollectionList = (
   req_body,
   tabTitle,
 ) => {
-  // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 162 ~", collectionAddress, collectionType, req_body, tabTitle)
   return (dispatch, getState) => {
     const {data, wallet} = getState().UserReducer;
     const owner = wallet?.address || data?.user?._id;
-    // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 168 ~ return ~ owner", owner)
     const url =
       collectionType == 0
         ? `${BASE_URL}/blindBox/view-blind-all-series-token-info`
@@ -317,7 +310,6 @@ export const nftBlindDataCollectionList = (
 
     // try {
     // let jsonData = handleCollectionList(url, collectionType, req_body);
-    // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 263 ~ return ~ jsonData", jsonData)
 
     // let json = {
     //   ...jsonData.data,
@@ -327,7 +319,6 @@ export const nftBlindDataCollectionList = (
     // const data = json.data;
 
     //   if (collectionType == 0) {
-    //     // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 191 ~ return ~ json", json)
     //     dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
     //   } else {
     //     let nftData = [];
@@ -344,12 +335,9 @@ export const nftBlindDataCollectionList = (
 
     //     json.count = json.data.length;
     //     json.data = nftData;
-    //     // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 208 ~ return ~ json", json)
     //     dispatch(nftDataCollectionLoadSuccess({ ...json, tabTitle: tabTitle }));
     //   }
     // } catch (error) {
-    //   // console.log(error)
-    //   console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 294 ~ return ~ error", error)
     // }
     // }
 
@@ -383,7 +371,6 @@ export const nftBlindDataCollectionList = (
         }
       })
       .catch(err => {
-        console.log('🚀 ~ line 335 ~ nftBlindDataCollectionList ~ err', err);
         if (!global.cancelToken) {
           dispatch(nftDataCollectionLoadFail());
         }
@@ -435,7 +422,6 @@ export const nftBlindSeriesCollectionList = (
       //     }
       //   })
       //   .catch(err => {
-      //     console.log('=====blind_series_my_collection_err', err);
 
       fetch(url, fetch_data_body)
         .then(response => response.json())
@@ -457,9 +443,7 @@ export const nftBlindSeriesCollectionList = (
             dispatch(nftBlindSeriesCollectionLoadFail());
           }
         })
-        .catch(err => {
-          console.log('=====blind_series_my_collection_err', err);
-        });
+        .catch(err => {});
     } else {
       const req_body =
         seriesInfoId == '61aa058d504d60a828f80113'
@@ -517,7 +501,6 @@ export const nftBlindSeriesCollectionList = (
             //   });
             // }
             // json.data = nftData;
-            // console.log("🚀 ~ file: nftDataCollectionAction.js ~ line 319 ~ return ~ json", json)
             dispatch(
               nftBlindSeriesCollectionLoadSuccess({
                 ...json,
@@ -529,7 +512,6 @@ export const nftBlindSeriesCollectionList = (
           }
         })
         .catch(err => {
-          console.log('=====blind_series_err', err);
           dispatch(nftBlindSeriesCollectionLoadFail());
         });
     }

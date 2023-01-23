@@ -58,6 +58,7 @@ const TabComponent = () => {
 
   return (
     <Tab.Navigator
+      initialRouteName="Home"
       tabBarOptions={{
         labelStyle: {
           fontSize: 12,
@@ -142,4 +143,4 @@ const TabComponent = () => {
   );
 };
 
-export default TabComponent;
+export default React.memo(TabComponent);

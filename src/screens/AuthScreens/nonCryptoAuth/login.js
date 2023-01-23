@@ -67,7 +67,6 @@ const LoginCrypto = ({navigation}) => {
     try {
       Keyboard.dismiss();
       let token = await requestConnectToDApp(email);
-      // console.log('🚀 ~ file: login.js ~ line 40 ~ collectWal ~ token', token);
       if (token) {
         dispatch(startLoading());
       }
@@ -87,13 +86,11 @@ const LoginCrypto = ({navigation}) => {
           setLoginBtnEnable(true);
         })
         .catch(err => {
-          console.log('🚀 ~ file: login.js ~ line 86 ~  ~ err', err);
           dispatch(endMagicLoading());
           setLoginBtnEnable(true);
           modalAlert(translate('wallet.common.tryAgain'));
         });
     } catch (error) {
-      console.log('🚀 ~ file: login.js ~ line 62 ~  ~ error', error);
       setLoginBtnEnable(true);
       clearTimeout(timeout);
       dispatch(endMagicLoading());

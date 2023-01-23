@@ -247,13 +247,9 @@ const Connect = ({route, navigation}) => {
                         };
                         singleSocket.onSendMessage(_data);
                       })
-                      .catch(error => {
-                        console.log(error, 'Get Nonce error Xanalia');
-                      });
+                      .catch(error => {});
                   })
-                  .catch(error => {
-                    console.log(error.response, 'Get Nonce error');
-                  });
+                  .catch(error => {});
               } else if (response.data.isConnected == 'false') {
                 singleSocket
                   .connectSocket(onSocketOpen, onSocketClose)
@@ -295,21 +291,15 @@ const Connect = ({route, navigation}) => {
           } else if (response.status === 'error') {
             if (response.type == 'wallet') {
             } else if (response.type == 'approve') {
-              modalAlert(
-                '',
-                translate('wallet.common.error.appNotConnected'),
-              );
+              modalAlert('', translate('wallet.common.error.appNotConnected'));
             } else if (response.type == 'remove') {
               setConnectedApps([]);
               // navigation.setParams({ appId: null });
             }
           }
-        } catch (err) {
-          console.log('err________', err);
-        }
+        } catch (err) {}
 
         //  else if (response.type == 'error' && !response.data.includes("walletId doesn't exists")) {
-        //     console.log('error',response.data);
         //     if(response.data.includes(`walletID:${wallet.address}`)){
         //         modalAlert('', '');
         //     }else{
@@ -356,7 +346,6 @@ const Connect = ({route, navigation}) => {
   };
 
   const disconnectApp = (id, name) => {
-    console.log('id from disconnect spp', id);
     confirmationAlert(
       translate('wallet.common.verification'),
       translate('wallet.common.askDisconnect', {appName: name}),
