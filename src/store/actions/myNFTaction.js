@@ -96,7 +96,15 @@ export const myNFTList = (pageIndex, pageSize, address, category) => {
     const url = `${NEW_BASE_URL}/nfts/nft-by-address-user?pageIndex=${pageIndex}&pageSize=${pageSize}&address=${address}&categoryFilter=${category}`;
     fetch(url)
       .then(response => response.json())
-      .then(data => dispatch(myNftLoadSuccess({...data, tabTitle: category})))
+      .then(data =>
+        dispatch(
+          myNftLoadSuccess({
+            ...data,
+            tabTitle: category,
+            pageNumber: pageIndex,
+          }),
+        ),
+      )
       .catch(error => dispatch(myNftLoadFail()));
   };
 };

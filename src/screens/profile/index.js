@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   View,
   Dimensions,
-  ScrollView,
 } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -24,7 +23,6 @@ import {
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
 import {AppHeader, C_Image} from '../../components';
-import TabViewScreen from '../../components/TabView/TabViewScreen';
 import Colors from '../../constants/Colors';
 import CommonStyles from '../../constants/styles';
 import {fonts} from '../../res';
@@ -33,7 +31,6 @@ import {
   endLoadingBanner,
   endLoadingImage,
   getUserData,
-  loadProfileFromAsync,
   startLoadingBanner,
   startLoadingImage,
   updateAvtar,
@@ -50,12 +47,10 @@ import * as Tabs from 'react-native-collapsible-tab-view';
 import {SocketHandler} from './socketHandler';
 
 const {
-  ConnectSmIcon,
   SettingIcon,
   CopyToClipboard,
   EditImage,
   CopyProfile,
-  SettingIconBlack,
   DefaultProfile,
   YouTubeIcon,
   WebIcon,
@@ -68,9 +63,7 @@ const {
 const {height} = Dimensions.get('window');
 
 function Profile({navigation, connector, route}) {
-  console.log('@@@ Profile Screen (Tab) =========>');
   const actionSheetRef = useRef(null);
-  const scrollRef = useRef(null);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
@@ -82,22 +75,15 @@ function Profile({navigation, connector, route}) {
     imageBannerLoading,
     userData,
   } = useSelector(state => state.UserReducer);
-  const {UserReducer} = useSelector(state => state);
 
   //================== Components State Defination ===================
-
-  const [openDial1, setOpenDial1] = useState(false);
-  const [openDial2, setOpenDial2] = useState(false);
-  const [childScroll, setChildScroll] = useState(0);
-  const [profileScroll, setProfileScroll] = useState(false);
-  const [profilePScroll, setProfilePScroll] = useState(0);
-  const [layout, setLayout] = useState(0);
+  const [openDial, setOpenDial] = useState({
+    address: false,
+    webLink: false,
+  });
   const [userDetails, setUserDetails] = useState(null);
-  const [index, setIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState('');
   const [options, setOptions] = useState([]);
-  const [currentTabIndex, setCurrentTabIndex] = React.useState(0);
-  // const [id, setId] = useState();
   const id = route?.params?.id
     ? route?.params?.id
     : userData?.userWallet?.address;
@@ -170,17 +156,17 @@ function Profile({navigation, connector, route}) {
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
-    setOpenDial1(true);
+    setOpenDial({...openDial, address: true});
     setTimeout(() => {
-      setOpenDial1(false);
+      setOpenDial({...openDial, address: false});
     }, 500);
   };
 
   const copyProfileToClipboard = () => {
     Clipboard.setString(`${XANALIA_WEB}/profile/${id}`);
-    setOpenDial2(true);
+    setOpenDial({...openDial, webLink: true});
     setTimeout(() => {
-      setOpenDial2(false);
+      setOpenDial({...openDial, webLink: false});
     }, 500);
   };
 
@@ -491,7 +477,7 @@ function Profile({navigation, connector, route}) {
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
             <PopupMenu
-              opened={openDial1}
+              opened={openDial.address}
               items={[{label: `${translate('common.Copied')}!`}]}
               containerStyle={{...CommonStyles.containerStyle}}
               textStyle={{...CommonStyles.textStyle}}
@@ -516,9 +502,7 @@ function Profile({navigation, connector, route}) {
           position: 'relative',
           paddingBottom: SIZE(10),
         }}
-        pointerEvents="box-none"
-        // onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}
-      >
+        pointerEvents="box-none">
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
@@ -547,7 +531,7 @@ function Profile({navigation, connector, route}) {
             style={styles.copyProfile}
             onPress={() => copyProfileToClipboard()}>
             <PopupMenu
-              opened={openDial2}
+              opened={openDial.webLink}
               items={[{label: `${translate('common.Copied')}!`}]}
               containerStyle={{...CommonStyles.containerStyle}}
               textStyle={{...CommonStyles.textStyle}}
@@ -690,10 +674,10 @@ function Profile({navigation, connector, route}) {
         renderHeader={RenderHeader}
         lazy={true}
         cancelLazyFadeIn={true}
-        renderTabBar={TabBarComponent}
-        onIndexChange={index => {
-          setCurrentTabIndex(index);
-        }}>
+        initialTabName={translate('wallet.common.profileCreated')}
+        // revealHeaderOnScroll
+        // snapThreshold={0.5}
+      >
         <Tabs.Tab
           name={translate('wallet.common.profileCreated')}
           key={'profileCreated'}>

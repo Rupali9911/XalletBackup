@@ -2,56 +2,23 @@ import React, {useState} from 'react';
 import {TouchableOpacity, View, Text, Image, Platform} from 'react-native';
 import {C_Image} from '../../components';
 import styles from './styles';
-import {
-  SIZE,
-  SVGS,
-  IMAGES,
-  AWARD_GOLD,
-  AWARD_BRONZE,
-  AWARD_SILVER,
-  AWARD_SPECIAL,
-  NFT_MARKET_STATUS,
-} from 'src/constants';
-import insertComma from '../../utils/insertComma';
-import {basePriceTokens} from '../../web3/config/basePriceTokens';
-import {basePriceTokens as availableTokens} from '../../web3/config/availableTokens';
-import {SvgWithCssUri} from 'react-native-svg';
+import {SIZE, SVGS, IMAGES, NFT_MARKET_STATUS} from 'src/constants';
 import {translate} from '../../walletUtils';
-import {handleLikeDislike} from '../../store/actions/nftTrendList';
 import {useDispatch, useSelector} from 'react-redux';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
-import ProfileImg from '../../assets/pngs/default_profile_img.png';
-import Ethereum from '../../assets/pngs/ethereum.png';
 import {handleLike} from '../../utils/handleLikeFunction';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {ImagekitType} from '../../common/ImageConstant';
 
-export default function NFTItem(props, {navigation}) {
+const NFTItem = (props, {navigation}) => {
   const dispatch = useDispatch();
 
   // ======================= Props Destructing =======================
-  const {
-    item,
-    onPress,
-    onLongPress,
-    isCollection,
-    index,
-    isMeCollection,
-    isBlind,
-    nftChain,
-    screenName,
-    isStore,
-  } = props;
+  const {item, onPress, onLongPress, isCollection, isMeCollection, isBlind} =
+    props;
 
   // ======================= SVGS Destructing =======================
-  const {
-    PolygonIcon,
-    Ethereum,
-    BitmapIcon,
-    HeartWhiteIcon,
-    HeartActiveIcon,
-    VerficationIcon,
-  } = SVGS;
+  const {HeartWhiteIcon, HeartActiveIcon, VerficationIcon} = SVGS;
 
   // =============== Getting data from reducer ========================
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
@@ -85,6 +52,7 @@ export default function NFTItem(props, {navigation}) {
     return (
       <TouchableOpacity
         activeOpacity={1}
+        key={item.nftId}
         // disabled={isDisable}
         onLongPress={onLongPress}
         onPress={() => {
@@ -819,4 +787,6 @@ export default function NFTItem(props, {navigation}) {
         : renderNFTCollectionItem(false)}
     </>
   );
-}
+};
+
+export default React.memo(NFTItem);
