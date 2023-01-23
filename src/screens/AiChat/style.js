@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     borderRightColor: message ? '#ced4da' : '#3c7bde',
     borderRightWidth: message ? 2 : 0,
   }),
-  sendBtn: {
+  sendBtn: disabled => ({
     paddingHorizontal: 15,
     height: hp(5),
     backgroundColor: '#3c7bde',
@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderBottomRightRadius: 3,
     borderTopRightRadius: 3,
-  },
+    opacity: disabled ? 0.5 : 1,
+  }),
   sendText: {
     fontSize: 30,
     color: 'black',

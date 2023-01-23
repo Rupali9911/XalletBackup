@@ -40,6 +40,7 @@ import {
   GET_AI_BG_IMAGE_SUCCESS,
   GET_AI_BG_IMAGE_FAIL,
   GET_AI_BG_IMAGE_RESET,
+  CHAT_AI_DATA_UPDATE,
 } from '../types';
 
 const initialState = {
@@ -93,6 +94,11 @@ const initialState = {
   //======================== AI Data ======================
   aiBgImageData: null,
   aiBgImageLoading: false,
+
+  updateMesaage: {
+    bg_message: '',
+    msg_update: '',
+  },
 };
 
 export default function chatReducer(state = initialState, action) {
@@ -239,6 +245,15 @@ export default function chatReducer(state = initialState, action) {
 
     case GET_AI_BG_IMAGE_RESET:
       return {...state, aiBgImageData: null, aiBgImageLoading: false};
+
+    case CHAT_AI_DATA_UPDATE:
+      return {
+        ...state,
+        updateMesaage: {
+          ...state.updateMesaage,
+          ...action.payload,
+        },
+      };
 
     default:
       return state;

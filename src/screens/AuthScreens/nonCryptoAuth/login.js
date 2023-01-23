@@ -42,17 +42,12 @@ const LoginCrypto = ({navigation}) => {
   }, []);
 
   useEffect(() => {
-    const gobackAction = () => {
-      {
-        navigation.goBack();
+    const backAction = () => {
+      if (loginBtnEnable) {
+        return false;
+      } else {
         return true;
       }
-    };
-    const backAction = () => {
-      if (!magicLoading) {
-        gobackAction();
-      }
-      return true;
     };
 
     const backHandler = BackHandler.addEventListener(
@@ -61,7 +56,7 @@ const LoginCrypto = ({navigation}) => {
     );
 
     return () => backHandler.remove();
-  }, [magicLoading]);
+  }, [loginBtnEnable]);
 
   const collectWallet = async timeout => {
     try {
