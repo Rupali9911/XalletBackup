@@ -582,6 +582,7 @@ function Profile({navigation, connector, route}) {
           )}
           <ActionSheet
             ref={actionSheetRef}
+            useNativeDriver={true}
             key={options}
             title={translate('wallet.common.choosePhoto')}
             options={options}
@@ -595,38 +596,11 @@ function Profile({navigation, connector, route}) {
 
   return (
     <AppBackground>
-      {/* <ScrollView
-        ref={scrollRef}
-        // scrollEnabled={profileScroll}
-        contentContainerStyle={styles.scrollViewContainer}
-        style={styles.scrollView}
-        onScroll={s => {
-          const currentScrollPos = s?.nativeEvent?.contentOffset?.y;
-          setProfilePScroll(currentScrollPos);
-        }}>
-        {renderHeader()}
-        <View
-          style={{
-            height: !route.params
-              ? Platform.OS == 'ios'
-                ? hp(85.2)
-                : hp(94)
-              : Platform.OS == 'ios'
-              ? hp(90.2)
-              : hp(101),
-          }}>
-          {renderTabView(id)}
-        </View>
-      </ScrollView> */}
-
       <Tabs.Container
         renderHeader={RenderHeader}
         lazy={true}
         cancelLazyFadeIn={true}
-        initialTabName={translate('wallet.common.profileCreated')}
-        // revealHeaderOnScroll
-        // snapThreshold={0.5}
-      >
+        initialTabName={translate('wallet.common.profileCreated')}>
         <Tabs.Tab
           name={translate('wallet.common.profileCreated')}
           key={'profileCreated'}>
