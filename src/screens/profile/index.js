@@ -607,6 +607,7 @@ function Profile({navigation, connector, route}) {
           )}
           <ActionSheet
             ref={actionSheetRef}
+            useNativeDriver={true}
             key={options}
             title={translate('wallet.common.choosePhoto')}
             options={options}
@@ -618,66 +619,13 @@ function Profile({navigation, connector, route}) {
     );
   };
 
-  const TabBarComponent = React.useCallback(
-    props => (
-      <Tabs.MaterialTabBar
-        {...props}
-        scrollEnabled
-        tabStyle={{
-          width: wp('50%'),
-          paddingHorizontal: wp('1%'),
-          justifyContent: 'center',
-        }}
-        activeColor={COLORS.BLUE2}
-        inactiveColor={COLORS.BLACK5}
-        labelStyle={{
-          fontSize: RF(1.6),
-          fontFamily: 'Arial',
-          textTransform: 'none',
-        }}
-        index={currentTabIndex}
-        width={'100%'}
-      />
-    ),
-    [],
-  );
-
   return (
     <AppBackground>
-      {/* <ScrollView
-        ref={scrollRef}
-        // scrollEnabled={profileScroll}
-        contentContainerStyle={styles.scrollViewContainer}
-        style={styles.scrollView}
-        onScroll={s => {
-          const currentScrollPos = s?.nativeEvent?.contentOffset?.y;
-
-          console.log('🚀 ~ p ~ onScroll ~ ~', currentScrollPos, childScroll);
-          setProfilePScroll(currentScrollPos);
-        }}>
-        {renderHeader()}
-        <View
-          style={{
-            height: !route.params
-              ? Platform.OS == 'ios'
-                ? hp(85.2)
-                : hp(94)
-              : Platform.OS == 'ios'
-              ? hp(90.2)
-              : hp(101),
-          }}>
-          {renderTabView(id)}
-        </View>
-      </ScrollView> */}
-
       <Tabs.Container
         renderHeader={RenderHeader}
         lazy={true}
         cancelLazyFadeIn={true}
-        initialTabName={translate('wallet.common.profileCreated')}
-        // revealHeaderOnScroll
-        // snapThreshold={0.5}
-      >
+        initialTabName={translate('wallet.common.profileCreated')}>
         <Tabs.Tab
           name={translate('wallet.common.profileCreated')}
           key={'profileCreated'}>
