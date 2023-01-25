@@ -271,7 +271,7 @@ function CollectionDetail(props) {
             {items === undefined ? '--' : items}
           </Text>
           <Text style={styles.collectionTableRowDec}>
-            {translate('common.itemsCollection')}
+            {translate('wallet.common.nfts')}
           </Text>
         </View>
         <View style={styles.collectionTableRow}>

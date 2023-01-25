@@ -90,9 +90,9 @@ const styles = StyleSheet.create({
     color: colors.PINK1,
   },
   nftName: {
-    fontSize: RF(2.75),
+    fontSize: RF(2.65),
     fontFamily: fonts.ARIAL_BOLD,
-    marginBottom: SIZE(15),
+    marginBottom: SIZE(8),
     paddingHorizontal: SIZE(12),
     textTransform: 'uppercase',
   },
