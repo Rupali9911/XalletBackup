@@ -19,7 +19,10 @@ const NFTOwned = props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const [ownedRefreshing, setOwnedRefreshing] = useState(false);
+  const [ownedRefreshing, setOwnedRefreshing] = useState({
+    refreshing: false,
+    loader: false,
+  });
 
   useEffect(() => {
     if (props.isFocused) {
@@ -53,7 +56,7 @@ const NFTOwned = props => {
 
   const renderEmptyComponent = () => {
     if (
-      !ownedRefreshing &&
+      !ownedRefreshing.refreshing &&
       MyNFTReducer.myNftOwnedListLoading &&
       MyNFTReducer.myNftOwnedListPage == 1
     ) {
@@ -62,7 +65,7 @@ const NFTOwned = props => {
           <Loader />
         </View>
       );
-    } else if (ownedRefreshing) {
+    } else if (ownedRefreshing.loader) {
       return <View style={styles.sorryMessageCont} />;
     } else {
       return (
@@ -91,9 +94,19 @@ const NFTOwned = props => {
   };
 
   const handlePullRefresh = useCallback(() => {
-    setOwnedRefreshing(true);
+    setOwnedRefreshing({
+      ...ownedRefreshing,
+      refreshing: true,
+      loader: true,
+    });
     dispatch(myNftOwnedListingReset());
     pressToggle();
+    setTimeout(() => {
+      setOwnedRefreshing({
+        ...ownedRefreshing,
+        loader: false,
+      });
+    }, 1000);
   }, []);
 
   return (
