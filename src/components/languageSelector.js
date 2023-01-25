@@ -48,6 +48,10 @@ function LanguageSel(props) {
   return (
     <DropDownPicker
       open={open}
+      listMode={'SCROLLVIEW'}
+      scrollViewProps={{
+        scrollEnabled: false,
+      }}
       value={value}
       items={items}
       closeAfterSelecting={true}
