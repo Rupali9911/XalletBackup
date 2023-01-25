@@ -57,6 +57,16 @@ const CommonStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
+  containerStyle: {
+    width: 'auto',
+    backgroundColor: Colors.BLACK1,
+  },
+  textStyle: {
+    color: Colors.WHITE1,
+  },
+  titleStyle: {
+    marginVertical: 10,
+  },
 });
 
 export default CommonStyles;

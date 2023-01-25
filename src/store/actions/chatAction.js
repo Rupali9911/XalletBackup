@@ -200,46 +200,46 @@ export const remainWordCountData = count => ({
 //=====================Chat=====================
 export const getAiChat =
   (address, name, collectionAddress, locale, nftId, text, tokenId) =>
-  (dispatch, getState) => {
-    let bot_name = name?.split(' ').slice?.(1)?.[0]
-      ? name?.split(' ').slice?.(1)?.[0]
-      : name;
-    const {reducerTabTitle} = getState().chatReducer;
-    dispatch(chatLoadingStart(true));
-    return new Promise((resolve, reject) => {
-      let url = `https://prod-backend.xanalia.com/xana-genesis-chat/chat-bot-ai`;
-      let data = {
-        address,
-        bot_name,
-        collectionAddress,
-        locale,
-        nftId: nftId.toString(),
-        text,
-        tokenId,
-        is_owned: reducerTabTitle === 'Owned' ? true : false,
-      };
-      sendRequest({
-        url,
-        method: 'POST',
-        data,
-      })
-        .then(res => {
-          dispatch(chatLoadingStart(false));
-          if (res?.data) {
-            dispatch(chatLoadingSuccess(res));
-            dispatch(remainWordCountData(res?.remainWordLimit?.userWordLimit));
-            resolve(res);
-          } else {
-            dispatch(chatLoadingSuccess(res));
-            resolve(res);
-          }
+    (dispatch, getState) => {
+      let bot_name = name?.split(' ').slice?.(1)?.[0]
+        ? name?.split(' ').slice?.(1)?.[0]
+        : name;
+      const { reducerTabTitle } = getState().chatReducer;
+      dispatch(chatLoadingStart(true));
+      return new Promise((resolve, reject) => {
+        let url = `https://prod-backend.xanalia.com/xana-genesis-chat/chat-bot-ai`;
+        let data = {
+          address,
+          bot_name,
+          collectionAddress,
+          locale,
+          nftId: nftId.toString(),
+          text,
+          tokenId,
+          is_owned: reducerTabTitle === 'Owned' ? true : false,
+        };
+        sendRequest({
+          url,
+          method: 'POST',
+          data,
         })
-        .catch(err => {
-          dispatch(chatLoadFail(err));
-          reject(err);
-        });
-    });
-  };
+          .then(res => {
+            dispatch(chatLoadingStart(false));
+            if (res?.data) {
+              dispatch(chatLoadingSuccess(res));
+              dispatch(remainWordCountData(res?.remainWordLimit?.userWordLimit));
+              resolve(res);
+            } else {
+              dispatch(chatLoadingSuccess(res));
+              resolve(res);
+            }
+          })
+          .catch(err => {
+            dispatch(chatLoadFail(err));
+            reject(err);
+          });
+      });
+    };
 
 //==================================Owned-Other==============================
 export const getNftCollections =
@@ -260,14 +260,14 @@ export const getNftCollections =
 
     (tabTitle === 'Owned'
       ? sendRequest({
-          url,
-          method: 'POST',
-        })
+        url,
+        method: 'POST',
+      })
       : sendRequest({
-          url,
-          method: 'POST',
-          data,
-        })
+        url,
+        method: 'POST',
+        data,
+      })
     )
       .then(response => {
         if (response) {
@@ -294,7 +294,6 @@ export const getNftCollections =
         }
       })
       .catch(err => {
-        console.log('Error : ', err);
         tabTitle === 'Owned'
           ? dispatch(ownedNftLoadSuccess([]))
           : dispatch(otherNftLoadSuccess([]));

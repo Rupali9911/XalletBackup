@@ -121,7 +121,7 @@ const ImportWallet = ({ route, navigation }) => {
               });
           } else {
             modalAlert(
-              translate('wallet.common.verification'),
+              translate('common.error'),
               translate('wallet.common.error.invalidPhrase'),
             );
             dispatch(endLoader());
@@ -133,7 +133,7 @@ const ImportWallet = ({ route, navigation }) => {
             err.toString() == 'Error: invalid checksum'
           ) {
             modalAlert(
-              translate('wallet.common.verification'),
+              translate('common.error'),
               translate('wallet.common.error.invalidPhrase'),
             );
           }
@@ -181,7 +181,7 @@ const ImportWallet = ({ route, navigation }) => {
         })
         .catch(err => {
           modalAlert(
-            translate('wallet.common.verification'),
+            translate('common.error'),
             translate('wallet.common.error.invalidPrivateKey'),
           );
           dispatch(endLoader());

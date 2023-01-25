@@ -4,6 +4,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Image,
+  KeyboardAvoidingView,
   FlatList,
   ImageBackground,
 } from 'react-native';
@@ -361,9 +362,7 @@ const ChatDetail = ({route, navigation}) => {
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
           }
         })
-        .catch(err => {
-          console.log('Error Chat : ', err);
-        });
+        .catch(err => {});
     }
   };
 
@@ -484,13 +483,13 @@ const ChatDetail = ({route, navigation}) => {
               />
             </TouchableOpacity>
 
-            {isOwnedTab && (
+            {/* {isOwnedTab && (
               <TouchableOpacity
                 style={styles.imageViewWrap}
                 onPress={() => openImagePicker()}>
                 <ChangeBackground width={SIZE(24)} height={SIZE(24)} />
               </TouchableOpacity>
-            )}
+            )} */}
           </View>
         </View>
 

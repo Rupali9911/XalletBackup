@@ -7,12 +7,10 @@ import { useSelector } from 'react-redux';
 import Share from 'react-native-share';
 import Clipboard from '@react-native-clipboard/clipboard';
 import { BlurView } from "@react-native-community/blur";
-
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import { translate } from '../../walletUtils';
-import { alertWithSingleBtn } from '../../utils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
@@ -35,9 +33,6 @@ const QRScreen = () => {
     const route = useRoute();
 
     const { item } = route.params;
-
-    // console.log('item', item);
-
     const { userData } = useSelector((state) => state.UserReducer);
     const wallet = userData?.userWallet;
 
@@ -45,6 +40,7 @@ const QRScreen = () => {
     const [showShare, setShowShare] = useState(false);
     const [qrData, setQrData] = useState(wallet?.address);
     const [modalVisible, setModalVisible] = useState(false);
+    const [copyAddress, setCopyAddress] = useState(false);
 
     useEffect(() => {
         setQrData(wallet?.address + ' ');
@@ -59,7 +55,6 @@ const QRScreen = () => {
 
     const onSharing = () => {
         qrRef && qrRef.capture().then(uri => {
-            // console.log("do something with ", uri);
             let options = {
                 title: "Share code",
                 url: `${uri}`,
@@ -67,17 +62,19 @@ const QRScreen = () => {
 
             Share.open(options)
                 .then((res) => {
-                    // console.log(res);
                 })
                 .catch((err) => {
-                    err && console.log(err);
+
                 });
         });
     }
 
     const copyToClipboard = () => {
         Clipboard.setString(wallet?.address);
-        alertWithSingleBtn(translate("wallet.common.copied"))
+        setCopyAddress(true);
+        setTimeout(() => {
+            setCopyAddress(false);
+        }, 700);
     }
 
     return (
@@ -109,6 +106,7 @@ const QRScreen = () => {
                         bgColor={Colors.headerIconBg2}
                         labelStyle={styles.btnLabel}
                         onPress={() => copyToClipboard()}
+                        copyAddress={copyAddress}
                     />
                     <HeaderBtns
                         image={ImagesSrc.receive}

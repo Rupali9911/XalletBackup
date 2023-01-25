@@ -118,7 +118,6 @@ const Tokens = props => {
     } else {
       result = array;
     }
-    // console.log('@@@ On Token screen ========>', result);
     setBalanceData(result);
   }, [
     network,

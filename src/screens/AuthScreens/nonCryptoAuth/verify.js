@@ -51,7 +51,6 @@ const Verify = ({ route }) => {
                 }, 5000);
             })
             .catch(error => {
-                console.log(error.response, "verify error")
                 setError(translate(`common.${error.response.data.error_code}`));
                 setLoading(false);
             });
@@ -79,7 +78,6 @@ const Verify = ({ route }) => {
                 setLoading(false);
             })
             .catch(error => {
-                console.log(error.response, "r verify error")
                 setError(translate(`common.${error.response.data.error_code}`));
                 setLoading(false);
             });

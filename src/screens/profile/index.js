@@ -12,12 +12,7 @@ import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {openSettings} from 'react-native-permissions';
-import {
-  Menu,
-  MenuOption,
-  MenuOptions,
-  MenuTrigger,
-} from 'react-native-popup-menu';
+import PopupMenu from '../../components/PopupMenu/PopupMenu';
 import {useDispatch, useSelector} from 'react-redux';
 import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
@@ -50,6 +45,7 @@ import NFTOwned from './nftOwned';
 import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
+import CommonStyles from '../../constants/styles';
 
 const {
   ConnectSmIcon,
@@ -70,6 +66,7 @@ const {
 const {height} = Dimensions.get('window');
 
 function Profile({navigation, connector, route}) {
+  console.log('@@@ Profile Screen (Tab) =========>');
   const actionSheetRef = useRef(null);
   const scrollRef = useRef(null);
   const dispatch = useDispatch();
@@ -474,20 +471,12 @@ function Profile({navigation, connector, route}) {
             )}
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
-            <Menu opened={openDial1}>
-              <MenuTrigger />
-              <MenuOptions
-                optionsContainerStyle={{
-                  width: 'auto',
-                  backgroundColor: Colors.BLACK1,
-                }}>
-                <MenuOption>
-                  <Text style={{color: '#FFFFFF'}}>
-                    {`${translate('common.Copied')}!`}
-                  </Text>
-                </MenuOption>
-              </MenuOptions>
-            </Menu>
+            <PopupMenu
+              opened={openDial1}
+              items={[{label: `${translate('common.Copied')}!`}]}
+              containerStyle={{...CommonStyles.containerStyle}}
+              textStyle={{...CommonStyles.textStyle}}
+            />
             <CopyToClipboard
               // onPress={() => copyToClipboard()}
               style={{marginLeft: SIZE(6)}}
@@ -533,20 +522,12 @@ function Profile({navigation, connector, route}) {
           <TouchableOpacity
             style={styles.copyProfile}
             onPress={() => copyProfileToClipboard()}>
-            <Menu opened={openDial2}>
-              <MenuTrigger />
-              <MenuOptions
-                optionsContainerStyle={{
-                  width: 'auto',
-                  backgroundColor: Colors.BLACK1,
-                }}>
-                <MenuOption>
-                  <Text style={{color: '#FFFFFF'}}>
-                    {`${translate('common.Copied')}!`}
-                  </Text>
-                </MenuOption>
-              </MenuOptions>
-            </Menu>
+            <PopupMenu
+              opened={openDial2}
+              items={[{label: `${translate('common.Copied')}!`}]}
+              containerStyle={{...CommonStyles.containerStyle}}
+              textStyle={{...CommonStyles.textStyle}}
+            />
             <CopyProfile width={SIZE(12)} height={SIZE(12)} />
           </TouchableOpacity>
           <View style={styles.iconWrapper}>

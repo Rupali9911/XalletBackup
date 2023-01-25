@@ -113,7 +113,6 @@ const PaymentNow = props => {
               onRequestClose();
             })
             .catch(err => {
-              console.log('payByWallet_err payByWallet 339', err);
               handlePendingModal(false);
               handleTransactionError(err);
             });
@@ -123,12 +122,7 @@ const PaymentNow = props => {
           handleTransactionError(error);
         }
       }
-    } catch (error) {
-      console.log(
-        '🚀 ~ file: payNowModal.js ~ line 322 ~ payByWal ~ error',
-        error,
-      );
-    }
+    } catch (error) { }
   };
 
   return (
