@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Text, View} from 'react-native';
 import {Tabs} from 'react-native-collapsible-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,6 +18,8 @@ const NFTCreated = props => {
   const {MyNFTReducer} = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const [createdRefreshing, setCreatedRefreshing] = useState(false);
 
   useEffect(() => {
     if (props.isFocused) {
@@ -51,6 +53,7 @@ const NFTCreated = props => {
 
   const renderEmptyComponent = () => {
     if (
+      !createdRefreshing &&
       MyNFTReducer.myNftCreatedListLoading &&
       MyNFTReducer.myNftCreatedListPage == 1
     ) {
@@ -59,6 +62,8 @@ const NFTCreated = props => {
           <Loader />
         </View>
       );
+    } else if (createdRefreshing) {
+      return <View style={styles.sorryMessageCont} />;
     } else {
       return (
         <View style={styles.sorryMessageCont}>
@@ -85,10 +90,11 @@ const NFTCreated = props => {
     );
   };
 
-  const handlePullRefresh = () => {
+  const handlePullRefresh = useCallback(() => {
+    setCreatedRefreshing(true);
     dispatch(myNftCreatedListingReset());
     getNFTlist(1, 10, props.id, 1);
-  };
+  }, []);
 
   return (
     <View style={styles.trendCont}>

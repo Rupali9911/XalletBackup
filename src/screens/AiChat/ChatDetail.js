@@ -214,7 +214,7 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.rightBubbleContainer}>
             <View style={styles.talkBubble(false)}>
               <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}>{senderName}</Text>
+                <Text style={styles.msgHolderName}>{item?.senderName}</Text>
                 <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>

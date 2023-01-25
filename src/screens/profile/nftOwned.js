@@ -1,5 +1,5 @@
 import {useNavigation} from '@react-navigation/native';
-import React, {useCallback, useEffect} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {ActivityIndicator, Text, View} from 'react-native';
 import {Tabs} from 'react-native-collapsible-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
@@ -18,6 +18,8 @@ const NFTOwned = props => {
   const {MyNFTReducer} = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
+
+  const [ownedRefreshing, setOwnedRefreshing] = useState(false);
 
   useEffect(() => {
     if (props.isFocused) {
@@ -51,6 +53,7 @@ const NFTOwned = props => {
 
   const renderEmptyComponent = () => {
     if (
+      !ownedRefreshing &&
       MyNFTReducer.myNftOwnedListLoading &&
       MyNFTReducer.myNftOwnedListPage == 1
     ) {
@@ -59,6 +62,8 @@ const NFTOwned = props => {
           <Loader />
         </View>
       );
+    } else if (ownedRefreshing) {
+      return <View style={styles.sorryMessageCont} />;
     } else {
       return (
         <View style={styles.sorryMessageCont}>
@@ -85,10 +90,11 @@ const NFTOwned = props => {
     );
   };
 
-  const handlePullRefresh = () => {
+  const handlePullRefresh = useCallback(() => {
+    setOwnedRefreshing(true);
     dispatch(myNftOwnedListingReset());
     pressToggle();
-  };
+  }, []);
 
   return (
     <View style={styles.trendCont}>
