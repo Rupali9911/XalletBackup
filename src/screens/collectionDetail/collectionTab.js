@@ -29,7 +29,8 @@ const CollectionTap = props => {
         renderItem={renderItem}
         keyExtractor={keyExtractor}
         legacyImplementation={false}
-      />
+        nestedScrollEnabled={true}
+        />
     );
   };
 
