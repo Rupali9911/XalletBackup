@@ -274,7 +274,7 @@ const TokenDetail = ({route, navigation}) => {
                 value={getTokenValue()}
                 displayType={'text'}
                 decimalScale={8}
-                thousandSeparator={true}
+                thousandSeparator={false}
                 renderText={formattedValue => (
                   <TextView style={styles.priceCont}>
                     {Number(formattedValue)}
