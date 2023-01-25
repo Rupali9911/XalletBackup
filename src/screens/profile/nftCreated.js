@@ -19,7 +19,10 @@ const NFTCreated = props => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
-  const [createdRefreshing, setCreatedRefreshing] = useState(false);
+  const [createdRefreshing, setCreatedRefreshing] = useState({
+    refreshing: false,
+    loader: false,
+  });
 
   useEffect(() => {
     if (props.isFocused) {
@@ -53,7 +56,7 @@ const NFTCreated = props => {
 
   const renderEmptyComponent = () => {
     if (
-      !createdRefreshing &&
+      !createdRefreshing.refreshing &&
       MyNFTReducer.myNftCreatedListLoading &&
       MyNFTReducer.myNftCreatedListPage == 1
     ) {
@@ -62,7 +65,7 @@ const NFTCreated = props => {
           <Loader />
         </View>
       );
-    } else if (createdRefreshing) {
+    } else if (createdRefreshing.loader) {
       return <View style={styles.sorryMessageCont} />;
     } else {
       return (
@@ -91,9 +94,19 @@ const NFTCreated = props => {
   };
 
   const handlePullRefresh = useCallback(() => {
-    setCreatedRefreshing(true);
+    setCreatedRefreshing({
+      ...createdRefreshing,
+      refreshing: true,
+      loader: true,
+    });
     dispatch(myNftCreatedListingReset());
     getNFTlist(1, 10, props.id, 1);
+    setTimeout(() => {
+      setCreatedRefreshing({
+        ...createdRefreshing,
+        loader: false,
+      });
+    }, 1000);
   }, []);
 
   return (
