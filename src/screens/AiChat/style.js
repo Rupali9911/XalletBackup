@@ -209,7 +209,7 @@ const styles = StyleSheet.create({
   },
   bannerImage: {
     width: '80%',
-    height: '80%',
+    height: '81%',
     resizeMode: 'contain',
   },
   bannerImgContainer: {
