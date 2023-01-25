@@ -704,7 +704,7 @@ const DetailScreen = ({ navigation, route }) => {
           </Text>
         )}
         {!load && (
-          <Text style={styles.nftName}>
+          <Text style={styles.nftName} numberOfLines={1}>
             {detailNFT ? detailNFT?.name : item?.name}
           </Text>
         )}
@@ -2667,13 +2667,13 @@ const DetailScreen = ({ navigation, route }) => {
     }
   };
   const toggleDropDown = (v, t) => {
-    if (v && t === 'Trading History')
+    if (v && t === translate('common.tradingHistory'))
       setDropDownOpen({ ...isDropDownOpen, TradingHistory: true, BidHistory: false, MoreCollection: false, OfferList: false })
-    if (v && t === 'Bid History')
+    if (v && t === translate('wallet.common.bidHistory'))
       setDropDownOpen({ ...isDropDownOpen, BidHistory: true, TradingHistory: false, MoreCollection: false, OfferList: false })
-    if (v && t === 'More NFTs')
+    if (v && t === translate('wallet.common.collectionHint'))
       setDropDownOpen({ ...isDropDownOpen, MoreCollection: true, BidHistory: false, TradingHistory: false, OfferList: false })
-    if (v && t === 'Offers')
+    if (v && t === translate('common.offers'))
       setDropDownOpen({ ...isDropDownOpen, OfferList: true, MoreCollection: false, BidHistory: false, TradingHistory: false })
   }
 
