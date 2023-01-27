@@ -37,35 +37,21 @@ import NetworkPicker from './components/networkPicker';
 import SelectToken from './components/SelectToken';
 import Tokens from './components/Tokens';
 import {balance, currencyInDollar} from './functions';
-
 import NetInfo from '@react-native-community/netinfo';
 import {modalAlert} from '../../common/function';
 
-const ethers = require('ethers');
-var Accounts = require('web3-eth-accounts');
-
-const singleSocket = new SingleSocket();
-var accounts = new Accounts('');
-
 const Wallet = ({route, navigation}) => {
   let wallet = null;
-  let subscribeEth;
-  let subscribeBnb;
-  let subscribeMatic;
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
-  const {isCreate, userData, isBackup} = useSelector(
-    state => state.UserReducer,
-  );
+  const {isCreate, isBackup} = useSelector(state => state.UserReducer);
   const {
     bnbBalance,
-    tnftBalance,
     busdBalance,
     usdtBalance,
     ethBalance,
     maticBalance,
-    talBalance,
     usdcBalance,
     wethBalance,
     xetaBalance,
@@ -73,38 +59,16 @@ const Wallet = ({route, navigation}) => {
   } = useSelector(state => state.WalletReducer);
 
   const [isBackedUp, setIsBackedUp] = useState(isBackup);
-  const [loading, setLoading] = useState(false);
-  const [fetching, setFetching] = useState(true);
   const [modalVisible, setModalVisible] = useState(isCreate);
   const [isSuccessVisible, setSuccessVisible] = useState(isCreate);
-  const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [balances, setBalances] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
+  const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [pickerVisible, setPickerVisible] = useState(false);
   const [selectTokenVisible, setSelectTokenVisible] = useState(false);
   const [isSend, setIsSend] = useState(false);
   const [currencyPriceDollar, setCurrencyPriceDollar] = useState(false);
-  const [totalValue, setTotalValue] = useState(0);
-  const [walletAccount, setWalletAccount] = useState();
-  // const [network, setNetwork] = useState({name: 'BSC', icon: ImagesSrc.bnb});
-
-  //======================== Use Effect First 1111 =======================
-  useEffect(() => {
-    // singleSocket.connectSocket().then(() => {
-    //   // ping(wallet.address);
-    // });
-    // const socketSubscribe = Events.asObservable().subscribe({
-    //   next: data => {
-    //     const response = JSON.parse(data);
-    //     if (response.type == 'pong') {
-    //       connect(response.data);
-    //     }
-    //   },
-    // });
-
-    return () => {
-      // socketSubscribe.unsubscribe();
-    };
-  }, []);
 
   //======================== Use Effect Second 2222 =======================
   useEffect(() => {
@@ -123,104 +87,13 @@ const Wallet = ({route, navigation}) => {
       setLoading(true);
       setFetching(true);
       getBalances(wallet?.address);
-    } else {
-      // subscribeEth &&
-      //   subscribeEth.unsubscribe((error, success) => {
-      //     if (success) console.log('Successfully unsubscribed!');
-      //   });
-      // subscribeBnb &&
-      //   subscribeBnb.unsubscribe((error, success) => {
-      //     if (success) console.log('Successfully unsubscribed!');
-      //   });
-      // subscribeMatic &&
-      //   subscribeMatic.unsubscribe((error, success) => {
-      //     if (success) console.log('Successfully unsubscribed!');
-      //   });
     }
-  }, [isFocused]);
+  }, [isFocused, networkType]);
 
   //======================== Use Effect Four 4444=======================
   useEffect(() => {
     setIsBackedUp(isBackup);
   }, [isFocused]);
-
-  //======================== Use Effect Four 5555 =======================
-  useEffect(async () => {
-    wallet = await getWallet();
-    setLoading(true);
-    setFetching(true);
-    getBalances(wallet?.address);
-    // if (network.name == 'Ethereum' && subscribeEth == null) {
-    //   subscribeEth = watchBalanceUpdate(() => {
-    //     getBalances(wallet.address);
-    //   }, 'eth');
-    // } else if (network.name == 'BSC' && subscribeBnb == null) {
-    //   subscribeBnb = watchBalanceUpdate(() => {
-    //     getBalances(wallet.address);
-    //   }, 'bsc');
-    //   // watchBnBBalance();
-    // } else if (network.name == 'Polygon' && subscribeMatic == null) {
-    //   subscribeMatic = watchBalanceUpdate(() => {
-    //     getBalances(wallet.address);
-    //   }, 'polygon');
-    // } else {
-    //   subscribeEth &&
-    //     subscribeEth.unsubscribe((error, success) => {
-    //       if (success) {
-    //         subscribeEth == null;
-    //       }
-    //     });
-    //   subscribeBnb &&
-    //     subscribeBnb.unsubscribe((error, success) => {
-    //       if (success) {
-    //         subscribeBnb == null;
-    //       }
-    //     });
-    //   subscribeMatic &&
-    //     subscribeMatic.unsubscribe((error, success) => {
-    //       if (success) {
-    //         subscribeMatic == null;
-    //       }
-    //     });
-    // }
-
-    return () => {
-      // ethSubscription.unsubscribe();
-      // bnbSubscription.unsubscribe();
-      // polygonSubscription.unsubscribe();
-      // subscribeEth &&
-      //   subscribeEth.unsubscribe((error, success) => {
-      //     if (success) console.log('Successfully unsubscribed!');
-      //   });
-      // subscribeBnb &&
-      //   subscribeBnb.unsubscribe((error, success) => {
-      //     if (success) console.log('Successfully unsubscribed!');
-      //   });
-      // subscribeMatic &&
-      //   subscribeMatic.unsubscribe((error, success) => {
-      //     if (success) console.log('Successfully unsubscribed!');
-      //   });
-    };
-  }, [networkType]);
-
-  //======================== Use Effect Four 6666 =======================
-  useEffect(() => {
-    if (balances) {
-      if (networkType?.name == 'Ethereum') {
-        let value = parseFloat(ethBalance); //+ parseFloat(balances.USDT)
-        setTotalValue(value);
-      } else if (networkType?.name == 'BSC') {
-        let value = parseFloat(bnbBalance); //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-        setTotalValue(value);
-      } else if (networkType?.name == 'Polygon') {
-        let value = parseFloat(maticBalance); //+ parseFloat(balances.USDC)
-        setTotalValue(value);
-      } else if (networkType?.name == 'XANACHAIN') {
-        let value = parseFloat(xetaBalance); //+ parseFloat(balances.USDC)
-        setTotalValue(value);
-      }
-    }
-  }, [networkType, wethBalance, bnbBalance, maticBalance, xetaBalance]);
 
   //======================== Render Header of Screen =====================
   const renderHeaderTokenSVGImage = () => {
@@ -319,27 +192,16 @@ const Wallet = ({route, navigation}) => {
       let value = eth + usdtValue;
       totalValue = value;
     } else if (networkType?.name == 'BSC') {
-      // for mainnet
-      // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-      // for testing
       let bnbValue = parseFloat(bnbBalance) * currencyPriceDollar?.BNB;
-      let tnftValue = parseFloat(tnftBalance) * currencyPriceDollar?.ALIA;
       let busdValue = parseFloat(busdBalance) * 1;
       let value = bnbValue + busdValue;
       totalValue = value;
     } else if (networkType?.name == 'XANACHAIN') {
-      // for mainnet
-      // let value = parseFloat(bnbBalance) //+ parseFloat(balances.BUSD) + parseFloat(balances.ALIA)
-      // for testing
       let xetaValue = parseFloat(xetaBalance) * currencyPriceDollar?.XETA;
       let value = xetaValue;
       totalValue = value;
     } else if (networkType?.name == 'Polygon') {
-      //for mainnet
-      // let value = parseFloat(maticBalance) //+ parseFloat(balances.USDC)
-      // for testing
       let maticValue = parseFloat(maticBalance) * currencyPriceDollar?.MATIC;
-      let talValue = parseFloat(talBalance) * currencyPriceDollar?.ALIA;
       let usdctValue = parseFloat(usdcBalance) * 1;
       let value = '';
       if (networkType == 'testnet') {
@@ -564,8 +426,6 @@ const Wallet = ({route, navigation}) => {
               environment.bnbRpc,
               'busd',
             ),
-            // balance(pubKey, environment.aliaCont, environment.aliaAbi, environment.bnbRpc, "alia"),
-            // balance(pubKey, environment.usdcCont, environment.usdcAbi, environment.polRpc, "usdc")
           ];
           Promise.all(balanceRequests)
             .then(responses => {
@@ -606,22 +466,36 @@ const Wallet = ({route, navigation}) => {
   //=================== Price In Dollerrs =============================
   const priceInDollars = pubKey => {
     return new Promise((resolve, reject) => {
+      let balanceRequests = [];
       try {
-        let balanceRequests = [
-          currencyInDollar(pubKey, 'BSC'),
-          currencyInDollar(pubKey, 'ETH'),
-          currencyInDollar(pubKey, 'Polygon'),
-          currencyInDollar(pubKey, 'ALIA'),
-          currencyInDollar(pubKey, 'XANACHAIN'),
-        ];
+        if (networkType?.name == 'BSC') {
+          balanceRequests = [currencyInDollar(pubKey, 'BSC')];
+        } else if (networkType?.name == 'Ethereum') {
+          balanceRequests = [currencyInDollar(pubKey, 'ETH')];
+        } else if (networkType?.name == 'Polygon') {
+          balanceRequests = [
+            currencyInDollar(pubKey, 'Polygon'),
+            currencyInDollar(pubKey, 'ETH'),
+          ];
+        } else if (networkType?.name == 'XANACHAIN') {
+          balanceRequests = [currencyInDollar(pubKey, 'XANACHAIN')];
+        } else {
+          balanceRequests = [
+            currencyInDollar(pubKey, 'BSC'),
+            currencyInDollar(pubKey, 'ETH'),
+            currencyInDollar(pubKey, 'Polygon'),
+            currencyInDollar(pubKey, 'ALIA'),
+            currencyInDollar(pubKey, 'XANACHAIN'),
+          ];
+        }
         Promise.all(balanceRequests)
           .then(responses => {
             let balances = {
               BNB: responses[0],
-              ETH: responses[1],
-              MATIC: responses[2],
-              ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
-              XETA: responses[4],
+              ETH: networkType?.name == 'Polygon' ? responses[1] : responses[0],
+              MATIC: responses[0],
+              // ALIA: parseFloat(responses[0]) / parseFloat(responses[3]),
+              XETA: responses[0],
             };
             setCurrencyPriceDollar(balances);
             setLoading(false);
@@ -774,29 +648,7 @@ const Wallet = ({route, navigation}) => {
     return new Promise((resolve, reject) => {
       let balanceRequests = [
         balance(pubKey, '', '', environment.xanaRpc, 'xeta'),
-        // balance(
-        //   pubKey,
-        //   environment.talCont,
-        //   environment.tnftAbi,
-        //   environment.polRpc,
-        //   'alia',
-        // ),
-        // balance(
-        //   pubKey,
-        //   environment.usdcCont,
-        //   environment.usdcAbi,
-        //   environment.polRpc,
-        //   'usdc',
-        // ),
-        // balance(
-        //   pubKey,
-        //   environment.wethCont,
-        //   environment.wethAbi,
-        //   environment.polRpc,
-        //   'weth',
-        // ),
       ];
-
       Promise.all(balanceRequests)
         .then(responses => {
           let balances = {
@@ -816,43 +668,9 @@ const Wallet = ({route, navigation}) => {
     });
   };
 
-  //======================== Other functions =======================
-  const ping = async public_key => {
-    let data = {
-      type: 'ping',
-      data: {
-        type: 'wallet',
-        publicKey: public_key,
-      },
-    };
-    return singleSocket.onSendMessage(data);
-  };
-
-  const getSig = message => {
-    let wlt = accounts.privateKeyToAccount(wallet.privateKey);
-    let sigMsg = wlt.sign(message, wallet.privateKey);
-    return sigMsg.signature;
-  };
-
-  const connect = async msg => {
-    let data = {
-      type: 'connect',
-      data: {
-        type: 'wallet',
-        data: {
-          walletId: wallet?.address,
-          publicKey: wallet?.address,
-          sig: `${getSig(msg)}`,
-        },
-      },
-    };
-    singleSocket.onSendMessage(data);
-  };
-
   //====================== Component render function ========================
   return (
     <AppBackground isBusy={balances ? loading : fetching}>
-      {/* // <AppBackground isBusy={loading}> */}
       <GradientBackground>
         <View style={styles.gradient}>
           {renderHeaderTokenSVGImage()}

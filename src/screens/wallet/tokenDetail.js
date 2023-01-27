@@ -254,7 +254,6 @@ const TokenDetail = ({route, navigation}) => {
                 dispatch(addAllXetaTransactions(res.data));
             }
           }
-          console.log('@@@ History API call 1111=======>');
           resolve();
         })
         .catch(err => {

@@ -106,7 +106,7 @@ const NFTOwned = props => {
         ...ownedRefreshing,
         loader: false,
       });
-    }, 1000);
+    }, 1500);
   }, []);
 
   return (
