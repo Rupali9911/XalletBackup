@@ -67,6 +67,15 @@ const CommonStyles = StyleSheet.create({
   titleStyle: {
     marginVertical: 10,
   },
+  socialSiteView: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    marginTop: 15,
+  },
+  socialSiteButton: {
+    marginLeft: 12,
+  },
 });
 
 export default CommonStyles;

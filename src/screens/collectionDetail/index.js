@@ -6,7 +6,6 @@ import {
   BackHandler,
   Dimensions,
   Image,
-  Linking,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -36,14 +35,12 @@ import TabViewScreen from '../../components/TabView/TabViewScreen';
 import {useDispatch, useSelector} from 'react-redux';
 import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
+import SocialMediaLinks from '../../components/SocialMediaLinks'
 
 const {height} = Dimensions.get('window');
 
 const {
-  TwiiterIcon,
-  FacebookIcon,
-  InstagramIcon,
   ThreeDotsVerticalIcon,
   PolygonIcon,
   Ethereum,
@@ -118,7 +115,7 @@ function CollectionDetail(props) {
             setCollection(res);
             setLoading(false);
           })
-          .catch(err => console.log('err : ', err));
+          .catch(err => {});
       } else {
         const collectionArray = await getHotCollectionDetail(
           networkName,
@@ -128,7 +125,6 @@ function CollectionDetail(props) {
         setLoading(false);
       }
     } catch (err) {
-      console.error(err.message);
       setCollection([]);
       setLoading(false);
     }
@@ -166,42 +162,6 @@ function CollectionDetail(props) {
                         />
                     </View>
                 )} */}
-      </View>
-    );
-  };
-
-  const renderSocialLinks = () => {
-    return (
-      <View style={styles.socialLinksWrap}>
-        {collection?.userInfo?.links?.twitter ? (
-          <TouchableOpacity
-            style={{marginRight: 10}}
-            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
-            onPress={() =>
-              Linking.openURL(collection?.userInfo?.links?.twitter)
-            }>
-            <TwiiterIcon />
-          </TouchableOpacity>
-        ) : null}
-        {collection?.userInfo?.links?.instagram ? (
-          <TouchableOpacity
-            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
-            style={{marginRight: 6}}
-            onPress={() =>
-              Linking.openURL(collection?.userInfo?.links?.instagram)
-            }>
-            <InstagramIcon />
-          </TouchableOpacity>
-        ) : null}
-        {collection?.userInfo?.links?.facebook ? (
-          <TouchableOpacity
-            hitSlop={{top: 5, bottom: 5, left: 5, right: 5}}
-            onPress={() =>
-              Linking.openURL(collection?.userInfo?.links?.facebook)
-            }>
-            <FacebookIcon />
-          </TouchableOpacity>
-        ) : null}
       </View>
     );
   };
@@ -271,7 +231,7 @@ function CollectionDetail(props) {
             {items === undefined ? '--' : items}
           </Text>
           <Text style={styles.collectionTableRowDec}>
-            {translate('common.itemsCollection')}
+            {translate('wallet.common.nfts')}
           </Text>
         </View>
         <View style={styles.collectionTableRow}>
@@ -316,10 +276,6 @@ function CollectionDetail(props) {
   };
 
   const renderTitle = () => {
-    // console.log(
-    //   'route?.params?.isLaunchPad === true || collection?.isOfficial === 1',
-    //   route?.params?.isLaunchPad === true || collection?.isOfficial === 1,
-    // );
     return (
       <View style={styles.mainNftText}>
         <Text numberOfLines={1} style={styles.collectionName}>
@@ -454,11 +410,13 @@ function CollectionDetail(props) {
             children={<ThreeDotsVerticalIcon />}
           />
         </View>
-        {renderBanner()}
-        {renderSocialLinks()}
+        {renderBanner()}        
         {renderSubBanner()}
         {renderTitle()}
         {renderDetailList()}
+        <View style={{...CommonStyles.socialSiteView}}>
+          <SocialMediaLinks socialSiteData={collection?.user} />
+        </View>
         {/* {renderChainList()} */}
         {renderDescription()}
         <View style={{height: height / 1.5}}>

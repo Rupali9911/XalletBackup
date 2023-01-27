@@ -1,24 +1,42 @@
-import {View, Text, TouchableOpacity, TextInput, Platform} from 'react-native';
+import {View, Text, TouchableOpacity, TextInput, Keyboard} from 'react-native';
 import styles from './style';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {translate} from '../../walletUtils';
 import {colors} from '../../res';
 
 const MessageInput = props => {
+  const inputRef = useRef(null);
   const [message, setMessage] = useState('');
 
+  const button_disabled = message?.length <= 0;
+
   useEffect(() => {
-    setMessage(props.message);
-  }, [props.message]);
+    if (props?.message) {
+      setMessage(props?.message);
+      inputRef.current.focus();
+    }
+  }, [props?.message]);
 
   const Button = props => {
     return (
       <TouchableOpacity
-        style={[styles.sendBtn, props.style]}
+        disabled={props?.isDisabled}
+        style={[styles.sendBtn(props?.isDisabled), props.style]}
         onPress={props.onPress}>
         <Text style={[styles.sendBtnTxt, props.labelStyle]}>{props.label}</Text>
       </TouchableOpacity>
     );
+  };
+
+  const onSendPress = () => {
+    props.onPress(message);
+    setMessage('');
+  };
+
+  const onCancelPress = () => {
+    props?.onPressCancel('');
+    setMessage('');
+    Keyboard.dismiss();
   };
 
   const renderSaveLayout = () => {
@@ -26,17 +44,14 @@ const MessageInput = props => {
       <View style={styles.editButtonView}>
         <Button
           style={styles.cancelButton}
-          onPress={() => {
-            props?.onPressCancel('');
-          }}
+          onPress={() => onCancelPress()}
           label={translate('common.Cancel')}
           labelStyle={styles.cancelLabel}
         />
         <Button
+          isDisabled={button_disabled}
           style={styles.saveButton}
-          onPress={() => {
-            props.onPress(message);
-          }}
+          onPress={() => onSendPress()}
           label={translate('common.save')}
         />
       </View>
@@ -48,6 +63,7 @@ const MessageInput = props => {
       <View style={styles.separator} />
       <View style={styles.inputContainer}>
         <TextInput
+          ref={inputRef}
           value={message}
           placeholder={
             props?.placeholder
@@ -62,10 +78,8 @@ const MessageInput = props => {
         />
         {!props.message ? (
           <Button
-            onPress={() => {
-              props.onPress(message);
-              setMessage('');
-            }}
+            isDisabled={button_disabled}
+            onPress={() => onSendPress()}
             label={translate('wallet.common.send')}
           />
         ) : null}

@@ -35,6 +35,7 @@ const modalAlert = (title, description, onOkPress, btnTxt) => {
 };
 
 const twitterLink = username => `https://twitter.com/${username}`;
+const instagramLink = username => `https://www.instagram.com/${username}`;
 
 const getFileType = uri => {
   let type = '';
@@ -44,4 +45,4 @@ const getFileType = uri => {
   return type;
 };
 
-export {confirmationAlert, modalAlert, twitterLink, getFileType};
+export {confirmationAlert, modalAlert, twitterLink, instagramLink,getFileType};

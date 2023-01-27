@@ -213,7 +213,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, tokenId)
           .call((err, res) => {
-            // console.log(res[0] !== '0x0000000000000000000000000000000000000000', "///////")
             if (res[0] !== '0x0000000000000000000000000000000000000000') {
               getPublicProfile(res[0], true);
             } else {
@@ -227,7 +226,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
     let _data = singleNFT;
     let web3 = new Web3(providerUrl);
     let ERC721Contract = new web3.eth.Contract(ERC721Abi, collectionAddress);
-    // console.log("lastOwnerOfNFTNonCrypto")
     let MarketPlaceContract = new web3.eth.Contract(
       MarketPlaceAbi,
       MarketContractAddress,
@@ -235,22 +233,12 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
     ERC721Contract.methods.ownerOf(tokenId).call((err, res) => {
       if (!err) {
         _data.owner_address = res;
-        // console.log('owner_address', res, tokenId);
         MarketPlaceContract.methods
           .getSellDetail(collectionAddress, tokenId)
           .call(async (err, res) => {
-            // console.log(
-            //   'MarketPlaceContract_res',
-            //   res,
-            //   err,
-            //   tokenId,
-            //   MarketContractAddress,
-            // );
-
             if (!err) {
               let priceOfNft = res[1] / 1e18;
               if (wallet?.address) {
-                // console.log(res[0] === "0x0000000000000000000000000000000000000000", "////")
                 if (res[0] === '0x0000000000000000000000000000000000000000') {
                   setPriceNFT(priceOfNft);
                   setPriceNFTString(res[1]);
@@ -363,8 +351,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
       obj.tokenId = nftId;
     }
 
-    // console.log(MarketContractAddress);
-
     let MarketPlaceContract = new web3.eth.Contract(
       _MarketPlaceAbi,
       _MarketContractAddress,
@@ -410,12 +396,9 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
     nftObj.logoImg = `${CDN_LINK}/logo-v2.svg`;
     nftObj.price = nftObj.price ? nftObj.price : '';
 
-    // console.log("nftObj", nftObj);
-
     await MarketPlaceContract.methods
       .ownerOf(nftObj.id)
       .call(function (err, res) {
-        // console.log('res', res);
         if (!err) {
           nftObj.owner_address = res;
         }
@@ -442,8 +425,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
         'Content-Type': 'application/json',
       },
     };
-    // console.log("getTokenDetailsApi")
-    // console.log('/xanalia/getDetailNFT called')
     await fetch(`${BASE_URL}/xanalia/getDetailNFT`, fetch_data_body)
       .then(response => response.json())
       .then(async res => {
@@ -482,7 +463,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
                 token.chain === chainType &&
                 currArray.includes(token.order.toString()),
             );
-            // console.log('availableTokens', availableTokens);
             setAvailableTokens(availableTokens);
           } else {
             setAvailableTokens([]);
@@ -512,7 +492,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
           fetch(`${BASE_URL}/xanalia/getProfile`, body)
             .then(response => response.json())
             .then(res => {
-              // console.log(res.data, "///////", item.metaData.name)
               if (res.data) {
                 setArtist(temp?.returnValues?.to?.toLowerCase());
                 setArtistData(res.data);
@@ -521,7 +500,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
           if (isCryptoOwner) {
             lastOwnerOfNFT();
           } else {
-            // console.log("aaaaaaaa")
             lastOwnerOfNFTNonCrypto();
           }
 
@@ -529,9 +507,7 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
         } else if (res.data === 'No record found') {
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => { });
   };
   const getNFTDiscount = id => {
     let web3 = new Web3(providerUrl);
@@ -596,9 +572,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
           artistData?.title?.trim() ? artistData.title : artist ? artist?.substring(0, 6) : ""
     : getArtistName(artist);
 
-  // console.log("🚀 ~ file: nftItem.js ~ line 571", artistData, '</>', artist, '>>>>')
-  // console.log("🚀 ~ file: nftItem.js ~ line 572 ~ nftItem ~ artistName", artistName)
-
   let ownerName = ownerData && typeof ownerData === 'object' ?
     ownerData?.role === 'crypto' ?
       ownerData?.title?.trim() ? ownerData.title :
@@ -608,9 +581,6 @@ const nftItem = ({ item, index, minHeight, screenName }) => {
         ownerData?.name?.trim() ? ownerData.name :
           ownerData?.title?.trim() ? ownerData.title : owner ? owner.substring(0, 6) : ""
     : owner ? owner.substring(0, 6) : ""
-
-  // console.log("🚀 ~ file: nftItem.js ~ line 573", ownerData, '</>', owner, '>>>>')
-  // console.log("🚀 ~ file: nftItem.js ~ line 574 ~ nftItem ~ ownerName", ownerName)
 
   // let ownerName = ownerData ? (
   //   ownerData.role === 'crypto' ?

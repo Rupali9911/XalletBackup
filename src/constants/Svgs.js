@@ -75,6 +75,7 @@ import TwitterIcon from 'src/assets/svgs/icon-twitter.svg';
 import TwitterIconNew from 'src/assets/svgs/icon-twitter-new.svg';
 import FacebookIcon from 'src/assets/svgs/icon-facebook.svg';
 import InstagramIcon from 'src/assets/svgs/icon-instagram.svg';
+import InstaIcon from 'src/assets/svgs/icon-insta.svg';
 import ThreeDotsVerticalIcon from 'src/assets/svgs/icon-three-dots-vertical.svg';
 import VerficationIcon from 'src/assets/svgs/icon-verified-nft.svg';
 import NewPolygonIcon from 'src/assets/svgs/icon-new-polygon.svg';
@@ -189,5 +190,6 @@ export default {
   ChatDefaultProfile,
   InfoIcon,
   ComingSoonInfoIcon,
+  InstaIcon,
   ChangeBackground
 };

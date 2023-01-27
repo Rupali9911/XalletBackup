@@ -38,7 +38,7 @@ async function sendRequest(payload) {
         modalAlert(
           translate('common.alertTitle'),
           translate('wallet.common.error.networkError'),
-        )
+        );
       } else {
         // return Promise.reject()
       }
@@ -56,7 +56,6 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   async err => {
-    console.log('@@@ API request error ======>', err);
     const {response, config} = err;
     try {
       if (response?.status === 401) {
@@ -71,11 +70,9 @@ axiosInstance.interceptors.response.use(
       } else if (response?.status === 455) {
       } else if (response?.status === 502) {
       } else if (response?.status === 400) {
-        console.log('@@@ Axios API Request 400 ======>');
       }
       return Promise.reject(response);
     } catch (error) {
-      console.log('@@@ error in interceptors ==========>', error);
       return Promise.reject(error);
     }
   },
@@ -95,9 +92,7 @@ export async function setAccesToken(value) {
       );
     }
     return value;
-  } catch (error) {
-    console.log('@@@ Set access token error ======>', error);
-  }
+  } catch (error) {}
 }
 
 //================== Get Access Token =====================
@@ -114,7 +109,6 @@ export async function getAccessToken(tokenName) {
       return null;
     }
   } catch (error) {
-    console.log('@@@ Get access token error ======>', error);
     return null;
   }
 }
@@ -129,7 +123,6 @@ export const getWallet = async () => {
       return null;
     }
   } catch (error) {
-    console.log('@@@ Get wallet error =========>', error);
     return null;
   }
 };

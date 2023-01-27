@@ -62,7 +62,7 @@ import MovieNFT from './movieNFT';
 import MusicNFT from './musicNFT';
 import styles from './styles';
 import Trending from './trending';
-import {Easing} from 'react-native-reanimated';
+import { Easing } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 
 const HomeScreen = ({ navigation }) => {
@@ -185,7 +185,6 @@ const HomeScreen = ({ navigation }) => {
   }, [showSuccess]);
 
   // function handleBackButtonClick() {
-  //   console.log('handleBackButtonClick Index', index);
   //   //navigation.goBack();
   //   if (index != 0) {
   //     //this.props.jumpTo('launch');
@@ -436,7 +435,6 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleIndexChange = index => {
-    console.log('Index', index);
     setIndex(index);
   };
 

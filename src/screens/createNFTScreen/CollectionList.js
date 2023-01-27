@@ -167,7 +167,6 @@ const CollectionList = ({
   };
 
   const getActualCollectionList = (num, status) => {
-    console.log('@@@ Get Actual collection API call ==========>', num, status);
     let params = {
       page: num,
       limit: 5,
@@ -188,18 +187,15 @@ const CollectionList = ({
     })
       .then(res => {
         if (res && res?.data && res?.data?.length !== 0) {
-          console.log('@@@ inside if after response');
           setOnEndReachedCalledDuringMomentum(true);
           setCollectionList(old => [...old, ...res.data]);
         } else {
-          console.log('@@@ inside else after response');
         }
         changeLoadingState(false);
         setPageLoader(false);
       })
       .catch(e => {
         changeLoadingState(false);
-        console.log(e, 'nftlist collectionList error');
         // alertWithSingleBtn(
         //   translate("wallet.common.alert"),
         //   translate("wallet.common.error.networkFailed")

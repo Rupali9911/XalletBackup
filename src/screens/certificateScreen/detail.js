@@ -20,13 +20,13 @@ import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Modal from 'react-native-modal';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
 import { useDispatch, useSelector } from 'react-redux';
 import { IMAGES, SIZE, SVGS } from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
 import { NEW_BASE_URL } from '../../common/constants';
 import Fee from '../../common/fee';
-import { twitterLink } from '../../common/function';
+import { twitterLink,instagramLink } from '../../common/function';
 import { ImagekitType } from '../../common/ImageConstant';
 import { AppHeader, C_Image, GroupButton } from '../../components';
 import AppBackground from '../../components/appBackground';
@@ -66,13 +66,13 @@ import sendRequest from '../../helpers/AxiosApiRequest';
 import useValidate from '../../hooks/useValidate';
 import { buyNFTApi } from '../../store/actions/detailsNFTAction';
 import { setPaymentObject } from '../../store/reducer/paymentReducer';
-import {numberWithCommas } from '../../utils';
-import {modalAlert} from '../../common/function';
+import { numberWithCommas } from '../../utils';
+import { modalAlert } from '../../common/function';
 
 import { collectionClick } from '../../utils/detailHelperFunctions';
 import { getTokenNameFromId } from '../../utils/nft';
 import { getDefaultToken, getERC20Tokens } from '../../utils/token';
-import { translate, environment} from '../../walletUtils';
+import { translate, environment } from '../../walletUtils';
 import { toFixCustom } from '../createNFTScreen/helperFunction';
 import { handleLike } from '../../utils/handleLikeFunction';
 import {
@@ -93,8 +93,7 @@ const {
   HeartActiveIcon,
   ThreeDotsVerticalIcon,
   TwitterIcon,
-  FacebookIcon,
-  InstagramIcon,
+  InstaIcon,
   VerficationIcon,
 } = SVGS;
 
@@ -449,9 +448,7 @@ const DetailScreen = ({ navigation, route }) => {
         }
         setFilterTableList(FILTER_TRADING_HISTORY_OPTIONS);
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => { });
   };
 
   //===================== Get More collection data API Call Functions =========================
@@ -477,9 +474,7 @@ const DetailScreen = ({ navigation, route }) => {
           setMoreData(res?.list);
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => { });
   };
 
   //===================== Offer List History API Call Functions =========================
@@ -509,9 +504,7 @@ const DetailScreen = ({ navigation, route }) => {
           setOfferList(tempList);
         }
       })
-      .catch(err => {
-        console.log(err);
-      });
+      .catch(err => { });
   };
 
   //====================== Render App Header Function =========================
@@ -711,7 +704,7 @@ const DetailScreen = ({ navigation, route }) => {
           </Text>
         )}
         {!load && (
-          <Text style={styles.nftName}>
+          <Text style={styles.nftName} numberOfLines={1}>
             {detailNFT ? detailNFT?.name : item?.name}
           </Text>
         )}
@@ -732,9 +725,8 @@ const DetailScreen = ({ navigation, route }) => {
   //====================Convert Price====================
 
   const convertPrice = val => {
-    console.log('Value', val)
     let price = val;
-    if(val){
+    if (val) {
       let priceArr = price?.split('.');
       if (priceArr[1]?.length < 6) price = parseFloat(price?.toString());
       else price = parseFloat(Number(price).toFixed(8));
@@ -2675,13 +2667,13 @@ const DetailScreen = ({ navigation, route }) => {
     }
   };
   const toggleDropDown = (v, t) => {
-    if (v && t === 'Trading History')
+    if (v && t === translate('common.tradingHistory'))
       setDropDownOpen({ ...isDropDownOpen, TradingHistory: true, BidHistory: false, MoreCollection: false, OfferList: false })
-    if (v && t === 'Bid History')
+    if (v && t === translate('wallet.common.bidHistory'))
       setDropDownOpen({ ...isDropDownOpen, BidHistory: true, TradingHistory: false, MoreCollection: false, OfferList: false })
-    if (v && t === 'More NFTs')
+    if (v && t === translate('wallet.common.collectionHint'))
       setDropDownOpen({ ...isDropDownOpen, MoreCollection: true, BidHistory: false, TradingHistory: false, OfferList: false })
-    if (v && t === 'Offers')
+    if (v && t === translate('common.offers'))
       setDropDownOpen({ ...isDropDownOpen, OfferList: true, MoreCollection: false, BidHistory: false, TradingHistory: false })
   }
 
@@ -2705,52 +2697,50 @@ const DetailScreen = ({ navigation, route }) => {
 
   const renderSocialLinks = () => {
     let twitterFullLink = twitterLink(detailNFT?.creator?.twitterLink);
+    let instagramFullLink = instagramLink(detailNFT?.creator?.instagramLink);
     return (
       <View style={styles.socialLinksWrap}>
         {detailNFT?.creator?.twitterLink ? (
-          <TouchableOpacity
-            style={styles.marginRight}
-            hitSlop={hitSlop}
-            onPress={() => Linking.openURL(twitterFullLink)}>
-            <TwitterIcon />
-          </TouchableOpacity>
+          <View
+            style={styles.socialView}
+          >
+            <TouchableOpacity
+              hitSlop={hitSlop}
+              onPress={() => Linking.openURL(twitterFullLink)}
+            >
+             <TwitterIcon />
+            </TouchableOpacity>
+          </View>
         ) : null}
         {detailNFT?.creator?.instagramLink ? (
-          <TouchableOpacity
-            hitSlop={hitSlop}
-            style={{ marginRight: 6 }}
-            onPress={() =>
-              Linking.openURL(
-                'https://www.instagram.com/' +
-                detailNFT?.creator?.instagramLink,
-              )
-            }>
-            <InstagramIcon />
-          </TouchableOpacity>
-        ) : null}
-        {detailNFT?.creator?.facebookLink ? (
-          <TouchableOpacity
-            hitSlop={hitSlop}
-            onPress={() => Linking.openURL(detailNFT?.creator?.facebookLink)}>
-            <FacebookIcon />
-          </TouchableOpacity>
+          <View 
+           style={styles.socialView}
+          >
+            <TouchableOpacity
+              hitSlop={hitSlop}
+              onPress={() =>
+                Linking.openURL(instagramFullLink)}
+            >
+              <InstaIcon />
+            </TouchableOpacity>
+          </View>
         ) : null}
       </View>
     );
   };
-
+  
   //===================== Render Detail NFTDetailDropdown Function =======================
   const renderDetailNFTDetailDropdown = () => {
     return (
       <NFTDetailDropdown
         title={translate('wallet.common.detail')}
         icon={detailsImg}>
-          <TouchableOpacity onPress={openURL}>
-        {renderDetail(
-          'wallet.common.contractAddress',
-          'address',
-          showContractAddress(collectionAddress),
-        )}
+        <TouchableOpacity onPress={openURL}>
+          {renderDetail(
+            'wallet.common.contractAddress',
+            'address',
+            showContractAddress(collectionAddress),
+          )}
         </TouchableOpacity>
         {renderDetail('common.TOKEN_ID', '', nftTokenId)}
         {renderDetail('wallet.common.tokenStandard', '', 'ERC-721')}
@@ -2858,7 +2848,6 @@ const DetailScreen = ({ navigation, route }) => {
         collectionAddress={collectionAddress}
         chain={networkName?.toLowerCase()}
         onRequestClose={() => {
-
           setShowPaymentMethod(false);
           // dispatch(setPaymentObject(null));
         }}

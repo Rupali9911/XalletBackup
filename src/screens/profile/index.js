@@ -1,7 +1,6 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {useIsFocused} from '@react-navigation/native';
 import {
-  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -12,7 +11,7 @@ import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {openSettings} from 'react-native-permissions';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
 import {useDispatch, useSelector} from 'react-redux';
 import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
@@ -44,6 +43,7 @@ import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
 import * as Tabs from 'react-native-collapsible-tab-view';
+import SocialMediaLinks from '../../components/SocialMediaLinks/index';
 import {SocketHandler} from './socketHandler';
 
 const {
@@ -52,11 +52,6 @@ const {
   EditImage,
   CopyProfile,
   DefaultProfile,
-  YouTubeIcon,
-  WebIcon,
-  Twitter,
-  Instagram,
-  DiscordIcon,
   VerficationIcon,
 } = SVGS;
 
@@ -459,6 +454,17 @@ function Profile({navigation, connector, route}) {
 
   const hideDialog = () => setVisible(false);
 
+  const HandleAddress = opened => {
+    return (
+      <PopupMenu
+        opened={opened}
+        items={[{label: `${translate('common.Copied')}!`}]}
+        containerStyle={{...CommonStyles.containerStyle}}
+        textStyle={{...CommonStyles.textStyle}}
+      />
+    );
+  };
+
   const renderProfileNameAndId = () => {
     return (
       <View style={styles.profileInfo}>
@@ -497,12 +503,12 @@ function Profile({navigation, connector, route}) {
   const RenderHeader = () => {
     return (
       <View
+        pointerEvents="box-none"
         style={{
           // flex: socialSite ? 0.6 : 0.55,
           position: 'relative',
           paddingBottom: SIZE(10),
-        }}
-        pointerEvents="box-none">
+        }}>
         {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
@@ -556,40 +562,8 @@ function Profile({navigation, connector, route}) {
           <View style={styles.userDetailsWrapper} pointerEvents="box-none">
             {renderProfileNameAndId()}
           </View>
-          <View style={styles.socialSiteView} pointerEvents="box-none">
-            {userDetails?.twitterSite ? (
-              <TouchableOpacity onPress={() => LinkingUrl('twitterSite')}>
-                <Twitter width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.instagramSite ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => LinkingUrl('instagramSite')}>
-                <Instagram width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.youtubeSite ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => Linking.openURL(userDetails?.youtubeSite)}>
-                <YouTubeIcon width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.discordSite ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => LinkingUrl('discordSite')}>
-                <DiscordIcon width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.website ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => LinkingUrl('webSite')}>
-                <WebIcon width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
+          <View style={{...CommonStyles.socialSiteView}}>
+            <SocialMediaLinks socialSiteData={userDetails} />
           </View>
           {!route.params && (
             <EditButton
@@ -774,15 +748,7 @@ const styles = StyleSheet.create({
     top: SIZE(150),
     right: SIZE(10),
   },
-  socialSiteButton: {
-    marginLeft: SIZE(12),
-  },
-  socialSiteView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginTop: SIZE(15),
-  },
+
   tabView: {
     height: height / 1.5,
     marginTop: SIZE(10),

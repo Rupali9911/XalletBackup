@@ -244,7 +244,6 @@ const NFTList = ({
       })
       .catch(e => {
         changeLoadingState(false);
-        console.log(e, 'nftlist collectionList error');
         // alertWithSingleBtn(
         //   translate("wallet.common.alert"),
         //   translate("wallet.common.error.networkFailed")
@@ -292,7 +291,6 @@ const NFTList = ({
       })
       .catch(e => {
         changeLoadingState(false);
-        console.log(e, 'nftlist collectionList error');
         // alertWithSingleBtn(
         //   translate("wallet.common.alert"),
         //   translate("wallet.common.error.networkFailed")

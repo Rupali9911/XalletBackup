@@ -90,9 +90,9 @@ const styles = StyleSheet.create({
     color: colors.PINK1,
   },
   nftName: {
-    fontSize: RF(2.75),
+    fontSize: RF(2.65),
     fontFamily: fonts.ARIAL_BOLD,
-    marginBottom: SIZE(15),
+    marginBottom: SIZE(8),
     paddingHorizontal: SIZE(12),
     textTransform: 'uppercase',
   },
@@ -1125,6 +1125,14 @@ const styles = StyleSheet.create({
     right: 92,
     bottom: 12,
     zIndex: 10,
+  },
+  socialView:{
+    height: 40,
+    width: '15%',
+    borderWidth: 0.3,
+    borderColor: colors.GREY12,
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
 

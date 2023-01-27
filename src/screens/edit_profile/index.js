@@ -40,7 +40,7 @@ import {hp} from '../../constants/responsiveFunct';
 import {View} from 'native-base';
 import Colors from '../../constants/Colors';
 import {COLORS} from '../../constants';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
 import {Portal} from '@gorhom/portal';
 import CommonStyles from '../../constants/styles';
 

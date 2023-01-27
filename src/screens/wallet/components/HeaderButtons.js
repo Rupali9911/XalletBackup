@@ -10,7 +10,7 @@ import CommonStyles from '../../../constants/styles';
 import Colors from '../../../constants/Colors';
 import Fonts from '../../../constants/Fonts';
 import { RF, hp, wp } from '../../../constants/responsiveFunct';
-import PopupMenu from '../../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../../components/PopupMenu';
 import {translate} from '../../../walletUtils';
 
 export const HeaderBtns = props => {
