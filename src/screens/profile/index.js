@@ -83,31 +83,11 @@ function Profile({navigation, connector, route}) {
     ? route?.params?.id
     : userData?.userWallet?.address;
 
-  // const ComponentTypes = [<NFTCreated id={id} />, <NFTOwned id={id} />];
-
-  // const [routes] = useState([
-  //   {
-  //     key: 'profileCreated',
-  //     title: translate('wallet.common.profileCreated'),
-  //     component: <NFTCreated id={id} />,
-  //   },
-  //   {
-  //     key: 'nftOwned',
-  //     title: translate('wallet.common.owned'),
-  //     component: <NFTOwned id={id} />,
-  //   },
-  // ]);
-
-  //================== Global Variables ===================
-  // const socialSite =
-  //   userDetails?.twitterSite ||
-  //   userDetails?.instagramSite ||
-  //   userDetails?.youtubeSite ||
-  //   userDetails?.discordSite ||
-  //   userDetails?.website;
+  const OPEN_CAMERA = 0;
+  const OPEN_GALLERY = 1;
+  const REMOVE_BANNER = 2;
 
   //===================== UseEffect Function =========================
-
   useEffect(() => {
     handleUserData();
   }, []);
@@ -133,21 +113,16 @@ function Profile({navigation, connector, route}) {
   const handleUserData = useCallback(() => {
     dispatch(startLoadingBanner());
     dispatch(startLoadingImage());
-    // console.log('route?.params?.id : ', route?.params?.id);
     if (route?.params?.id) {
-      // setId(route?.params?.id);
-      // id = route?.params?.id;
       dispatch(getUserData(route?.params?.id, true));
     } else {
-      // setId(userData?.userWallet?.address);
-      // id = userData?.userWallet?.address;
       dispatch(getUserData(userData?.userWallet?.address, false));
     }
   }, []);
 
-  const OPEN_CAMERA = 0;
-  const OPEN_GALLERY = 1;
-  const REMOVE_BANNER = 2;
+  useEffect(() => {
+    options.length && actionSheetRef.current.show();
+  }, [options]);
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
@@ -165,86 +140,10 @@ function Profile({navigation, connector, route}) {
     }, 500);
   };
 
-  // const handleIndexChange = index => {
-  //   console.log('Index', index);
-  //   setIndex(index);
-  // };
-
-  const LinkingUrl = type => {
-    let url;
-    if (type === 'discordSite') {
-      url = /(http(s?)):\/\//i.test(userDetails?.discordSite)
-        ? userDetails?.discordSite
-        : 'https://' + userDetails?.discordSite;
-    } else if (type === 'webSite') {
-      url = /(http(s?)):\/\//i.test(userDetails?.website)
-        ? userDetails?.website
-        : 'https://' + userDetails?.website;
-    } else if (type === 'twitterSite') {
-      url = 'https://twitter.com/' + userDetails?.twitterSite;
-    } else if (type === 'instagramSite') {
-      url = 'https://www.instagram.com/' + userDetails?.instagramSite;
-    }
-    return Linking.openURL(url);
-  };
-
-  // const renderScene = ({route}) => {
-  //   let scrollEnabled =
-  //     Number(profilePScroll).toFixed(0) < Number(layout).toFixed(0)
-  //       ? false
-  //       : true;
-  //   setProfileScroll(scrollEnabled);
-
-  //   switch (route.key) {
-  //     case 'profileCreated':
-  //       return (
-  //         <NFTCreated
-  //           key={id}
-  //           id={id}
-  //           navigation={navigation}
-  //           scrollEnabled={scrollEnabled}
-  //           setChildScroll={setChildScroll}
-  //         />
-  //       );
-  //     case 'nftOwned':
-  //       return (
-  //         <NFTOwned
-  //           key={id}
-  //           id={id}
-  //           navigation={navigation}
-  //           scrollEnabled={scrollEnabled}
-  //           setChildScroll={setChildScroll}
-  //         />
-  //       );
-  //     default:
-  //       return null;
-  //   }
-  // };
-
-  // const renderTabView = id => {
-  //   return (
-  //     <TabViewScreen
-  //       index={index}
-  //       routes={routes}
-  //       switchRoutes={r => renderScene(r)}
-  //       indexChange={i => handleIndexChange(i)}
-  //       tabBarStyle={{
-  //         width: wp('50%'),
-  //         paddingHorizontal: wp('1%'),
-  //         justifyContent: 'center',
-  //       }}
-  //     />
-  //   );
-  // };
-
   const onSelect = from => {
     setSelectedImage(from);
     handleOptions(from);
   };
-
-  useEffect(() => {
-    options.length && actionSheetRef.current.show();
-  }, [options]);
 
   const selectActionSheet = async (index, e) => {
     const options = {
@@ -256,7 +155,6 @@ function Profile({navigation, connector, route}) {
       },
       quality: 0.5,
     };
-
     if (index === OPEN_CAMERA) {
       ImagePicker.openCamera({
         height: 512,
@@ -305,8 +203,6 @@ function Profile({navigation, connector, route}) {
             (e.code === 'E_NO_CAMERA_PERMISSION' ||
               e.code === 'E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR')
           ) {
-            // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-            // if (isGranted===false) {
             confirmationAlert(
               translate('wallet.common.cameraPermissionHeader'),
               translate('wallet.common.cameraPermissionMessage'),
@@ -315,7 +211,6 @@ function Profile({navigation, connector, route}) {
               () => openSettings(),
               () => null,
             );
-            // }
           }
         });
     } else if (index === OPEN_GALLERY) {
@@ -361,8 +256,6 @@ function Profile({navigation, connector, route}) {
         })
         .catch(async e => {
           if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
-            // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
-            // if (isGranted === false) {
             confirmationAlert(
               translate('wallet.common.storagePermissionHeader'),
               translate('wallet.common.storagePermissionMessage'),
@@ -371,7 +264,6 @@ function Profile({navigation, connector, route}) {
               () => openSettings(),
               () => null,
             );
-            // }
           }
         });
     } else if (index === REMOVE_BANNER && selectedImage === 'banner') {
@@ -452,19 +344,6 @@ function Profile({navigation, connector, route}) {
     }
   };
 
-  const hideDialog = () => setVisible(false);
-
-  const HandleAddress = opened => {
-    return (
-      <PopupMenu
-        opened={opened}
-        items={[{label: `${translate('common.Copied')}!`}]}
-        containerStyle={{...CommonStyles.containerStyle}}
-        textStyle={{...CommonStyles.textStyle}}
-      />
-    );
-  };
-
   const renderProfileNameAndId = () => {
     return (
       <View style={styles.profileInfo}>
@@ -505,7 +384,6 @@ function Profile({navigation, connector, route}) {
       <View
         pointerEvents="box-none"
         style={{
-          // flex: socialSite ? 0.6 : 0.55,
           position: 'relative',
           paddingBottom: SIZE(10),
         }}>

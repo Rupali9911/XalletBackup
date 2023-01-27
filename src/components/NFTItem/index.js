@@ -4,24 +4,18 @@ import {C_Image} from '../../components';
 import styles from './styles';
 import {SIZE, SVGS, IMAGES, NFT_MARKET_STATUS} from 'src/constants';
 import {translate} from '../../walletUtils';
-import {useDispatch, useSelector} from 'react-redux';
 import FixedTouchableHighlight from '../../components/FixedTouchableHighlight';
 import {handleLike} from '../../utils/handleLikeFunction';
 import {useNavigation} from '@react-navigation/native';
 import {ImagekitType} from '../../common/ImageConstant';
 
 const NFTItem = (props, {navigation}) => {
-  const dispatch = useDispatch();
-
   // ======================= Props Destructing =======================
   const {item, onPress, onLongPress, isCollection, isMeCollection, isBlind} =
     props;
 
   // ======================= SVGS Destructing =======================
   const {HeartWhiteIcon, HeartActiveIcon, VerficationIcon} = SVGS;
-
-  // =============== Getting data from reducer ========================
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
 
   //================== Components State Declaration ===================
   const [isLike, setIsLike] = useState(Number(item.isLike));
