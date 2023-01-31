@@ -9,6 +9,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  Linking,
 } from 'react-native';
 import {Searchbar} from 'react-native-paper';
 import {useDispatch} from 'react-redux';
@@ -22,6 +23,7 @@ import {searchNFT} from '../store/actions/newNFTActions';
 import {translate} from '../walletUtils';
 import LoadingView from './LoadingView';
 import {Verifiedcollections} from './verifiedCollection';
+import {CORPORATE_COLLAB_URL, CORPORATE_NAME} from '../common/constants';
 
 function AppSearch() {
   const dispatch = useDispatch();
@@ -106,11 +108,15 @@ function AppSearch() {
               id: item?.address,
             });
           } else if (item.type == 'Collections') {
-            navigation.push('CollectionDetail', {
-              networkName: item?.network,
-              contractAddress: item?.address,
-              launchpadId: item?.launchpadId,
-            });
+            item?.name === CORPORATE_NAME && item?.launchpadId === 3
+              ? Linking.openURL(CORPORATE_COLLAB_URL)
+              : item?.name === CORPORATE_NAME && item?.launchpadId === 1
+              ? Linking.openURL(CORPORATE_COLLAB_URL)
+              : navigation.push('CollectionDetail', {
+                  networkName: item?.network,
+                  contractAddress: item?.address,
+                  launchpadId: item?.launchpadId,
+                });
           }
         }}
       />

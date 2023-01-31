@@ -1,6 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect} from 'react';
-import {FlatList, StatusBar, Text, View} from 'react-native';
+import {FlatList, StatusBar, Text, View, Linking} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Loader} from '../../components';
 import {colors} from '../../res';
@@ -13,6 +13,7 @@ import {
 import {translate} from '../../walletUtils';
 import LaunchPadItemData from '../LaunchPadDetail/LaunchPadItemData';
 import styles from './styles';
+import {CORPORATE_COLLAB_URL, CORPORATE_NAME} from '../../common/constants';
 
 const LaunchPad = () => {
   const dispatch = useDispatch();
@@ -78,12 +79,16 @@ const LaunchPad = () => {
         collectionId={item?._id}
         // disabled={item.totalNft === 0}
         onPress={() => {
-          navigation.push('CollectionDetail', {
-            networkName: null,
-            contractAddress: null,
-            launchpadId: item?.id,
-            isLaunchPad: true,
-          });
+          item?.description === CORPORATE_NAME && item?.id === 1
+            ? Linking.openURL(CORPORATE_COLLAB_URL)
+            : item?.description === CORPORATE_NAME && item?.id === 3
+            ? Linking.openURL(CORPORATE_COLLAB_URL)
+            : navigation.push('CollectionDetail', {
+                networkName: null,
+                contractAddress: null,
+                launchpadId: item?.id,
+                isLaunchPad: true,
+              });
         }}
       />
     );
