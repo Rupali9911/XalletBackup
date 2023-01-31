@@ -53,7 +53,6 @@ const getUploadData = async ({
         })
         return presignedResponse;
     } catch (error) {
-        console.log("@@@ errro ====>", error)
         return presignedResponse;
     }
 
@@ -66,9 +65,7 @@ const convertImageToArrayBuffer = async (url) => {
         var Buffer = require("buffer/").Buffer;
         const arrayBuffer = await Buffer.from(base64, "base64");
         return arrayBuffer;
-    } catch (error) {
-        console.log("@@@ error ", error)
-    }
+    } catch (error) { }
 }
 
 // Upload media on AWS S3
@@ -92,10 +89,7 @@ const putCollectionMedia = async ({
                 'Authorization': 'No'
             },
         })
-        console.log("@@@ after upload media =========>", presignedFinalResponse)
-    } catch (error) {
-        console.log("@@@ error ", error)
-    }
+    } catch (error) { }
 }
 
 const putNFTMedia = async ({

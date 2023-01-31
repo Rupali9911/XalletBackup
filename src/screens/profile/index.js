@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
-  Linking,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -12,7 +11,7 @@ import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
 import Clipboard from '@react-native-clipboard/clipboard';
 import {openSettings} from 'react-native-permissions';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
 import {useDispatch, useSelector} from 'react-redux';
 import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
@@ -46,7 +45,7 @@ import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
-
+import SocialMediaLinks from '../../components/SocialMediaLinks'
 const {
   ConnectSmIcon,
   SettingIcon,
@@ -55,11 +54,6 @@ const {
   CopyProfile,
   SettingIconBlack,
   DefaultProfile,
-  YouTubeIcon,
-  WebIcon,
-  Twitter,
-  Instagram,
-  DiscordIcon,
   VerficationIcon,
 } = SVGS;
 
@@ -82,8 +76,8 @@ function Profile({navigation, connector, route}) {
   const {UserReducer} = useSelector(state => state);
 
   //================== Components State Defination ===================
-  const [openDial1, setOpenDial1] = useState(false);
-  const [openDial2, setOpenDial2] = useState(false);
+  const [userCopyAddress, setUserCopyAddress] = useState(false);
+  const [bannerCopyAddress, setBannerCopyAddress] = useState(false);
   const [childScroll, setChildScroll] = useState(0);
   const [profileScroll, setProfileScroll] = useState(false);
   const [profilePScroll, setProfilePScroll] = useState(0);
@@ -147,41 +141,22 @@ function Profile({navigation, connector, route}) {
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
-    setOpenDial1(true);
+    setUserCopyAddress(true);
     setTimeout(() => {
-      setOpenDial1(false);
+      setUserCopyAddress(false);
     }, 500);
   };
 
   const copyProfileToClipboard = () => {
     Clipboard.setString(`${XANALIA_WEB}/profile/${id}`);
-    setOpenDial2(true);
+    setBannerCopyAddress(true);
     setTimeout(() => {
-      setOpenDial2(false);
+      setBannerCopyAddress(false);
     }, 500);
   };
 
   const handleIndexChange = index => {
-    console.log('Index', index);
     setIndex(index);
-  };
-
-  const LinkingUrl = type => {
-    let url;
-    if (type === 'discordSite') {
-      url = /(http(s?)):\/\//i.test(userDetails?.discordSite)
-        ? userDetails?.discordSite
-        : 'https://' + userDetails?.discordSite;
-    } else if (type === 'webSite') {
-      url = /(http(s?)):\/\//i.test(userDetails?.website)
-        ? userDetails?.website
-        : 'https://' + userDetails?.website;
-    } else if (type === 'twitterSite') {
-      url = 'https://twitter.com/' + userDetails?.twitterSite;
-    } else if (type === 'instagramSite') {
-      url = 'https://www.instagram.com/' + userDetails?.instagramSite;
-    }
-    return Linking.openURL(url);
   };
 
   const renderScene = ({route}) => {
@@ -455,6 +430,17 @@ function Profile({navigation, connector, route}) {
 
   const hideDialog = () => setVisible(false);
 
+  const HandleAddress = opened => {
+    return (
+      <PopupMenu
+        opened={opened}
+        items={[{label: `${translate('common.Copied')}!`}]}
+        containerStyle={{...CommonStyles.containerStyle}}
+        textStyle={{...CommonStyles.textStyle}}
+      />
+    );
+  };
+  
   const renderProfileNameAndId = () => {
     return (
       <View style={styles.profileInfo}>
@@ -472,12 +458,7 @@ function Profile({navigation, connector, route}) {
             )}
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
-            <PopupMenu
-              opened={openDial1}
-              items={[{label: `${translate('common.Copied')}!`}]}
-              containerStyle={{...CommonStyles.containerStyle}}
-              textStyle={{...CommonStyles.textStyle}}
-            />
+            {userCopyAddress && <HandleAddress open={userCopyAddress} />}
             <CopyToClipboard
               // onPress={() => copyToClipboard()}
               style={{marginLeft: SIZE(6)}}
@@ -523,12 +504,7 @@ function Profile({navigation, connector, route}) {
           <TouchableOpacity
             style={styles.copyProfile}
             onPress={() => copyProfileToClipboard()}>
-            <PopupMenu
-              opened={openDial2}
-              items={[{label: `${translate('common.Copied')}!`}]}
-              containerStyle={{...CommonStyles.containerStyle}}
-              textStyle={{...CommonStyles.textStyle}}
-            />
+            {bannerCopyAddress && <HandleAddress open={bannerCopyAddress} />}
             <CopyProfile width={SIZE(12)} height={SIZE(12)} />
           </TouchableOpacity>
           <View style={styles.iconWrapper}>
@@ -548,40 +524,8 @@ function Profile({navigation, connector, route}) {
           <View style={styles.userDetailsWrapper}>
             {renderProfileNameAndId()}
           </View>
-          <View style={styles.socialSiteView}>
-            {userDetails?.twitterSite ? (
-              <TouchableOpacity onPress={() => LinkingUrl('twitterSite')}>
-                <Twitter width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.instagramSite ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => LinkingUrl('instagramSite')}>
-                <Instagram width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.youtubeSite ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => Linking.openURL(userDetails?.youtubeSite)}>
-                <YouTubeIcon width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.discordSite ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => LinkingUrl('discordSite')}>
-                <DiscordIcon width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
-            {userDetails?.website ? (
-              <TouchableOpacity
-                style={styles.socialSiteButton}
-                onPress={() => LinkingUrl('webSite')}>
-                <WebIcon width={SIZE(35)} height={SIZE(35)} />
-              </TouchableOpacity>
-            ) : null}
+          <View style={{...CommonStyles.socialSiteView}}>
+            <SocialMediaLinks socialSiteData={userDetails} />
           </View>
           {!route.params && (
             <EditButton
@@ -619,8 +563,6 @@ function Profile({navigation, connector, route}) {
         style={styles.scrollView}
         onScroll={s => {
           const currentScrollPos = s?.nativeEvent?.contentOffset?.y;
-
-          console.log('🚀 ~ p ~ onScroll ~ ~', currentScrollPos, childScroll);
           setProfilePScroll(currentScrollPos);
         }}>
         {renderHeader()}
@@ -776,15 +718,7 @@ const styles = StyleSheet.create({
     top: SIZE(150),
     right: SIZE(10),
   },
-  socialSiteButton: {
-    marginLeft: SIZE(12),
-  },
-  socialSiteView: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    marginTop: SIZE(15),
-  },
+
   tabView: {
     height: height / 1.5,
     marginTop: SIZE(10),

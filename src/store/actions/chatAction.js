@@ -40,6 +40,7 @@ import {
   GET_AI_BG_IMAGE_SUCCESS,
   GET_AI_BG_IMAGE_FAIL,
   GET_AI_BG_IMAGE_RESET,
+  CHAT_AI_DATA_UPDATE,
 } from '../types';
 import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
 
@@ -183,6 +184,11 @@ export const getAIBackgroundImageFail = error => ({
 
 export const getAIBackgroundImageReset = () => ({
   type: GET_AI_BG_IMAGE_RESET,
+});
+
+export const aiMessageUpdate = data => ({
+  type: CHAT_AI_DATA_UPDATE,
+  payload: data,
 });
 
 //===================Set Remaining Words============================
@@ -349,7 +355,7 @@ export const getChatBotHistory =
     });
   };
 
-//==================================Owned-Other==============================
+//================================== Owned APIs==============================
 export const uploadAIBgImage =
   (file, collections_address, token_id) => async (dispatch, getState) => {
     dispatch(getAIBackgroundImageStart());
@@ -410,10 +416,15 @@ export const uploadAIBgImageData = data => {
     })
       .then(res => {
         dispatch(getAIBackgroundImageSuccess(res));
-        console.log('🚀 ~ file: uploadAIBgImageData.js:510 ~ ~ res', res);
+        dispatch(
+          aiMessageUpdate({
+            bg_message: 'Successfully uploaded',
+          }),
+        );
+        console.log('🚀 ~ file: uploadAIBgImageData.js:425 ~ ~ res', res);
       })
       .catch(err => {
-        console.log('🚀 ~ file: chatAction.js:513 ~ return ~ err', err);
+        console.log('🚀 ~ file: chatAction.js:428 ~ err', err);
         dispatch(getAIBackgroundImageFail());
       });
   };
@@ -436,7 +447,7 @@ export const getAIBgImage = (address, collections_address, token_id) => {
         dispatch(getAIBackgroundImageSuccess(res));
       })
       .catch(err => {
-        console.log('🚀 ~ file: chatAction.js:538 ~ return ~ err', err);
+        console.log('🚀 ~ file: chatAction.js:451 ~ err', err);
         dispatch(getAIBackgroundImageFail());
       });
   };
@@ -465,6 +476,11 @@ export const chatBotUpdate = (botName, tokenId, previous_msg, update_msg) => {
       .then(res => {
         console.log('🚀 ~ file: chatAction.js:550 ~ return ~ res', res);
         dispatch(remainWordCountData(res?.remainWordLimit?.userWordLimit));
+        dispatch(
+          aiMessageUpdate({
+            msg_update: 'Message updated successfully',
+          }),
+        );
       })
       .catch(err => {
         console.log('🚀 ~ file: chatAction.js:538 ~ return ~ err', err);

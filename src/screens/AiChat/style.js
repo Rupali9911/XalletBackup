@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     borderRightColor: message ? '#ced4da' : '#3c7bde',
     borderRightWidth: message ? 2 : 0,
   }),
-  sendBtn: {
+  sendBtn: disabled => ({
     paddingHorizontal: 15,
     height: hp(5),
     backgroundColor: '#3c7bde',
@@ -42,7 +42,8 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderBottomRightRadius: 3,
     borderTopRightRadius: 3,
-  },
+    opacity: disabled ? 0.5 : 1,
+  }),
   sendText: {
     fontSize: 30,
     color: 'black',
@@ -191,7 +192,10 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontStyle: 'italic',
     paddingTop: 5,
-    width: '55%',
+    textAlign: 'right',
+    fontWeight: 'bold',
+    fontStyle: 'normal',
+    alignSelf: 'flex-end',
   },
   sendBtnTxt: {
     color: '#fff',
@@ -208,7 +212,7 @@ const styles = StyleSheet.create({
   },
   bannerImage: {
     width: '80%',
-    height: '80%',
+    height: '81%',
     resizeMode: 'contain',
   },
   bannerImgContainer: {
@@ -282,14 +286,9 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 10,
   },
-  remainWordCount: {
-    fontWeight: 'bold',
-    fontStyle: 'normal',
-  },
   typingContainer: {
     flexDirection: 'row',
-    width: '45%',
-    flexWrap: 'wrap',
+    flex: 0.5,
   },
   rcvContainerArrow: {
     borderLeftWidth: 25,
@@ -343,6 +342,15 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 0.5,
     borderColor: '#ebecf0',
+  },
+  mainView: {
+    paddingStart: 10,
+    flexDirection: 'column',
+    width: '86%',
+  },
+  remainWordCountView: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
 

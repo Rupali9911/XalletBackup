@@ -20,6 +20,7 @@ import {
   getAIBackgroundImageReset,
   uploadAIBgImage,
   chatBotUpdate,
+  aiMessageUpdate,
 } from '../../store/actions/chatAction';
 import {translate} from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
@@ -45,6 +46,7 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
+import {hp} from '../../constants/responsiveFunct';
 const {ThreeDotsVerticalIcon} = SVGS;
 
 const {ChatDefaultProfile, ChangeBackground} = SVGS;
@@ -57,7 +59,7 @@ const ChatDetail = ({route, navigation}) => {
   const [chatBotData, setChatBotData] = useState([]);
   const [bannerImage, setBannerImage] = useState(false);
 
-  const [editMessage, setEditMessage] = useState('');
+  const [editMessage, setEditMessage] = useState({});
   const flatList = React.useRef(null);
   const toastRef = useRef(null);
 
@@ -72,6 +74,7 @@ const ChatDetail = ({route, navigation}) => {
     remainCount,
     aiBgImageData,
     aiBgImageLoading,
+    updateMesaage,
   } = useSelector(state => state.chatReducer);
   const {userData} = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
@@ -103,6 +106,30 @@ const ChatDetail = ({route, navigation}) => {
   // }, [aiBgImageLoading]);
 
   useEffect(() => {
+    console.log(
+      updateMesaage?.bg_message,
+      '🚀 ~ file: ChatDetail.js:78 ~ ChatDetail ~',
+      updateMesaage?.msg_update,
+    );
+    if (updateMesaage?.bg_message) {
+      setBannerImage(!bannerImage);
+      showToast(updateMesaage?.bg_message);
+      dispatch(
+        aiMessageUpdate({
+          bg_message: '',
+        }),
+      );
+    } else if (updateMesaage?.msg_update) {
+      showToast(updateMesaage?.msg_update);
+      dispatch(
+        aiMessageUpdate({
+          msg_update: '',
+        }),
+      );
+    }
+  }, [updateMesaage]);
+
+  useEffect(() => {
     if (isOwnedTab) {
       dispatch(
         getAIBgImage(
@@ -119,7 +146,7 @@ const ChatDetail = ({route, navigation}) => {
     dispatch(getChatBotHistory(page, userAdd, nftDetail?.tokenId)).then(
       response => {
         if (response.length > 0) {
-          // let history = []
+          let history = [...chatBotData];
           response.map(data => {
             let second = data.date._seconds;
             let milisecond = Number(second) * 1000;
@@ -145,9 +172,10 @@ const ChatDetail = ({route, navigation}) => {
               receiverImage: nftImage,
               receiverName: bot_name,
             };
-            // history.push(receiver, sender);
-            setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
+            history.push(receiver, sender);
+            // setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
           });
+          setChatBotData(history);
         }
       },
     );
@@ -174,27 +202,17 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   const onEditMessage = update_msg => {
-    console.log(
-      '🚀 ~ file: ChatDetail.js:170 ~ onEditMessage ~ update_msg',
-      update_msg,
-    );
+    let msg_question = editMessage?.question;
     dispatch(
-      chatBotUpdate(bot_name, nftDetail?.tokenId, editMessage, update_msg),
+      chatBotUpdate(bot_name, nftDetail?.tokenId, msg_question, update_msg),
     );
-    setEditMessage('');
+    setEditMessage({});
   };
 
   const renderEdit = item => {
     return (
       <View style={styles.threeDotView}>
-        <Menu
-          onSelect={() => {
-            setEditMessage(item?.message);
-            console.log(
-              '🚀 ~ file: ChatDetail.js:181 ~ renderEdit ~ item',
-              item,
-            );
-          }}>
+        <Menu onSelect={() => setEditMessage(item)}>
           <MenuTrigger children={<ThreeDotsVerticalIcon />} />
           <MenuOptions optionsContainerStyle={styles.editPopupContainer}>
             <MenuOption value={1}>
@@ -244,7 +262,7 @@ const ChatDetail = ({route, navigation}) => {
               </View>
             </View>
 
-            {/* {isOwnedTab && renderEdit(item)} */}
+            {isOwnedTab && renderEdit(item)}
           </View>
         )}
       </View>
@@ -295,10 +313,10 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   //=========================Toast Message=================================
-  const showToast = () => {
+  const showToast = msg => {
     toastRef.current.show({
       type: 'info',
-      text1: translate('common.exceededToastWord'),
+      text1: msg ? msg : translate('common.exceededToastWord'),
     });
   };
 
@@ -339,6 +357,7 @@ const ChatDetail = ({route, navigation}) => {
               time: timeConversion,
               receiverImage: nftImage,
               receiverName: bot_name,
+              question: response?.data?.question,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
           }
@@ -377,9 +396,9 @@ const ChatDetail = ({route, navigation}) => {
               imageStyle={styles.cImageContainer}
             />
           </View>
-          <View style={{paddingStart: 10}}>
+          <View style={styles.mainView}>
             <Text style={styles.headerNftName}>{bot_name}</Text>
-            <View style={{flexDirection: 'row'}}>
+            <View style={styles.remainWordCountView}>
               <View style={styles.typingContainer}>
                 {isChatLoading && (
                   <Text style={styles.typingMessage}>
@@ -387,14 +406,9 @@ const ChatDetail = ({route, navigation}) => {
                   </Text>
                 )}
               </View>
-
               {remainCount > 0 && (
                 <Text style={styles.remainWordText}>
-                  {translate('common.remainWordCount')}
-                  <Text style={styles.remainWordCount}>
-                    {' '}
-                    {parseInt(remainCount)}
-                  </Text>
+                  {translate('common.remainWordCount')} {parseInt(remainCount)}
                 </Text>
               )}
             </View>
@@ -420,6 +434,7 @@ const ChatDetail = ({route, navigation}) => {
         }}
         scrollEnabled={false}
         extraScrollHeight={Platform.OS === 'ios' ? SIZE(25) : 0}
+        extraHeight={editMessage?.message ? hp(9) : hp(4)}
         keyboardShouldPersistTaps={'always'}
         keyboardOpeningTime={0}>
         <View style={{flex: 0.4}}>
@@ -439,7 +454,7 @@ const ChatDetail = ({route, navigation}) => {
           </View>
 
           <ImageBackground
-            // key={bannerImage}
+            key={bannerImage}
             style={styles.bannerImgContainer}
             source={{uri: aiBgImageData?.background_image}}>
             <C_Image
@@ -492,17 +507,12 @@ const ChatDetail = ({route, navigation}) => {
           </View>
 
           <MessageInput
-            message={editMessage ? editMessage : ''}
+            message={editMessage?.message ? editMessage?.message : ''}
             onPressCancel={() => {
-              setEditMessage('');
+              setEditMessage({});
             }}
             onPress={message => {
-              console.log(
-                '🚀 ~ file: ChatDetail.js:523 ~ ChatDetail ~ message',
-                message,
-              );
-
-              if (editMessage) {
+              if (editMessage?.message) {
                 onEditMessage(message);
               } else {
                 sendMessage(message, new Date());

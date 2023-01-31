@@ -193,10 +193,8 @@ const Collection = () => {
           //     isStore: item.redirect,
           //   });
           // } else if (item.blind) {
-          //   console.log('========collection tab => blind1', item.blind, item.collectionId)
           //   navigation.push('CollectionDetail', { isBlind: true, collectionId: item.collectionId, isHotCollection: true });
           // } else {
-          //   console.log("Else ")
           //   navigation.push('CollectionDetail', { isBlind: false, collectionId: item._id, isHotCollection: false });
           // }
         }}

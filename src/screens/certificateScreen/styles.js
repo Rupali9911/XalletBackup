@@ -1126,6 +1126,14 @@ const styles = StyleSheet.create({
     bottom: 12,
     zIndex: 10,
   },
+  socialView:{
+    height: 40,
+    width: '15%',
+    borderWidth: 0.3,
+    borderColor: colors.GREY12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
 });
 
 export default styles;

@@ -10,7 +10,7 @@ import { ImagekitType } from '../../common/ImageConstant';
 import { handleLike } from '../../utils/handleLikeFunction';
 import { numberWithCommas } from '../../utils';
 import { styles } from './styled';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
 import CommonStyles from '../../constants/styles';
 import { modalAlert } from '../../common/function';
 const { ThreeDotsVerticalIcon, HeartWhiteIcon, HeartActiveIcon } = SVGS;

@@ -13,7 +13,6 @@ import {colors} from '../../res';
 import DiscoverItem from './discoverItem';
 
 const ExploreScreen = () => {
-  console.log('@@@ Discover screen (Tab) =======>');
   const isFocused = useIsFocused();
 
   //=================== Getting data from reducer ======================
@@ -69,7 +68,6 @@ const ExploreScreen = () => {
         setLoader(false);
         setFooterLoader(false);
         toggleFetching(false);
-        console.log(err, 'error discover');
       });
   };
 

@@ -39,7 +39,7 @@ import Tokens from './components/Tokens';
 import {balance, currencyInDollar} from './functions';
 
 import NetInfo from '@react-native-community/netinfo';
-import { modalAlert } from '../../common/function';
+import {modalAlert} from '../../common/function';
 
 const ethers = require('ethers');
 var Accounts = require('web3-eth-accounts');
@@ -94,7 +94,6 @@ const Wallet = ({route, navigation}) => {
     // });
     // const socketSubscribe = Events.asObservable().subscribe({
     //   next: data => {
-    //     console.log('socket subscribe', data);
     //     const response = JSON.parse(data);
     //     if (response.type == 'pong') {
     //       connect(response.data);
@@ -125,18 +124,18 @@ const Wallet = ({route, navigation}) => {
       setFetching(true);
       getBalances(wallet?.address);
     } else {
-      subscribeEth &&
-        subscribeEth.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
-      subscribeBnb &&
-        subscribeBnb.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
-      subscribeMatic &&
-        subscribeMatic.unsubscribe((error, success) => {
-          if (success) console.log('Successfully unsubscribed!');
-        });
+      // subscribeEth &&
+      //   subscribeEth.unsubscribe((error, success) => {
+      //     if (success) console.log('Successfully unsubscribed!');
+      //   });
+      // subscribeBnb &&
+      //   subscribeBnb.unsubscribe((error, success) => {
+      //     if (success) console.log('Successfully unsubscribed!');
+      //   });
+      // subscribeMatic &&
+      //   subscribeMatic.unsubscribe((error, success) => {
+      //     if (success) console.log('Successfully unsubscribed!');
+      //   });
     }
   }, [isFocused]);
 
@@ -168,21 +167,18 @@ const Wallet = ({route, navigation}) => {
     //   subscribeEth &&
     //     subscribeEth.unsubscribe((error, success) => {
     //       if (success) {
-    //         console.log('ETH Successfully unsubscribed!');
     //         subscribeEth == null;
     //       }
     //     });
     //   subscribeBnb &&
     //     subscribeBnb.unsubscribe((error, success) => {
     //       if (success) {
-    //         console.log('BNB Successfully unsubscribed!');
     //         subscribeBnb == null;
     //       }
     //     });
     //   subscribeMatic &&
     //     subscribeMatic.unsubscribe((error, success) => {
     //       if (success) {
-    //         console.log('Matic Successfully unsubscribed!');
     //         subscribeMatic == null;
     //       }
     //     });
@@ -591,7 +587,6 @@ const Wallet = ({route, navigation}) => {
               resolve();
             })
             .catch(err => {
-              console.log('@@@ Get balance load fun error', err);
               setLoading(false);
               setFetching(false);
               reject();
@@ -621,7 +616,6 @@ const Wallet = ({route, navigation}) => {
         ];
         Promise.all(balanceRequests)
           .then(responses => {
-            // console.log('@@@ Price in dollars ==========>', responses);
             let balances = {
               BNB: responses[0],
               ETH: responses[1],
@@ -643,7 +637,6 @@ const Wallet = ({route, navigation}) => {
             reject();
           });
       } catch (error) {
-        console.log('@@@ price in dollars error ========>', error);
         reject();
       }
     });
@@ -676,7 +669,6 @@ const Wallet = ({route, navigation}) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
           setLoading(false);
           setFetching(false);
           reject();
@@ -771,7 +763,6 @@ const Wallet = ({route, navigation}) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
           setLoading(false);
           setFetching(false);
           reject();
@@ -818,7 +809,6 @@ const Wallet = ({route, navigation}) => {
           resolve();
         })
         .catch(err => {
-          console.log('err', err);
           setLoading(false);
           setFetching(false);
           reject();

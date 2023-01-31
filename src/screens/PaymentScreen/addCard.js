@@ -219,7 +219,6 @@ function AddCard({ route, navigation }) {
             if (response.id) {
                 addCustomerCard(response.id);
             } else if (response.error) {
-                console.log("error_code", response.error.code)
                 modalAlert(
                     translate("wallet.common.alert"),
                     translate(`wallet.common.stripeError.${response.error.code}`)
@@ -227,10 +226,7 @@ function AddCard({ route, navigation }) {
                 setLoading(false);
             }
         }).catch((err) => {
-            console.log(err);
-            if (err.error) {
-                console.log("error_code1", response.error.code)
-            }
+            if (err.error) { }
             setLoading(false);
         });
     }
@@ -271,7 +267,6 @@ function AddCard({ route, navigation }) {
                 )
             }
         }).catch((err) => {
-            console.log('err', err);
             setLoading(false);
             if (err.message === 'Unauthorized!') {
                 modalAlert(

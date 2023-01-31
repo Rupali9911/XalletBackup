@@ -126,7 +126,6 @@ const Filter = ({
         })
         .catch(e => {
           changeLoadingState(false);
-          console.log(e.response, "nftlist collectionList error");
           // alertWithSingleBtn(
           //   translate("wallet.common.alert"),
           //   translate("wallet.common.error.networkFailed")
@@ -147,15 +146,12 @@ const Filter = ({
         collectionId: id,
       };
       let result = await axios.post(url, dataToSend, { headers: headers });
-      console.log(result, "get filter list")
       if (result?.data?.success) {
         setFilterList(result.data.data);
       }
       setlistLoader(false)
     } catch (err) {
       setlistLoader(false)
-
-      console.log('err in getFiltersList', err);
     }
     changeLoadingState(false)
   }
@@ -182,13 +178,10 @@ const Filter = ({
     axios
       .post(url, dataToSend, { headers: headers })
       .then(res => {
-        console.log('res create filter', res);
         getFiltersList(collection?._id)
       })
       .catch(err => {
         changeLoadingState(false)
-
-        console.log('err res create filter', err.response);
       });
 
   }
@@ -208,17 +201,13 @@ const Filter = ({
       collectionId: collection?._id,
       requestId: item._id,
     };
-    // console.log('handleDelete dataToSend', dataToSend);
     axios
       .post(url, dataToSend, { headers: headers })
       .then(res => {
-        console.log('res', res);
         getFiltersList(collection?._id);
       })
       .catch(err => {
         changeLoadingState(false)
-
-        console.log('err', err);
       });
   }
 
@@ -242,23 +231,17 @@ const Filter = ({
       filter_value2: filterActive.hasOwnProperty("filter_value2") ? filterActive?.filter_value2 : ""
     };
 
-    console.log(dataToSend)
-
     axios
       .post(url, dataToSend, { headers: headers })
       .then(res => {
-        console.log('res edit filter', res);
         getFiltersList(collection?._id)
       })
       .catch(err => {
         changeLoadingState(false)
-
-        console.log('err res edit filter', err.response);
       });
   }
 
   const renderListItem = ({ item, index }) => {
-    // console.log(item, "filterItem")
     return (
       <ListItem
         press={() => {

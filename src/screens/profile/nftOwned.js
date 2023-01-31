@@ -85,7 +85,6 @@ const NFTOwned = props => {
 
   return (
     <View style={styles.trendCont}>
-      {/* { isFocusedHistory &&console.log("🚀 ~ file: nftOwned.js ~ line 85 ~ NFTOwned ~ MyCollectionReducer", MyCollectionReducer)} */}
       {isFirstRender ? (
         isFirstRender
       ) : MyNFTReducer.myNftOwnedListPage === 1 &&
@@ -120,21 +119,12 @@ const NFTOwned = props => {
             }
           }}
           onScrollBeginDrag={s => {
-            // console.log(
-            //   '🚀 ~ ~ onScrollBeginDrag ~ ~',
-            //   s?.nativeEvent?.contentOffset,
-            // );
             setChildScroll(s?.nativeEvent?.contentOffset?.y);
           }}
           onScroll={s => {
-            // console.log('🚀 ~ o ~ onScroll ~ ~', s?.nativeEvent?.contentOffset);
             setChildScroll(s?.nativeEvent?.contentOffset?.y);
           }}
           onScrollEndDrag={s => {
-            // console.log(
-            //   '🚀 ~ ~ onScrollEndDrag ~ ~',
-            //   s?.nativeEvent?.contentOffset,
-            // );
             setChildScroll(s?.nativeEvent?.contentOffset?.y);
           }}
           ListFooterComponent={renderFooter}

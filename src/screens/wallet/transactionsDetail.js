@@ -13,7 +13,7 @@ import { hp, RF, wp } from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import { environment, translate } from '../../walletUtils';
 import { useSelector } from 'react-redux';
-import PopupMenu from '../../components/PopupMenu/PopupMenu';
+import PopupMenu from '../../components/PopupMenu';
 
 export default function transactionsDetail({ route }) {
   const transactionInfo = route?.params?.data;
@@ -48,6 +48,16 @@ export default function transactionsDetail({ route }) {
     }, 700);
   };
 
+  const HandleTransactionAddress = opened => {
+    return (
+      <PopupMenu
+        opened={opened}
+        items={[{label: `${translate('wallet.common.copied')}!`}]}
+        containerStyle={{...CommonStyles.containerStyle}}
+        textStyle={{...CommonStyles.textStyle}}
+      />
+    );
+  };
   const openURL = () => {
     if (coin?.network == 'BSC') {
       Linking.openURL(`${environment.bscScanURL}tx/${transactionInfo?.hash}`);
@@ -122,12 +132,9 @@ export default function transactionsDetail({ route }) {
             </TextView>
             <TouchableOpacity onPress={() => copyAddress()}>
               <Image style={styles.copyImage} source={copy} />
-              <PopupMenu
-                opened={showTxAddress}
-                items={[{label: `${translate('wallet.common.copied')}!`}]}
-                containerStyle={{...CommonStyles.containerStyle}}
-                textStyle={{...CommonStyles.textStyle}}
-              />
+              {showTxAddress && (
+                <HandleTransactionAddress open={showTxAddress} />
+              )}
             </TouchableOpacity>
           </View>
         </View>
@@ -144,12 +151,7 @@ export default function transactionsDetail({ route }) {
             </TextView>
             <TouchableOpacity onPress={copyTransactionHash}>
               <Image style={styles.copyImage} source={copy} />
-              <PopupMenu
-                opened={showTxId}
-                items={[{label: `${translate('wallet.common.copied')}!`}]}
-                containerStyle={{...CommonStyles.containerStyle}}
-                textStyle={{...CommonStyles.textStyle}}
-              />
+              {showTxId && <HandleTransactionAddress open={showTxId} />}
             </TouchableOpacity>
           </View>
         </View>
