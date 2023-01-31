@@ -51,6 +51,7 @@ function LanguageSel(props) {
       listMode={'SCROLLVIEW'}
       scrollViewProps={{
         scrollEnabled: false,
+        showsVerticalScrollIndicator: false,
       }}
       value={value}
       items={items}
