@@ -1,65 +1,88 @@
-import {useIsFocused, useNavigation} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import React, {useCallback, useEffect, useState} from 'react';
-import {ActivityIndicator, FlatList, Text, View} from 'react-native';
+import {ActivityIndicator, Text, View} from 'react-native';
+import {Tabs} from 'react-native-collapsible-tab-view';
 import {useDispatch, useSelector} from 'react-redux';
 import {Loader} from '../../components';
 import NFTItem from '../../components/NFTItem';
 import {colors} from '../../res';
 import {
   myNFTList,
-  myNftListReset,
   myNftLoadFail,
   myNftOwnedListingReset,
-  myNftOwnedPageChange,
 } from '../../store/actions/myNFTaction';
 import {translate} from '../../walletUtils';
 import styles from './styles';
 
 const NFTOwned = props => {
-  const {route, id, setChildScroll, scrollEnabled} = props;
-  const isFocusedHistory = useIsFocused();
-
-  // const { id } = route?.params;
   const {MyNFTReducer} = useSelector(state => state);
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const [isFirstRender, setIsFirstRender] = useState(true);
 
-  let pageNum = 1;
-  let limit = 10;
-  let tab = 2;
+  const [ownedRefreshing, setOwnedRefreshing] = useState({
+    refreshing: false,
+    loader: false,
+  });
 
   useEffect(() => {
-    dispatch(myNftOwnedListingReset());
-    if (isFocusedHistory) {
-      if (MyNFTReducer?.myNftOwnedList?.length === 0) {
-        dispatch(myNftListReset());
+    if (props.isFocused) {
+      if (!MyNFTReducer?.myNftOwnedList?.length) {
         pressToggle();
-      } else {
-        if (id && id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
-          dispatch(myNftLoadFail());
-        } else {
-          dispatch(myNftListReset());
-          pressToggle();
-        }
+      } else if (
+        props.id &&
+        props.id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()
+      ) {
+        dispatch(myNftLoadFail());
       }
-      setIsFirstRender(false);
     }
-  }, [isFocusedHistory, id]);
+  }, []);
 
-  const renderFooter = () => {
-    if (!MyNFTReducer.myNftListLoading) return null;
-    return <ActivityIndicator size="small" color={colors.themeR} />;
+  const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
+    dispatch(myNFTList(pageIndex, pageSize, address, category));
+  }, []);
+
+  const pressToggle = () => {
+    getNFTlist(1, 10, props.id, 2);
   };
 
-  const renderItem = ({item}) => {
+  const renderFooter = () => {
+    if (
+      MyNFTReducer.myNftOwnedListLoading &&
+      MyNFTReducer.myNftOwnedListPage > 1
+    )
+      return <ActivityIndicator size="small" color={colors.themeR} />;
+    return null;
+  };
+
+  const renderEmptyComponent = () => {
+    if (
+      !ownedRefreshing.refreshing &&
+      MyNFTReducer.myNftOwnedListLoading &&
+      MyNFTReducer.myNftOwnedListPage == 1
+    ) {
+      return (
+        <View style={styles.sorryMessageCont}>
+          <Loader />
+        </View>
+      );
+    } else if (ownedRefreshing.loader) {
+      return <View style={styles.sorryMessageCont} />;
+    } else {
+      return (
+        <View style={styles.sorryMessageCont}>
+          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+        </View>
+      );
+    }
+  };
+
+  const renderItem = ({item, index}) => {
     return (
       <NFTItem
         screenName="movieNFT"
         item={item}
-        // image={imageUri}
+        profile={true}
         onPress={() => {
-          // dispatch(changeScreenName('movieNFT'));
           navigation.push('CertificateDetail', {
             networkName: item?.network?.networkName,
             collectionAddress: item?.collection?.address,
@@ -70,72 +93,51 @@ const NFTOwned = props => {
     );
   };
 
-  const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
-    dispatch(myNFTList(pageIndex, pageSize, address, category));
-  }, []);
-
-  const pressToggle = () => {
-    getNFTlist(pageNum, limit, id, tab);
-  };
-
-  const handlePullRefresh = () => {
+  const handlePullRefresh = useCallback(() => {
+    setOwnedRefreshing({
+      ...ownedRefreshing,
+      refreshing: true,
+      loader: true,
+    });
     dispatch(myNftOwnedListingReset());
     pressToggle();
-  };
+    setTimeout(() => {
+      setOwnedRefreshing({
+        ...ownedRefreshing,
+        loader: false,
+      });
+    }, 1500);
+  }, []);
 
   return (
     <View style={styles.trendCont}>
-      {isFirstRender ? (
-        isFirstRender
-      ) : MyNFTReducer.myNftOwnedListPage === 1 &&
-        MyNFTReducer.myNftListLoading ? (
-        <View style={styles.sorryMessageCont}>
-          <Loader />
-        </View>
-      ) : MyNFTReducer.myNftOwnedList?.length ? (
-        <FlatList
-          key={2}
-          scrollEnabled={scrollEnabled}
-          data={MyNFTReducer?.myNftOwnedList}
-          horizontal={false}
-          numColumns={2}
-          initialNumToRender={14}
-          nestedScrollEnabled={true}
-          onRefresh={handlePullRefresh}
-          refreshing={
-            MyNFTReducer.myNftOwnedListPage === 1 &&
-            MyNFTReducer.myNftListLoading
+      <Tabs.FlatList
+        key={2}
+        data={MyNFTReducer?.myNftOwnedList}
+        numColumns={2}
+        keyExtractor={(v, i) => 'owned_item' + i}
+        initialNumToRender={10}
+        renderItem={renderItem}
+        onEndReached={() => {
+          if (
+            !MyNFTReducer.myNftOwnedListLoading &&
+            MyNFTReducer.myNftOwnedList.length !==
+              MyNFTReducer.myNftOwnedTotalCount
+          ) {
+            let num = MyNFTReducer.myNftOwnedListPage + 1;
+            getNFTlist(num, 10, props.id, 2);
           }
-          renderItem={renderItem}
-          onEndReached={() => {
-            if (
-              !MyNFTReducer.myNftListLoading &&
-              MyNFTReducer.myNftOwnedList.length !==
-                MyNFTReducer.myNftTotalCount
-            ) {
-              let num = MyNFTReducer.myNftOwnedListPage + 1;
-              getNFTlist(num, limit, id, tab);
-              dispatch(myNftOwnedPageChange(num));
-            }
-          }}
-          onScrollBeginDrag={s => {
-            setChildScroll(s?.nativeEvent?.contentOffset?.y);
-          }}
-          onScroll={s => {
-            setChildScroll(s?.nativeEvent?.contentOffset?.y);
-          }}
-          onScrollEndDrag={s => {
-            setChildScroll(s?.nativeEvent?.contentOffset?.y);
-          }}
-          ListFooterComponent={renderFooter}
-          onEndReachedThreshold={1}
-          keyExtractor={(v, i) => 'item_' + i}
-        />
-      ) : (
-        <View style={styles.sorryMessageCont}>
-          <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-        </View>
-      )}
+        }}
+        onEndReachedThreshold={0.01}
+        onRefresh={handlePullRefresh}
+        refreshing={
+          MyNFTReducer.myNftOwnedListPage === 1 &&
+          MyNFTReducer.myNftOwnedListLoading
+        }
+        ListFooterComponent={renderFooter}
+        ListEmptyComponent={renderEmptyComponent}
+        removeClippedSubviews={true}
+      />
     </View>
   );
 };

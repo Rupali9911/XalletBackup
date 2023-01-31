@@ -1,11 +1,11 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useCallback, useEffect, useRef, useState} from 'react';
+import {useIsFocused} from '@react-navigation/native';
 import {
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Dimensions,
-  ScrollView,
 } from 'react-native';
 import ActionSheet from 'react-native-actionsheet';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -15,7 +15,6 @@ import PopupMenu from '../../components/PopupMenu';
 import {useDispatch, useSelector} from 'react-redux';
 import {XANALIA_WEB} from '../../common/constants';
 import {COLORS, FONT, FONTS, SIZE, SVGS} from 'src/constants';
-import {Container} from 'src/styles/common.styles';
 import {confirmationAlert} from '../../common/function';
 import {
   heightPercentageToDP as hp,
@@ -23,15 +22,14 @@ import {
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
 import {AppHeader, C_Image} from '../../components';
-import TabViewScreen from '../../components/TabView/TabViewScreen';
 import Colors from '../../constants/Colors';
+import CommonStyles from '../../constants/styles';
 import {fonts} from '../../res';
 import colors from '../../res/colors';
 import {
   endLoadingBanner,
   endLoadingImage,
   getUserData,
-  loadProfileFromAsync,
   startLoadingBanner,
   startLoadingImage,
   updateAvtar,
@@ -44,15 +42,15 @@ import NFTOwned from './nftOwned';
 import {EditButton, EditButtonText} from './styled';
 import AppBackground from '../../components/appBackground';
 import {ImagekitType} from '../../common/ImageConstant';
-import CommonStyles from '../../constants/styles';
-import SocialMediaLinks from '../../components/SocialMediaLinks'
+import * as Tabs from 'react-native-collapsible-tab-view';
+import SocialMediaLinks from '../../components/SocialMediaLinks/index';
+import {SocketHandler} from './socketHandler';
+
 const {
-  ConnectSmIcon,
   SettingIcon,
   CopyToClipboard,
   EditImage,
   CopyProfile,
-  SettingIconBlack,
   DefaultProfile,
   VerficationIcon,
 } = SVGS;
@@ -60,10 +58,9 @@ const {
 const {height} = Dimensions.get('window');
 
 function Profile({navigation, connector, route}) {
-  console.log('@@@ Profile Screen (Tab) =========>');
   const actionSheetRef = useRef(null);
-  const scrollRef = useRef(null);
   const dispatch = useDispatch();
+  const isFocused = useIsFocused();
 
   // =============== Getting data from reducer ========================
   const {
@@ -73,35 +70,24 @@ function Profile({navigation, connector, route}) {
     imageBannerLoading,
     userData,
   } = useSelector(state => state.UserReducer);
-  const {UserReducer} = useSelector(state => state);
 
   //================== Components State Defination ===================
-  const [userCopyAddress, setUserCopyAddress] = useState(false);
-  const [bannerCopyAddress, setBannerCopyAddress] = useState(false);
-  const [childScroll, setChildScroll] = useState(0);
-  const [profileScroll, setProfileScroll] = useState(false);
-  const [profilePScroll, setProfilePScroll] = useState(0);
-  const [layout, setLayout] = useState(0);
+  const [openDial, setOpenDial] = useState({
+    address: false,
+    webLink: false,
+  });
   const [userDetails, setUserDetails] = useState(null);
-  const [index, setIndex] = useState(0);
   const [selectedImage, setSelectedImage] = useState('');
   const [options, setOptions] = useState([]);
-  const [id, setId] = useState();
-  const [routes] = useState([
-    {key: 'profileCreated', title: translate('wallet.common.profileCreated')},
-    {key: 'nftOwned', title: translate('wallet.common.owned')},
-  ]);
+  const id = route?.params?.id
+    ? route?.params?.id
+    : userData?.userWallet?.address;
 
-  //================== Global Variables ===================
-  const socialSite =
-    userDetails?.twitterSite ||
-    userDetails?.instagramSite ||
-    userDetails?.youtubeSite ||
-    userDetails?.discordSite ||
-    userDetails?.website;
+  const OPEN_CAMERA = 0;
+  const OPEN_GALLERY = 1;
+  const REMOVE_BANNER = 2;
 
   //===================== UseEffect Function =========================
-
   useEffect(() => {
     handleUserData();
   }, []);
@@ -124,98 +110,40 @@ function Profile({navigation, connector, route}) {
     !loading && dispatch(endLoadingBanner());
   }, [userData, loading]);
 
-  const handleUserData = () => {
+  const handleUserData = useCallback(() => {
     dispatch(startLoadingBanner());
     dispatch(startLoadingImage());
     if (route?.params?.id) {
-      setId(route?.params?.id);
       dispatch(getUserData(route?.params?.id, true));
     } else {
-      setId(userData?.userWallet?.address);
       dispatch(getUserData(userData?.userWallet?.address, false));
     }
-  };
-  const OPEN_CAMERA = 0;
-  const OPEN_GALLERY = 1;
-  const REMOVE_BANNER = 2;
+  }, []);
+
+  useEffect(() => {
+    options.length && actionSheetRef.current.show();
+  }, [options]);
 
   const copyToClipboard = () => {
     Clipboard.setString(id);
-    setUserCopyAddress(true);
+    setOpenDial({...openDial, address: true});
     setTimeout(() => {
-      setUserCopyAddress(false);
+      setOpenDial({...openDial, address: false});
     }, 500);
   };
 
   const copyProfileToClipboard = () => {
     Clipboard.setString(`${XANALIA_WEB}/profile/${id}`);
-    setBannerCopyAddress(true);
+    setOpenDial({...openDial, webLink: true});
     setTimeout(() => {
-      setBannerCopyAddress(false);
+      setOpenDial({...openDial, webLink: false});
     }, 500);
-  };
-
-  const handleIndexChange = index => {
-    setIndex(index);
-  };
-
-  const renderScene = ({route}) => {
-    let scrollEnabled =
-      Number(profilePScroll).toFixed(0) < Number(layout).toFixed(0)
-        ? false
-        : true;
-    setProfileScroll(scrollEnabled);
-
-    switch (route.key) {
-      case 'profileCreated':
-        return (
-          <NFTCreated
-            key={id}
-            id={id}
-            navigation={navigation}
-            scrollEnabled={scrollEnabled}
-            setChildScroll={setChildScroll}
-          />
-        );
-      case 'nftOwned':
-        return (
-          <NFTOwned
-            key={id}
-            id={id}
-            navigation={navigation}
-            scrollEnabled={scrollEnabled}
-            setChildScroll={setChildScroll}
-          />
-        );
-      default:
-        return null;
-    }
-  };
-
-  const renderTabView = id => {
-    return (
-      <TabViewScreen
-        index={index}
-        routes={routes}
-        switchRoutes={r => renderScene(r)}
-        indexChange={i => handleIndexChange(i)}
-        tabBarStyle={{
-          width: wp('50%'),
-          paddingHorizontal: wp('1%'),
-          justifyContent: 'center',
-        }}
-      />
-    );
   };
 
   const onSelect = from => {
     setSelectedImage(from);
     handleOptions(from);
   };
-
-  useEffect(() => {
-    options.length && actionSheetRef.current.show();
-  }, [options]);
 
   const selectActionSheet = async (index, e) => {
     const options = {
@@ -227,7 +155,6 @@ function Profile({navigation, connector, route}) {
       },
       quality: 0.5,
     };
-
     if (index === OPEN_CAMERA) {
       ImagePicker.openCamera({
         height: 512,
@@ -276,8 +203,6 @@ function Profile({navigation, connector, route}) {
             (e.code === 'E_NO_CAMERA_PERMISSION' ||
               e.code === 'E_PICKER_CANNOT_RUN_CAMERA_ON_SIMULATOR')
           ) {
-            // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.camera);
-            // if (isGranted===false) {
             confirmationAlert(
               translate('wallet.common.cameraPermissionHeader'),
               translate('wallet.common.cameraPermissionMessage'),
@@ -286,7 +211,6 @@ function Profile({navigation, connector, route}) {
               () => openSettings(),
               () => null,
             );
-            // }
           }
         });
     } else if (index === OPEN_GALLERY) {
@@ -332,8 +256,6 @@ function Profile({navigation, connector, route}) {
         })
         .catch(async e => {
           if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
-            // const isGranted = await Permission.checkPermission(PERMISSION_TYPE.storage);
-            // if (isGranted === false) {
             confirmationAlert(
               translate('wallet.common.storagePermissionHeader'),
               translate('wallet.common.storagePermissionMessage'),
@@ -342,7 +264,6 @@ function Profile({navigation, connector, route}) {
               () => openSettings(),
               () => null,
             );
-            // }
           }
         });
     } else if (index === REMOVE_BANNER && selectedImage === 'banner') {
@@ -354,23 +275,19 @@ function Profile({navigation, connector, route}) {
     return <VerficationIcon width={SIZE(25)} height={SIZE(25)} />;
   };
   const renderBannerImage = () => {
-    const renderBanner = () => {
-      if (userDetails?.banner && !imageBannerLoading) {
-        return (
-          <C_Image
-            size={ImagekitType.FULLIMAGE}
-            uri={userDetails?.banner}
-            imageStyle={styles.collectionListImage}
-          />
-        );
-      } else if (!imageBannerLoading && !userDetails?.banner) {
-        return <View style={styles.collectionWrapper}></View>;
-      } else if (imageBannerLoading) {
-        return <LoadingView />;
-      } else return null;
-    };
-
-    return renderBanner();
+    if (userDetails?.banner && !imageBannerLoading) {
+      return (
+        <C_Image
+          size={ImagekitType.FULLIMAGE}
+          uri={userDetails?.banner}
+          imageStyle={styles.collectionListImage}
+        />
+      );
+    } else if (!imageBannerLoading && !userDetails?.banner) {
+      return <View style={styles.collectionWrapper}></View>;
+    } else if (imageBannerLoading) {
+      return <LoadingView />;
+    } else return null;
   };
 
   const renderIconImage = () => {
@@ -427,19 +344,6 @@ function Profile({navigation, connector, route}) {
     }
   };
 
-  const hideDialog = () => setVisible(false);
-
-  const HandleAddress = opened => {
-    return (
-      <PopupMenu
-        opened={opened}
-        items={[{label: `${translate('common.Copied')}!`}]}
-        containerStyle={{...CommonStyles.containerStyle}}
-        textStyle={{...CommonStyles.textStyle}}
-      />
-    );
-  };
-  
   const renderProfileNameAndId = () => {
     return (
       <View style={styles.profileInfo}>
@@ -457,7 +361,12 @@ function Profile({navigation, connector, route}) {
             )}
           </Text>
           <TouchableOpacity onPress={() => copyToClipboard()}>
-            {userCopyAddress && <HandleAddress open={userCopyAddress} />}
+            <PopupMenu
+              opened={openDial.address}
+              items={[{label: `${translate('common.Copied')}!`}]}
+              containerStyle={{...CommonStyles.containerStyle}}
+              textStyle={{...CommonStyles.textStyle}}
+            />
             <CopyToClipboard
               // onPress={() => copyToClipboard()}
               style={{marginLeft: SIZE(6)}}
@@ -470,19 +379,19 @@ function Profile({navigation, connector, route}) {
     );
   };
 
-  const renderHeader = () => {
+  const RenderHeader = () => {
     return (
       <View
+        pointerEvents="box-none"
         style={{
-          // flex: socialSite ? 0.6 : 0.55,
           position: 'relative',
           paddingBottom: SIZE(10),
-        }}
-        onLayout={o => setLayout(o?.nativeEvent?.layout?.height)}>
+        }}>
+        {id && <SocketHandler routeId={route?.params?.id} id={id} />}
         {route.params && (
           <AppHeader title={translate('common.profile')} showBackButton />
         )}
-        <View>
+        <View pointerEvents="box-none">
           {!route.params && (
             <TouchableOpacity
               style={styles.settings}
@@ -492,7 +401,9 @@ function Profile({navigation, connector, route}) {
               <SettingIcon width={SIZE(23)} height={SIZE(23)} />
             </TouchableOpacity>
           )}
-          <View style={styles.collectionWrapper}>{renderBannerImage()}</View>
+          <View style={styles.collectionWrapper} pointerEvents="box-none">
+            {renderBannerImage()}
+          </View>
           {!route.params && (
             <TouchableOpacity
               style={styles.editImage}
@@ -503,24 +414,30 @@ function Profile({navigation, connector, route}) {
           <TouchableOpacity
             style={styles.copyProfile}
             onPress={() => copyProfileToClipboard()}>
-            {bannerCopyAddress && <HandleAddress open={bannerCopyAddress} />}
+            <PopupMenu
+              opened={openDial.webLink}
+              items={[{label: `${translate('common.Copied')}!`}]}
+              containerStyle={{...CommonStyles.containerStyle}}
+              textStyle={{...CommonStyles.textStyle}}
+            />
             <CopyProfile width={SIZE(12)} height={SIZE(12)} />
           </TouchableOpacity>
-          <View style={styles.iconWrapper}>
+          <View style={styles.iconWrapper} pointerEvents="box-none">
             <View
               style={[
                 styles.iconBadgeVw,
                 route?.params?.role === 4
                   ? styles.borderBtnColor
                   : styles.borderTrans,
-              ]}>
+              ]}
+              pointerEvents="box-none">
               {renderIconImage()}
               {route?.params?.role === 4 ? (
                 <View style={styles.markIconView}>{renderVerifiedIcon()}</View>
               ) : null}
             </View>
           </View>
-          <View style={styles.userDetailsWrapper}>
+          <View style={styles.userDetailsWrapper} pointerEvents="box-none">
             {renderProfileNameAndId()}
           </View>
           <View style={{...CommonStyles.socialSiteView}}>
@@ -542,6 +459,7 @@ function Profile({navigation, connector, route}) {
           )}
           <ActionSheet
             ref={actionSheetRef}
+            useNativeDriver={true}
             key={options}
             title={translate('wallet.common.choosePhoto')}
             options={options}
@@ -555,29 +473,20 @@ function Profile({navigation, connector, route}) {
 
   return (
     <AppBackground>
-      <ScrollView
-        ref={scrollRef}
-        // scrollEnabled={profileScroll}
-        contentContainerStyle={styles.scrollViewContainer}
-        style={styles.scrollView}
-        onScroll={s => {
-          const currentScrollPos = s?.nativeEvent?.contentOffset?.y;
-          setProfilePScroll(currentScrollPos);
-        }}>
-        {renderHeader()}
-        <View
-          style={{
-            height: !route.params
-              ? Platform.OS == 'ios'
-                ? hp(85.2)
-                : hp(94)
-              : Platform.OS == 'ios'
-              ? hp(90.2)
-              : hp(101),
-          }}>
-          {renderTabView(id)}
-        </View>
-      </ScrollView>
+      <Tabs.Container
+        renderHeader={RenderHeader}
+        lazy={true}
+        cancelLazyFadeIn={true}
+        initialTabName={translate('wallet.common.profileCreated')}>
+        <Tabs.Tab
+          name={translate('wallet.common.profileCreated')}
+          key={'profileCreated'}>
+          <NFTCreated id={id} isFocused={isFocused} />
+        </Tabs.Tab>
+        <Tabs.Tab name={translate('wallet.common.owned')} key={'nftOwned'}>
+          <NFTOwned id={id} isFocused={isFocused} />
+        </Tabs.Tab>
+      </Tabs.Container>
     </AppBackground>
   );
 }

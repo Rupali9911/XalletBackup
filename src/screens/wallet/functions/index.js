@@ -5,25 +5,19 @@ const Web3 = require('web3');
 
 var Accounts = require('web3-eth-accounts');
 const EthereumTx = require('ethereumjs-tx').Transaction;
-// import Common, {Chain} from '@ethereumjs/common'
 import Common from 'ethereumjs-common';
 
-import {Transaction} from '@ethereumjs/tx';
 import {
   binanceNftAbi_new,
   binanceNftDex_new,
   environment,
   ethNftDex_new,
-  maticNftDex_new,
-  xetaNftDex_new,
-  translate,
   lpAliaContractAbi,
   lpAliaContractAddr,
-  networkChain,
+  maticNftDex_new,
 } from '../../../walletUtils';
 import {blockChainConfig} from '../../../web3/config/blockChainConfig';
 import {getChainId, getNetworkId} from '../../../web3/config/chainIds';
-import {useState} from 'react';
 
 export const getSig = (message, privateKey) => {
   var accounts = new Accounts('');

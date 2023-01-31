@@ -202,7 +202,7 @@ const TokenDetail = ({route, navigation}) => {
 
   const getTransactionsByType = (address, type, coin) => {
     return new Promise((resolve, reject) => {
-      let apiRequest = {}
+      let apiRequest = {};
       let params = {
         address,
         networkId: networkType?.id,
@@ -215,7 +215,7 @@ const TokenDetail = ({route, navigation}) => {
         coin !== 'XETA'
       ) {
         params.tokenName = coin;
-        params.contractAddress = config.ContractAddress
+        params.contractAddress = config.ContractAddress;
         //=================== API Request object ======================
         apiRequest.url = `${NEW_BASE_URL}/mobile/history`;
         apiRequest.method = 'GET';
@@ -224,11 +224,12 @@ const TokenDetail = ({route, navigation}) => {
         apiRequest.url = `https://api.xanalia.com/xanachain/xanaChainHistory`;
         apiRequest.method = 'POST';
         apiRequest.data = {
-          address: address
+          address: address,
         };
       } else {
         if (coin === 'XETA' && environment === 'testnet') {
           setLoading(false);
+          reject();
           return;
         }
         apiRequest.url = `${NEW_BASE_URL}/mobile/history`;
@@ -240,13 +241,17 @@ const TokenDetail = ({route, navigation}) => {
           setLoading(false);
           if (res.success) {
             if (type == 'ethereum') {
-              dispatch(addAllEthTransactions(res.data));
+              if (res.data.length !== 0)
+                dispatch(addAllEthTransactions(res.data));
             } else if (type == 'bsc') {
-              dispatch(addAllBnbTransactions(res.data));
+              if (res.data.length !== 0)
+                dispatch(addAllBnbTransactions(res.data));
             } else if (type == 'polygon') {
-              dispatch(addAllMaticTransactions(res.data));
+              if (res.data.length !== 0)
+                dispatch(addAllMaticTransactions(res.data));
             } else if (type == 'xanachain') {
-              dispatch(addAllXetaTransactions(res.data));
+              if (res.data.length !== 0)
+                dispatch(addAllXetaTransactions(res.data));
             }
           }
           resolve();
