@@ -371,7 +371,8 @@ function Profile({navigation, connector, route}) {
           }
         });
     } else if (index === REMOVE_BANNER && selectedImage === 'banner') {
-      dispatch(removeBanner('-1', userDetails.id));
+      // dispatch(removeBanner('-1', userDetails.id));
+      dispatch(removeBanner('-1', userData?.userWallet?.address));
     }
   };
 

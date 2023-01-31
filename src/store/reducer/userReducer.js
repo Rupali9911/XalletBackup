@@ -544,9 +544,10 @@ export const getUserData = (id, profile = false) => {
     const url = `${NEW_BASE_URL}/users/${id}`;
     sendRequest(url)
       .then(res => {
-        if (profile) {
+        if(profile){
           dispatch(setOtherUserDetails(res));
-        } else {
+        }
+        else{
           dispatch(updateUserData(res));
         }
         dispatch(endLoading());
@@ -611,7 +612,8 @@ export const removeBanner = (banner, id) => async dispatch => {
     data: {banner: banner},
   })
     .then(res => {
-      dispatch(getUserData(id, true));
+      // dispatch(getUserData(id, true));
+        dispatch(getUserData(id, false));
     })
     .catch(error => {
       dispatch(endLoadingBanner());

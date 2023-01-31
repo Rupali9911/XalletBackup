@@ -1,5 +1,7 @@
 import { formatAddress } from './addressFormat'
 import { FILTER_TRADING_HISTORY_OPTIONS, SORT_TRADING_HISTORY } from './nft'
+import {translate} from '../walletUtils';
+
 export const getKeyEventByValue = (value) => {
     const key = SORT_TRADING_HISTORY[value]
     return key
@@ -8,7 +10,7 @@ export const getKeyEventByValue = (value) => {
 export const getEventByValue = (action) => {
     const event = FILTER_TRADING_HISTORY_OPTIONS.find(
         option => option.value === action)
-    return event?.label
+    return translate(`common.${event?.label}`)
 }
 
 export const getFromAddress = (from, action) => {
