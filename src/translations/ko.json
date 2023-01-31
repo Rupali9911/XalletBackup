@@ -1125,7 +1125,8 @@
       "transferFrom": "옮기다",
       "closeTimeWarn": "마감 시간은 오픈 시간보다 커야 합니다.",
       "descriptionCreate": "컬렉션 설명",
-      "reflectInHistory": "(완료 후 거래 내역에 반영됩니다)"
+      "reflectInHistory": "(완료 후 거래 내역에 반영됩니다)",
+      "loginSuccess": "사용자가 성공적으로 로그인했습니다."
     },
     "backendmessage": {
       "error": {},
