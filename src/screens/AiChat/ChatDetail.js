@@ -472,13 +472,13 @@ const ChatDetail = ({route, navigation}) => {
               />
             </TouchableOpacity>
 
-            {/* {isOwnedTab && (
+            {isOwnedTab && (
               <TouchableOpacity
                 style={styles.imageViewWrap}
                 onPress={() => openImagePicker()}>
                 <ChangeBackground width={SIZE(24)} height={SIZE(24)} />
               </TouchableOpacity>
-            )} */}
+            )}
           </View>
         </View>
 

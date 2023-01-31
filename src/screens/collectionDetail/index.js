@@ -131,7 +131,10 @@ function CollectionDetail(props) {
   };
 
   const renderBanner = () => {
-    let bannerUrl = collection?.bannerImage;
+    // let bannerUrl = collection?.bannerImage;
+    let bannerUrl = collection?.thumbCollectionImage
+      ? collection?.thumbCollectionImage
+      : collection.bannerImage;
 
     return (
       <View style={styles.bannerView}>

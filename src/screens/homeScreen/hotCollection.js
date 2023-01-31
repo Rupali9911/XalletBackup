@@ -124,9 +124,12 @@ const HotCollection = () => {
   };
 
   const renderItem = ({item}) => {
+    let bannerImage = item?.thumbCollectionImage
+      ? item?.thumbCollectionImage
+      : item.bannerImage;
     return (
       <CollectionItem
-        bannerImage={item.bannerImage}
+        bannerImage={bannerImage}
         creator={item.owner}
         chainType={item.chainType}
         items={item.items}

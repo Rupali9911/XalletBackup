@@ -59,9 +59,9 @@ const LaunchPad = () => {
 
   //=====================(Render Flatlist Item Function)=============================
   const renderItem = ({item}) => {
-    let bannerImage = item?.bannerImage
-      ? item.bannerImage
-      : item?.thumbCollectionImage;
+    let bannerImage = item?.thumbCollectionImage
+      ? item?.thumbCollectionImage
+      : item.bannerImage;
     return (
       <LaunchPadItemData
         bannerImage={bannerImage}
