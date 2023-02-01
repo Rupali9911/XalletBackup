@@ -3,8 +3,10 @@
   "version": "1.10.29",
   "private": true,
   "scripts": {
-    "android": "npx rn-nodeify --install --hack && npx react-native run-android",
+    "android": "npx jetify && npx rn-nodeify --install --hack && npx react-native run-android",
     "ios": "npx rn-nodeify --install --hack && npx react-native run-ios",
+    "iphone14": "npx rn-nodeify --install --hack && npx react-native run-ios --simulator='iPhone 14'",
+    "iphoneDevice": "npx rn-nodeify --install --hack && npx react-native run-ios --device",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
