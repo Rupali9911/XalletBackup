@@ -11,7 +11,7 @@ import AppButton from './appButton';
 import TextView from './appText';
 
 const SuccessModalContent = props => {
-  const {isCreate} = useSelector(state => state.UserReducer);
+  const {isCreate, userData} = useSelector(state => state.UserReducer);
   return (
     <View style={styles.container}>
       <IconButton
@@ -46,6 +46,8 @@ const SuccessModalContent = props => {
           <TextView style={styles.hint}>
             {props.sucessMsg
               ? props.sucessMsg
+              : userData?.isNonCrypto
+              ? translate('wallet.common.loginSuccess')
               : translate('wallet.common.walletImported')}
           </TextView>
         </>

@@ -206,7 +206,7 @@
     "pending": "保留中",
     "archived": "アーカイブ ",
     "selected": "選択されたNFT",
-    "minted": "出品",
+    "minted": "ミント",
     "fiveColumn": "５列 ",
     "tenColumn": "１０列",
     "userNameVal": "ユーザー名（40文字未満）",
@@ -1125,7 +1125,8 @@
       "transferFrom": "転送",
       "closeTimeWarn": "閉店時間は開店時間より長くする必要があります",
       "descriptionCreate": "作品の詳細",
-      "reflectInHistory": "（完了後、取引履歴に反映されます）"
+      "reflectInHistory": "（完了後、取引履歴に反映されます）",
+      "loginSuccess": "正常にログインが完了しました"
     },
     "backendmessage": {
       "error": {},

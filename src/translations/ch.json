@@ -206,7 +206,7 @@
     "pending": "等候接听 ",
     "archived": "已存档 ",
     "selected": "已选择",
-    "minted": "铸造",
+    "minted": "铸造的",
     "fiveColumn": "5列 ",
     "tenColumn": "10列 ",
     "userNameVal": "用户名（少于40个字符）",
@@ -1125,7 +1125,8 @@
       "transferFrom": "转移",
       "closeTimeWarn": "关闭时间应大于打开时间",
       "descriptionCreate": "描述",
-      "reflectInHistory": "（完成后会反映在交易记录中）"
+      "reflectInHistory": "（完成后会反映在交易记录中）",
+      "loginSuccess": "用户登录成功"
     },
     "backendmessage": {
       "error": {},

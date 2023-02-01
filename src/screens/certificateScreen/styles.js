@@ -94,7 +94,7 @@ const styles = StyleSheet.create({
     fontFamily: fonts.ARIAL_BOLD,
     marginBottom: SIZE(8),
     paddingHorizontal: SIZE(12),
-    textTransform: 'uppercase',
+    // textTransform: 'uppercase',
   },
   listItem: {
     height: wp('87.5%') / 3 - wp('0.5%'),
