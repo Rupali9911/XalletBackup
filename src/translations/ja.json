@@ -1019,7 +1019,7 @@
       "backupPhrase": "復元フレーズ",
       "notBackedUp": "復元フレーズのバックアップが未完了です（デバイスの紛失や盗難等、 ウォレット内の資金の復元に必要なため、非常に重要です）",
       "backupSuccess": "復元フレーズのバックアップが完了しました",
-      "walletImported": "ウォレットが正常にインポートされました。",
+      "walletImported": "正常にインポートが完了しました",
       "importWallet": "ウォレットのインポート",
       "createAccount": "新しいアカウントの作成",
       "nameYWallet": "財布に名前を付ける",
