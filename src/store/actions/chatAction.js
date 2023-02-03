@@ -356,7 +356,7 @@ export const getChatBotHistory =
   };
 
 //================================== Owned APIs==============================
-export const uploadAIBgImage =
+export const uploadAIBgImage = 
   (file, collections_address, token_id) => async (dispatch, getState) => {
     dispatch(getAIBackgroundImageStart());
 
@@ -444,6 +444,7 @@ export const getAIBgImage = (address, collections_address, token_id) => {
       },
     })
       .then(res => {
+        console.log('🚀 ~ file: getBackgroundImage.js:457 ~ res', res);
         dispatch(getAIBackgroundImageSuccess(res));
       })
       .catch(err => {

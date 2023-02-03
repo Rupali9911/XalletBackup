@@ -106,6 +106,18 @@ const ChatDetail = ({route, navigation}) => {
   // }, [aiBgImageLoading]);
 
   useEffect(() => {
+    if (isOwnedTab) {
+      dispatch(
+        getAIBgImage(
+          userAdd,
+          nftDetail?.collection?.address,
+          nftDetail?.tokenId,
+        ),
+      );
+    }
+  }, [reducerTabTitle]);
+
+  useEffect(() => {
     console.log(
       updateMesaage?.bg_message,
       '🚀 ~ file: ChatDetail.js:78 ~ ChatDetail ~',
@@ -128,18 +140,6 @@ const ChatDetail = ({route, navigation}) => {
       );
     }
   }, [updateMesaage]);
-
-  useEffect(() => {
-    if (isOwnedTab) {
-      dispatch(
-        getAIBgImage(
-          userAdd,
-          nftDetail?.collection?.address,
-          nftDetail?.tokenId,
-        ),
-      );
-    }
-  }, [reducerTabTitle]);
 
   //================== Get History Data =================================
   const getHistoryData = page => {
@@ -380,6 +380,22 @@ const ChatDetail = ({route, navigation}) => {
     return <Loader />;
   };
 
+  const renderBGImg = () => {
+    return (
+      <ImageBackground
+      key={bannerImage}
+      source={{uri: aiBgImageData?.background_image + '?' + Date.now() }}
+      style={styles.bannerImgContainer}
+      >
+           <C_Image
+        uri={nftDetail?.smallImage}
+        size={ImagekitType.FULLIMAGE}
+        imageStyle={styles.bannerImage}
+      />
+      </ImageBackground>
+    );
+  };
+
   // ===================== FlatList Header Call ===================================
   const ListHeader = () => {
     //View to set in Header
@@ -447,16 +463,7 @@ const ChatDetail = ({route, navigation}) => {
             ) : null}
           </View>
 
-          <ImageBackground
-            key={bannerImage}
-            style={styles.bannerImgContainer}
-            source={{uri: aiBgImageData?.background_image}}>
-            <C_Image
-              uri={nftDetail?.smallImage}
-              size={ImagekitType.FULLIMAGE}
-              imageStyle={styles.bannerImage}
-            />
-          </ImageBackground>
+          {renderBGImg()}
 
           <View style={styles.backBtnContainer}>
             <TouchableOpacity
@@ -476,7 +483,8 @@ const ChatDetail = ({route, navigation}) => {
               <TouchableOpacity
                 style={styles.imageViewWrap}
                 onPress={() => openImagePicker()}>
-                <ChangeBackground width={SIZE(24)} height={SIZE(24)} />
+               
+                  <ChangeBackground width={SIZE(24)} height={SIZE(24)} />
               </TouchableOpacity>
             )}
           </View>
