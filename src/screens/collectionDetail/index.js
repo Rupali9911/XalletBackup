@@ -274,7 +274,7 @@ function CollectionDetail(props) {
   // ======================= Render Verified Collection Function =======================
   const renderVerifiedCollection = () => {
     return (
-      <VerficationIcon width={SIZE(20)} height={SIZE(20)} style={{left: 2}} />
+      <VerficationIcon width={SIZE(20)} height={SIZE(20)}/>
     );
   };
 
