@@ -108,11 +108,12 @@ function AppSearch() {
               id: item?.address,
             });
           } else if (item.type == 'Collections') {
-            item?.name === CORPORATE_NAME && item?.launchpadId === 3
-              ? Linking.openURL(CORPORATE_COLLAB_URL)
-              : item?.name === CORPORATE_NAME && item?.launchpadId === 1
-              ? Linking.openURL(CORPORATE_COLLAB_URL)
-              : navigation.push('CollectionDetail', {
+            // item?.name === CORPORATE_NAME && item?.launchpadId === 3
+            //   ? Linking.openURL(CORPORATE_COLLAB_URL)
+            //   : item?.name === CORPORATE_NAME && item?.launchpadId === 1
+            //   ? Linking.openURL(CORPORATE_COLLAB_URL)
+            //   : 
+              navigation.push('CollectionDetail', {
                   networkName: item?.network,
                   contractAddress: item?.address,
                   launchpadId: item?.launchpadId,

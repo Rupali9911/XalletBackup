@@ -79,11 +79,12 @@ const LaunchPad = () => {
         collectionId={item?._id}
         // disabled={item.totalNft === 0}
         onPress={() => {
-          item?.description === CORPORATE_NAME && item?.id === 1
-            ? Linking.openURL(CORPORATE_COLLAB_URL)
-            : item?.description === CORPORATE_NAME && item?.id === 3
-            ? Linking.openURL(CORPORATE_COLLAB_URL)
-            : navigation.push('CollectionDetail', {
+          // item?.description === CORPORATE_NAME && item?.id === 1
+          //   ? Linking.openURL(CORPORATE_COLLAB_URL)
+          //   : item?.description === CORPORATE_NAME && item?.id === 3
+          //   ? Linking.openURL(CORPORATE_COLLAB_URL)
+          //   : 
+            navigation.push('CollectionDetail', {
                 networkName: null,
                 contractAddress: null,
                 launchpadId: item?.id,
