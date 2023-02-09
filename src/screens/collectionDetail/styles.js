@@ -61,8 +61,7 @@ const styles = StyleSheet.create({
     color: '#000',
     textAlign: 'center',
     fontFamily: fonts.ARIAL,
-    marginBottom: SIZE(5),
-    width: '58%',
+    margin: SIZE(5)
   },
   verifyIcon: {
     position: 'absolute',
@@ -330,11 +329,13 @@ const styles = StyleSheet.create({
   themeColor: {color: Colors.themeColor},
   blackTextColor: {color: Colors.black},
   mainNftText: {
+    width: '65%',
     marginTop: SIZE(55),
     marginBottom: SIZE(20),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    alignSelf: 'center'
   },
 });
 
