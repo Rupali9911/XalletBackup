@@ -30,6 +30,7 @@ import {
   DELETE_ACCOUNT_FAILD,
   MAGIC_LOADING_START,
   MAGIC_LOADING_END,
+  SET_PROFILE_PULL_TO_REFRESH,
 } from '../types';
 import {getSig} from '../../screens/wallet/functions';
 import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
@@ -59,6 +60,7 @@ const initialState = {
   imageAvatarLoading: false,
   imageBannerLoading: false,
   deleteAccountLoading: false,
+  profilePullToRefresh: false,
 };
 
 export default UserReducer = (state = initialState, action) => {
@@ -208,6 +210,11 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         deleteAccountLoading: false,
       };
+    case SET_PROFILE_PULL_TO_REFRESH:
+      return (state = {
+        ...state,
+        profilePullToRefresh: !state.profilePullToRefresh,
+      });
     default:
       return state;
   }
@@ -317,6 +324,9 @@ export const endLoadingImage = () => ({
 });
 export const endLoadingBanner = () => ({
   type: IMAGE_BANNER_END,
+});
+export const setProfilePullToRefresh = () => ({
+  type: SET_PROFILE_PULL_TO_REFRESH,
 });
 export const startLoader = () => dispatch =>
   new Promise((resolve, reject) => {
@@ -540,15 +550,11 @@ export const getUserData = (id, profile = false) => {
     const url = `${NEW_BASE_URL}/users/${id}`;
     sendRequest(url)
       .then(async res => {
-        if(profile){
+        if (profile) {
           dispatch(setOtherUserDetails(res));
-        }
-        else{
+        } else {
           dispatch(updateUserData(res));
-          await AsyncStorage.setItem(
-            '@USERDATA',
-            JSON.stringify(res),
-          );
+          await AsyncStorage.setItem('@USERDATA', JSON.stringify(res));
         }
         dispatch(endLoading());
       })
@@ -611,7 +617,7 @@ export const removeBanner = (banner, id) => async dispatch => {
   })
     .then(res => {
       // dispatch(getUserData(id, true));
-        dispatch(getUserData(id, false));
+      dispatch(getUserData(id, false));
     })
     .catch(error => {
       dispatch(endLoadingBanner());

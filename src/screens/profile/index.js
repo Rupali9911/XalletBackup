@@ -61,7 +61,6 @@ function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
-  const {MyNFTReducer} = useSelector(state => state);
 
   // =============== Getting data from reducer ========================
   const {
@@ -70,6 +69,7 @@ function Profile({navigation, connector, route}) {
     imageAvatarLoading,
     imageBannerLoading,
     userData,
+    profilePullToRefresh,
   } = useSelector(state => state.UserReducer);
 
   //================== Components State Defination ===================
@@ -80,7 +80,6 @@ function Profile({navigation, connector, route}) {
   const [userDetails, setUserDetails] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
   const [options, setOptions] = useState([]);
-  const [refreshing, setRefreshing] = React.useState(false);
 
   const id = route?.params?.id
     ? route?.params?.id
@@ -93,7 +92,7 @@ function Profile({navigation, connector, route}) {
   //===================== UseEffect Function =========================
   useEffect(() => {
     handleUserData();
-  }, [MyNFTReducer?.profileRef]);
+  }, [profilePullToRefresh]);
 
   useEffect(() => {
     if (
@@ -111,7 +110,7 @@ function Profile({navigation, connector, route}) {
     }
     !loading && dispatch(endLoadingImage());
     !loading && dispatch(endLoadingBanner());
-  }, [userData, loading, MyNFTReducer?.profileRef]);
+  }, [userData, loading]);
 
   const handleUserData = useCallback(() => {
     dispatch(startLoadingBanner());
@@ -475,6 +474,30 @@ function Profile({navigation, connector, route}) {
     );
   };
 
+  const TabBarComponent = React.useCallback(
+    props => (
+      <Tabs.MaterialTabBar
+        {...props}
+        scrollEnabled
+        tabStyle={{
+          width: wp('50%'),
+          justifyContent: 'center',
+        }}
+        activeColor={COLORS.BLUE2}
+        inactiveColor={COLORS.BLACK5}
+        labelStyle={{
+          fontSize: RF(1.6),
+          fontFamily: 'Arial',
+        }}
+        indicatorStyle={{
+          borderBottomColor: COLORS.BLUE4,
+        }}
+        width={'100%'}
+      />
+    ),
+    [],
+  );
+
   return (
     <AppBackground>
       <Tabs.Container
@@ -482,7 +505,7 @@ function Profile({navigation, connector, route}) {
         lazy={true}
         cancelLazyFadeIn={true}
         initialTabName={translate('wallet.common.profileCreated')}
-        >
+        renderTabBar={TabBarComponent}>
         <Tabs.Tab
           name={translate('wallet.common.profileCreated')}
           key={'profileCreated'}>

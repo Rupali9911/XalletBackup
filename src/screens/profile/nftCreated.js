@@ -10,8 +10,8 @@ import {
   myNftCreatedListingReset,
   myNFTList,
   myNftLoadFail,
-  profilePullToRef,
 } from '../../store/actions/myNFTaction';
+import {setProfilePullToRefresh} from '../../store/reducer/userReducer';
 import {translate} from '../../walletUtils';
 import styles from './styles';
 
@@ -26,17 +26,18 @@ const NFTCreated = props => {
   });
 
   useEffect(() => {
-    if (props.isFocused) {
-      if (!MyNFTReducer?.myNftCreatedList?.length) {
+    if (!MyNFTReducer?.myNftCreatedList?.length) {
+      dispatch(myNftCreatedListingReset());
+      pressToggle();
+    } else {
+      if (
+        props.id &&
+        props.id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()
+      ) {
+        dispatch(myNftLoadFail());
+      } else {
         dispatch(myNftCreatedListingReset());
         pressToggle();
-      } else {
-        if (props.id && props.id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
-          dispatch(myNftLoadFail());
-        } else {
-          dispatch(myNftCreatedListingReset());
-          pressToggle();
-        }
       }
     }
   }, [props.isFocused]);
@@ -98,7 +99,7 @@ const NFTCreated = props => {
   };
 
   const handlePullRefresh = useCallback(() => {
-    dispatch(profilePullToRef());
+    dispatch(setProfilePullToRefresh());
     setCreatedRefreshing({
       ...createdRefreshing,
       refreshing: true,
@@ -133,11 +134,12 @@ const NFTCreated = props => {
             getNFTlist(num, 10, props.id, 1);
           }
         }}
-        onEndReachedThreshold={0.4}
+        onEndReachedThreshold={0.6}
         onRefresh={handlePullRefresh}
         refreshing={
           MyNFTReducer.myNftCreatedListPage === 1 &&
-          MyNFTReducer.myNftCreatedListLoading && createdRefreshing.refreshing 
+          MyNFTReducer.myNftCreatedListLoading &&
+          createdRefreshing.refreshing
         }
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmptyComponent}

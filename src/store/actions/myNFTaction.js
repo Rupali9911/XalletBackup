@@ -19,7 +19,6 @@ import {
   MY_NFT_OWNED_LIST_RESET,
   MY_NFT_CREATED_LOAD_START,
   MY_NFT_OWNED_LOAD_START,
-  PROFILE_PULL_TO_REFRESH
 } from '../types';
 
 export const myNftLoadStart = () => ({
@@ -83,10 +82,6 @@ export const myNftLoadSuccess = data => ({
 export const favoriteNftSuccess = data => ({
   type: FAVORITE_NFT_SUCCESS,
   payload: data,
-});
-
-export const profilePullToRef = () => ({
-  type: PROFILE_PULL_TO_REFRESH,
 });
 
 export const myNFTList = (pageIndex, pageSize, address, category) => {
