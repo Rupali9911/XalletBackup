@@ -486,11 +486,11 @@ function Profile({navigation, connector, route}) {
         activeColor={COLORS.BLUE2}
         inactiveColor={COLORS.BLACK5}
         labelStyle={{
-          fontSize: RF(1.6),
+          fontSize: RF(2),
           fontFamily: 'Arial',
         }}
         indicatorStyle={{
-          borderBottomColor: COLORS.BLUE4,
+          borderBottomColor: COLORS.BLUE2,
         }}
         width={'100%'}
       />
@@ -508,10 +508,14 @@ function Profile({navigation, connector, route}) {
         renderTabBar={TabBarComponent}>
         <Tabs.Tab
           name={translate('wallet.common.profileCreated')}
+          label={translate('wallet.common.profileCreated')}
           key={'profileCreated'}>
           <NFTCreated id={id} isFocused={isFocused} />
         </Tabs.Tab>
-        <Tabs.Tab name={translate('wallet.common.owned')} key={'nftOwned'}>
+        <Tabs.Tab 
+        name={translate('wallet.common.owned')}
+        label={translate('wallet.common.owned')}
+        key={'nftOwned'}>
           <NFTOwned id={id} isFocused={isFocused} />
         </Tabs.Tab>
       </Tabs.Container>
