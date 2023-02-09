@@ -10,6 +10,7 @@ import {
   myNftCreatedListingReset,
   myNFTList,
   myNftLoadFail,
+  profilePullToRef,
 } from '../../store/actions/myNFTaction';
 import {translate} from '../../walletUtils';
 import styles from './styles';
@@ -27,15 +28,18 @@ const NFTCreated = props => {
   useEffect(() => {
     if (props.isFocused) {
       if (!MyNFTReducer?.myNftCreatedList?.length) {
+        dispatch(myNftCreatedListingReset());
         pressToggle();
-      } else if (
-        props.id &&
-        props.id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()
-      ) {
-        dispatch(myNftLoadFail());
+      } else {
+        if (props.id && props.id.toLowerCase() === MyNFTReducer.nftUserAdd.toLowerCase()) {
+          dispatch(myNftLoadFail());
+        } else {
+          dispatch(myNftCreatedListingReset());
+          pressToggle();
+        }
       }
     }
-  }, []);
+  }, [props.isFocused]);
 
   const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
     dispatch(myNFTList(pageIndex, pageSize, address, category));
@@ -94,13 +98,14 @@ const NFTCreated = props => {
   };
 
   const handlePullRefresh = useCallback(() => {
+    dispatch(profilePullToRef());
     setCreatedRefreshing({
       ...createdRefreshing,
       refreshing: true,
       loader: true,
     });
     dispatch(myNftCreatedListingReset());
-    getNFTlist(1, 10, props.id, 1);
+    pressToggle();
     setTimeout(() => {
       setCreatedRefreshing({
         ...createdRefreshing,
@@ -128,11 +133,11 @@ const NFTCreated = props => {
             getNFTlist(num, 10, props.id, 1);
           }
         }}
-        onEndReachedThreshold={0.01}
+        onEndReachedThreshold={0.4}
         onRefresh={handlePullRefresh}
         refreshing={
           MyNFTReducer.myNftCreatedListPage === 1 &&
-          MyNFTReducer.myNftCreatedListLoading
+          MyNFTReducer.myNftCreatedListLoading && createdRefreshing.refreshing 
         }
         ListFooterComponent={renderFooter}
         ListEmptyComponent={renderEmptyComponent}

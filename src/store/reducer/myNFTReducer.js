@@ -15,6 +15,7 @@ import {
   MY_NFT_OWNED_LIST_RESET,
   MY_NFT_CREATED_LOAD_START,
   MY_NFT_OWNED_LOAD_START,
+  PROFILE_PULL_TO_REFRESH
 } from '../types';
 
 const initialState = {
@@ -32,6 +33,7 @@ const initialState = {
   myNftTotalCount: 0,
   myNftCreatedTotalCount: 0,
   myNftOwnedTotalCount: 0,
+  profileRef: false
 };
 
 export default function MyNFTReducer(state = initialState, action) {
@@ -71,6 +73,7 @@ export default function MyNFTReducer(state = initialState, action) {
           // myNftListLoading: false,
           myNftCreatedListLoading: false,
           myNftCreatedListPage: action.payload.pageNumber,
+          profileRef: false
         });
       } else if (action.payload.tabTitle === 2) {
         return (state = {
@@ -83,6 +86,7 @@ export default function MyNFTReducer(state = initialState, action) {
           // myNftListLoading: false,
           myNftOwnedListLoading: false,
           myNftOwnedListPage: action.payload.pageNumber,
+          profileRef: false
         });
       } else {
         return (state = {
@@ -90,6 +94,7 @@ export default function MyNFTReducer(state = initialState, action) {
           myList: [...state.myList, ...action.payload.list],
           myNftTotalCount: action.payload.count,
           myNftListLoading: false,
+          profileRef: false
         });
       }
 
@@ -129,6 +134,12 @@ export default function MyNFTReducer(state = initialState, action) {
         myNftOwnedListLoading: true,
         myNftOwnedList: [],
         myNftOwnedListPage: 1,
+      });
+
+      case PROFILE_PULL_TO_REFRESH:
+      return (state = {
+        ...state,
+        profileRef: true,
       });
 
     default:

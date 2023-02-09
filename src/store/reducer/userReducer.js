@@ -539,12 +539,16 @@ export const getUserData = (id, profile = false) => {
     dispatch(startLoading());
     const url = `${NEW_BASE_URL}/users/${id}`;
     sendRequest(url)
-      .then(res => {
+      .then(async res => {
         if(profile){
           dispatch(setOtherUserDetails(res));
         }
         else{
           dispatch(updateUserData(res));
+          await AsyncStorage.setItem(
+            '@USERDATA',
+            JSON.stringify(res),
+          );
         }
         dispatch(endLoading());
       })

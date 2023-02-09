@@ -61,6 +61,7 @@ function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
+  const {MyNFTReducer} = useSelector(state => state);
 
   // =============== Getting data from reducer ========================
   const {
@@ -79,6 +80,8 @@ function Profile({navigation, connector, route}) {
   const [userDetails, setUserDetails] = useState(null);
   const [selectedImage, setSelectedImage] = useState('');
   const [options, setOptions] = useState([]);
+  const [refreshing, setRefreshing] = React.useState(false);
+
   const id = route?.params?.id
     ? route?.params?.id
     : userData?.userWallet?.address;
@@ -90,7 +93,7 @@ function Profile({navigation, connector, route}) {
   //===================== UseEffect Function =========================
   useEffect(() => {
     handleUserData();
-  }, []);
+  }, [MyNFTReducer?.profileRef]);
 
   useEffect(() => {
     if (
@@ -108,7 +111,7 @@ function Profile({navigation, connector, route}) {
     }
     !loading && dispatch(endLoadingImage());
     !loading && dispatch(endLoadingBanner());
-  }, [userData, loading]);
+  }, [userData, loading, MyNFTReducer?.profileRef]);
 
   const handleUserData = useCallback(() => {
     dispatch(startLoadingBanner());
@@ -478,7 +481,8 @@ function Profile({navigation, connector, route}) {
         renderHeader={RenderHeader}
         lazy={true}
         cancelLazyFadeIn={true}
-        initialTabName={translate('wallet.common.profileCreated')}>
+        initialTabName={translate('wallet.common.profileCreated')}
+        >
         <Tabs.Tab
           name={translate('wallet.common.profileCreated')}
           key={'profileCreated'}>
