@@ -298,20 +298,20 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  const renderFooter = () => {
-    if (artistLoading) {
-      return (
-        <View style={styles.artistLoader1}>
-          <ActivityIndicator size="small" color={colors.themeR} />
-        </View>
-      );
-    }
-    return null;
-  };
+  // const renderFooter = () => {
+  //   if (artistLoading) {
+  //     return (
+  //       <View style={styles.artistLoader1}>
+  //         <ActivityIndicator size="small" color={colors.themeR} />
+  //       </View>
+  //     );
+  //   }
+  //   return null;
+  // };
 
-  const keyExtractor = (item, index) => {
-    return 'item_' + index;
-  };
+  // const keyExtractor = (item, index) => {
+  //   return 'item_' + index;
+  // };
 
   const renderArtistList = () => {
     return (

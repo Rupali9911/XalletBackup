@@ -226,12 +226,11 @@ function CollectionDetail(props) {
     let owners = Number(collection?.totalOwner);
     let floorPrice = Number(collection?.floorPrice).toFixed(3);
     let volTraded = Number(collection?.volumeTraded).toFixed(3);
-
     return (
       <View style={styles.collectionTable}>
         <View style={styles.collectionTableRow}>
           <Text style={styles.collectionTableRowText}>
-            {items === undefined ? '--' : items}
+            {items ? items : '--'}
           </Text>
           <Text style={styles.collectionTableRowDec}>
             {translate('wallet.common.nfts')}
@@ -239,7 +238,7 @@ function CollectionDetail(props) {
         </View>
         <View style={styles.collectionTableRow}>
           <Text style={styles.collectionTableRowText}>
-            {owners === undefined ? '--' : owners}
+            {owners ? owners : '--'}
           </Text>
           <Text style={styles.collectionTableRowDec}>
             {translate('common.owners')}
@@ -249,7 +248,7 @@ function CollectionDetail(props) {
           <View style={styles.floorPriceVw}>
             <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
             <Text style={styles.collectionTableRowText} numberOfLines={1}>
-              {floorPrice}
+              {floorPrice && floorPrice !== 'NaN' ? floorPrice : '--'}
             </Text>
           </View>
           <Text style={styles.collectionTableRowDec} numberOfLines={1}>
@@ -260,7 +259,7 @@ function CollectionDetail(props) {
           <View style={styles.floorPriceVw}>
             <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
             <Text style={styles.collectionTableRowText} numberOfLines={1}>
-              {volTraded}
+            {volTraded && volTraded !== 'NaN' ? volTraded : '--'}
             </Text>
           </View>
           <Text style={styles.collectionTableRowDec} numberOfLines={1}>

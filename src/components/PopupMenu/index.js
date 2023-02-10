@@ -14,7 +14,7 @@ const PopupMenu = props => {
       <MenuTrigger style={props.triggerStyle} children={props.children} />
       <MenuOptions optionsContainerStyle={props.containerStyle || {}}>
         {props?.items?.map((e, i) => (
-          <MenuOption {...e} value={i}>
+          <MenuOption {...e} value={i} key={i}>
           { props.customRenderItem? e.label: <Text style={props.textStyle}>{e.label}</Text>}
           </MenuOption>
         ))}
