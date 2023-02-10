@@ -151,7 +151,7 @@ const HomeScreen = ({ navigation }) => {
   }, [sortOption]);
 
   useEffect(() => {
-    const removeNetInfoSubscription = NetInfo.addEventListener(state => {
+    const netInfoSubscription = NetInfo.addEventListener(state => {
       const offline = !state.isConnected;
       if (state.isInternetReachable) {
         if (offline) {
@@ -165,13 +165,14 @@ const HomeScreen = ({ navigation }) => {
         }
       }
     });
-    AppState.addEventListener('change', appStateChange);
+    const appStateEvent = AppState.addEventListener('change', appStateChange);
     if (requestAppId) {
       navigation.navigate('Connect', { appId: requestAppId });
     }
 
     return () => {
-      removeNetInfoSubscription();
+      netInfoSubscription();
+      appStateEvent();
     };
   }, [requestAppId]);
 

@@ -30,7 +30,7 @@ const AppRoutes = () => {
 
   useEffect(async () => {
     LogBox.ignoreAllLogs();
-    Linking.addEventListener('url', async ({url}) => {
+    const linking = Linking.addEventListener('url', async ({url}) => {
       if (url && url.includes('xanaliaapp://connect')) {
         let id = url.substring(url.lastIndexOf('/') + 1);
         let wallet = await getWallet();
@@ -43,6 +43,9 @@ const AppRoutes = () => {
         }
       }
     });
+    return () => {
+      linking.remove();
+    };
   }, []);
 
   useEffect(() => {
