@@ -136,7 +136,6 @@ export default {
   EditImage,
   CopyProfile,
   FitRedIcon,
-  CartRedIcon,
   StoreActiveIcon,
   MessageIcon,
   UserIcon,
