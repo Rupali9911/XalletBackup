@@ -1,5 +1,3 @@
-import GirlIcon from 'src/assets/svgs/icon-girl.svg';
-import LogoIcon from 'src/assets/svgs/icon-logo.svg';
 import HomeIcon from 'src/assets/svgs/icon-home.svg';
 import HomeActiveIcon from 'src/assets/svgs/icon-home-active.svg';
 import SearchIcon from 'src/assets/svgs/icon-search.svg';
@@ -8,8 +6,6 @@ import CalendarIcon from 'src/assets/svgs/icon-calendar.svg';
 import CalendarActiveIcon from 'src/assets/svgs/icon-calendar-active.svg';
 import WalletIcon from 'src/assets/svgs/icon-wallet.svg';
 import WalletActiveIcon from 'src/assets/svgs/icon-wallet-active.svg';
-import ChatIcon from 'src/assets/svgs/icon-chat.svg';
-import ChatActiveIcon from 'src/assets/svgs/icon-chat-active.svg';
 import HeartWhiteIcon from 'src/assets/svgs/icon-new-heart.svg';
 import HeartActiveIcon from 'src/assets/svgs/icon-new-activeHeart.svg';
 import RiseIcon from 'src/assets/svgs/icon-rise.svg';
@@ -36,7 +32,6 @@ import SaveIcon from 'src/assets/svgs/icon-save.svg';
 import ShareIcon from 'src/assets/svgs/icon-share.svg';
 import CloudUploadIcon from 'src/assets/svgs/icon-cloud-upload.svg';
 import AddEventIcon from 'src/assets/svgs/icon-add-event.svg';
-import WalletConnectIcon from 'src/assets/svgs/icon-wallet-connect.svg';
 import CommentIcon from 'src/assets/svgs/icon-comment.svg';
 import BookMarkIcon from 'src/assets/svgs/icon-book-mark.svg';
 import PlayButtonIcon from 'src/assets/svgs/icon-play.svg';
@@ -46,8 +41,6 @@ import ConnectSmIcon from 'src/assets/svgs/icon-connect-sm.svg';
 
 import FitIcon from 'src/assets/svgs/icon-fit.svg';
 import FitRedIcon from 'src/assets/svgs/icon-fit-red.svg';
-import CartIcon from 'src/assets/svgs/icon-cart.svg';
-import CartRedIcon from 'src/assets/svgs/icon-cart-red.svg';
 import StoreIcon from 'src/assets/svgs/icon-store.svg';
 import StoreActiveIcon from 'src/assets/svgs/icon-store-active.svg';
 import MessageIcon from 'src/assets/svgs/icon-message.svg';
@@ -97,12 +90,9 @@ import ComingSoonInfoIcon from 'src/assets/svgs/info.svg';
 import ChangeBackground from 'src/assets/svgs/change-bg.svg';
 
 export default {
-  GirlIcon,
-  LogoIcon,
   HomeIcon,
   SearchIcon,
   FitIcon,
-  CartIcon,
   StoreIcon,
   HomeActiveIcon,
   SearchRedIcon,
@@ -110,8 +100,6 @@ export default {
   CalendarActiveIcon,
   WalletIcon,
   WalletActiveIcon,
-  ChatIcon,
-  ChatActiveIcon,
   HeartWhiteIcon,
   HeartActiveIcon,
   RiseIcon,
@@ -138,7 +126,6 @@ export default {
   ShareIcon,
   CloudUploadIcon,
   AddEventIcon,
-  WalletConnectIcon,
   CommentIcon,
   BookMarkIcon,
   PlayButtonIcon,
