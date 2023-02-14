@@ -52,8 +52,10 @@ const {ThreeDotsVerticalIcon} = SVGS;
 const {ChatDefaultProfile, ChangeBackground} = SVGS;
 
 const ChatDetail = ({route, navigation}) => {
-  const {nftDetail, nftImage} = route.params;
-  const bot_name = nftDetail?.name?.slice(nftDetail?.name?.lastIndexOf('#'));
+  // const {nftDetail, nftImage, bot_name, collectionAddress, nftId, tokenId} =
+  //   route.params;
+    const {chatDetailData} =
+    route.params;
 
   //================== Components State Declaration ===================
   const [chatBotData, setChatBotData] = useState([]);
@@ -85,10 +87,11 @@ const ChatDetail = ({route, navigation}) => {
 
   //====================== UseEffect Call ===============================
   useEffect(() => {
-    dispatch(chatHistoryLoading());
-    getHistoryData(1);
-    dispatch(ChatHistoryPageChange(1));
-
+    if (reducerTabTitle != 'Animated') {
+      dispatch(chatHistoryLoading());
+      getHistoryData(1);
+      dispatch(ChatHistoryPageChange(1));
+    }
     return () => {
       dispatch(getAIBackgroundImageReset());
     };
@@ -107,13 +110,7 @@ const ChatDetail = ({route, navigation}) => {
 
   useEffect(() => {
     if (isOwnedTab) {
-      dispatch(
-        getAIBgImage(
-          userAdd,
-          nftDetail?.collection?.address,
-          nftDetail?.tokenId,
-        ),
-      );
+      dispatch(getAIBgImage(userAdd, chatDetailData?.collectionAddress, chatDetailData?.tokenId));
     }
   }, [reducerTabTitle]);
 
@@ -143,42 +140,40 @@ const ChatDetail = ({route, navigation}) => {
 
   //================== Get History Data =================================
   const getHistoryData = page => {
-    dispatch(getChatBotHistory(page, userAdd, nftDetail?.tokenId)).then(
-      response => {
-        if (response.length > 0) {
-          let history = [...chatBotData];
-          response.map(data => {
-            let second = data.date._seconds;
-            let milisecond = Number(second) * 1000;
-            let getDate = new Date(milisecond);
-            let timeConversion = moment(getDate).format('h:mm A');
+    dispatch(getChatBotHistory(page, userAdd, chatDetailData?.tokenId)).then(response => {
+      if (response.length > 0) {
+        let history = [...chatBotData];
+        response.map(data => {
+          let second = data.date._seconds;
+          let milisecond = Number(second) * 1000;
+          let getDate = new Date(milisecond);
+          let timeConversion = moment(getDate).format('h:mm A');
 
-            let sender = {
-              message: data?.question,
-              type: 'sender',
-              time: timeConversion,
-              senderImage: userData?.avatar,
-              senderName:
-                userData?.userName != ''
-                  ? userData?.userName
-                  : userData?.userWallet?.address.substring(0, 6),
-            };
+          let sender = {
+            message: data?.question,
+            type: 'sender',
+            time: timeConversion,
+            senderImage: userData?.avatar,
+            senderName:
+              userData?.userName != ''
+                ? userData?.userName
+                : userData?.userWallet?.address.substring(0, 6),
+          };
 
-            let receiver = {
-              message: data.reply,
-              question: data?.question,
-              type: 'receiver',
-              time: timeConversion,
-              receiverImage: nftImage,
-              receiverName: bot_name,
-            };
-            history.push(receiver, sender);
-            // setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
-          });
-          setChatBotData(history);
-        }
-      },
-    );
+          let receiver = {
+            message: data.reply,
+            question: data?.question,
+            type: 'receiver',
+            time: timeConversion,
+            receiverImage: chatDetailData?.nftImage,
+            receiverName: chatDetailData?.bot_name,
+          };
+          history.push(receiver, sender);
+          // setChatBotData(chatBotData => [...chatBotData, receiver, sender]);
+        });
+        setChatBotData(history);
+      }
+    });
   };
 
   //====================== Chat Sender Image =========================
@@ -203,9 +198,7 @@ const ChatDetail = ({route, navigation}) => {
 
   const onEditMessage = update_msg => {
     let msg_question = editMessage?.question;
-    dispatch(
-      chatBotUpdate(bot_name, nftDetail?.tokenId, msg_question, update_msg),
-    );
+    dispatch(chatBotUpdate(chatDetailData?.bot_name, chatDetailData?.tokenId, msg_question, update_msg));
     setEditMessage({});
   };
 
@@ -285,13 +278,7 @@ const ChatDetail = ({route, navigation}) => {
           fileName: filename,
           image: image,
         };
-        dispatch(
-          uploadAIBgImage(
-            temp,
-            nftDetail?.collection?.address,
-            nftDetail?.tokenId,
-          ),
-        );
+        dispatch(uploadAIBgImage(temp, chatDetailData?.collectionAddress, chatDetailData?.tokenId));
       })
       .catch(async e => {
         if (e.code && e.code === 'E_NO_LIBRARY_PERMISSION') {
@@ -326,7 +313,7 @@ const ChatDetail = ({route, navigation}) => {
         message: msg,
         type: 'sender',
         time: timeConversion,
-        senderImage: userData.avatar,
+        senderImage: userData?.avatar,
         senderName:
           userData.userName != ''
             ? userData.userName
@@ -337,12 +324,12 @@ const ChatDetail = ({route, navigation}) => {
       dispatch(
         getAiChat(
           userData?.userWallet?.address,
-          bot_name,
-          nftDetail?.collection?.address,
+          chatDetailData?.bot_name,
+          chatDetailData?.collectionAddress,
           selectedLanguageItem?.language_name,
-          nftDetail?.id,
+          chatDetailData?.nftId,
           msg,
-          nftDetail?.tokenId,
+          chatDetailData?.tokenId,
         ),
       )
         .then(response => {
@@ -353,8 +340,8 @@ const ChatDetail = ({route, navigation}) => {
               message: response?.data?.response,
               type: 'receiver',
               time: timeConversion,
-              receiverImage: nftImage,
-              receiverName: bot_name,
+              receiverImage: chatDetailData?.nftImage,
+              receiverName: chatDetailData?.bot_name,
               question: response?.data?.question,
             };
             setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
@@ -383,15 +370,18 @@ const ChatDetail = ({route, navigation}) => {
   const renderBGImg = () => {
     return (
       <ImageBackground
-      key={bannerImage}
-      source={{uri: aiBgImageData?.background_image + '?' + Date.now() }}
-      style={styles.bannerImgContainer}
-      >
-           <C_Image
-        uri={nftDetail?.smallImage}
-        size={ImagekitType.FULLIMAGE}
-        imageStyle={styles.bannerImage}
-      />
+        key={bannerImage}
+        source={{uri: aiBgImageData?.background_image + '?' + Date.now()}}
+        style={styles.bannerImgContainer}>
+        <C_Image
+          uri={
+            reducerTabTitle === 'Animated'
+              ? chatDetailData?.nftImage
+              : chatDetailData?.listItems?.smallImage
+          }
+          size={ImagekitType.FULLIMAGE}
+          imageStyle={styles.bannerImage}
+        />
       </ImageBackground>
     );
   };
@@ -406,12 +396,12 @@ const ChatDetail = ({route, navigation}) => {
             <C_Image
               imageType={'profile'}
               size={ImagekitType.AVATAR}
-              uri={nftImage}
+              uri={chatDetailData?.nftImage}
               imageStyle={styles.cImageContainer}
             />
           </View>
           <View style={styles.mainView}>
-            <Text style={styles.headerNftName}>{bot_name}</Text>
+            <Text style={styles.headerNftName}>{chatDetailData?.bot_name}</Text>
             <View style={styles.remainWordCountView}>
               <View style={styles.typingContainer}>
                 {isChatLoading && (
@@ -420,11 +410,11 @@ const ChatDetail = ({route, navigation}) => {
                   </Text>
                 )}
               </View>
-              {remainCount > 0 && (
+              {reducerTabTitle != 'Animated' && ( remainCount > 0 && (
                 <Text style={styles.remainWordText}>
                   {translate('common.remainWordCount')} {parseInt(remainCount)}
                 </Text>
-              )}
+              ))}
             </View>
           </View>
         </View>
@@ -450,7 +440,7 @@ const ChatDetail = ({route, navigation}) => {
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
-            <Text style={styles.nftName}>{bot_name}</Text>
+            <Text style={styles.nftName}>{chatDetailData?.bot_name}</Text>
             <View style={[styles.separator, {width: '80%'}]} />
             {!chatBotData?.response ? (
               <View>
@@ -483,8 +473,7 @@ const ChatDetail = ({route, navigation}) => {
               <TouchableOpacity
                 style={styles.imageViewWrap}
                 onPress={() => openImagePicker()}>
-               
-                  <ChangeBackground width={SIZE(24)} height={SIZE(24)} />
+                <ChangeBackground width={SIZE(24)} height={SIZE(24)} />
               </TouchableOpacity>
             )}
           </View>

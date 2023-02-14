@@ -21,6 +21,7 @@ const AiChat = () => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {key: 'Owner', title: translate('wallet.common.owned')},
+    {key: 'Animated', title: 'Animated'},
     {key: 'Others', title: translate('common.others')},
   ]);
   const dispatch = useDispatch();
@@ -95,6 +96,8 @@ const AiChat = () => {
     switch (route.key) {
       case 'Owner':
         return <ChatNftsList tabTitle={'Owned'} />;
+      case 'Animated':
+        return <ChatNftsList tabTitle={'Animated'} />;
       case 'Others':
         return <ChatNftsList tabTitle={'Other'} />;
       default:

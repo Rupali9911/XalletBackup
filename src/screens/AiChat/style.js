@@ -260,6 +260,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0,
     backgroundColor: 'white',
     marginVertical: 10,
+    width: wp(100),
   },
   label: {
     fontSize: RF(1.6),
@@ -268,7 +269,7 @@ const styles = StyleSheet.create({
   },
   tabStyle: {
     height: SIZE(40),
-    width: wp('50%'),
+    width: wp(100) / 3,
     paddingHorizontal: wp('1%'),
     justifyContent: 'center',
   },
