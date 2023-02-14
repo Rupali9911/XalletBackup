@@ -781,7 +781,8 @@
     "ENTER_INVALID_AMOUNT": "Please enter the valid amount for transaction.",
     "COMING_SOON": "Coming Soon",
     "alertTitle": "Alert",
-    "EMAIL_AUTHORIZATION_MSG": "Please wait while the Email Authorization is in Process…"
+    "EMAIL_AUTHORIZATION_MSG": "Please wait while the Email Authorization is in Process…",
+    "LAUNCH_COMPLETED": "Completed"
   },
   "AwardPage": {},
   "wallet": {
@@ -1044,7 +1045,6 @@
       "reject": "Reject",
       "connectionRequest": "{{name}} wants to connect with your wallet!",
       "noAppConnect": "No app connected to show",
-      "paymentComplete": "Complete",
       "paymentFailed": "Payment Failed",
       "remittanceFailure": "Remittance Failure",
       "Dislike": "Dislike",

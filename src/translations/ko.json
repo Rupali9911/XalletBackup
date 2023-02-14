@@ -782,7 +782,8 @@
     "ENTER_INVALID_AMOUNT": "유효한 거래 금액을 입력하세요.",
     "COMING_SOON": "곧 출시",
     "alertTitle": "알리다",
-    "EMAIL_AUTHORIZATION_MSG": "이메일 승인이 진행되는 동안 잠시 기다려 주십시오..."
+    "EMAIL_AUTHORIZATION_MSG": "이메일 승인이 진행되는 동안 잠시 기다려 주십시오...",
+    "LAUNCH_COMPLETED": "완전한"
   },
   "AwardPage": {},
   "wallet": {
