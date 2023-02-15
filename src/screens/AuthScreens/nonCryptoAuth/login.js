@@ -120,10 +120,12 @@ const LoginCrypto = ({navigation}) => {
         KeyboardShiftStyle={styles.keyboardShift}>
         <View style={styles.sectionCont}>
           <View style={styles.contentContainer}>
+          <View style={styles.padding}>
             <AppLogo />
             <TextView style={styles.title}>
               {translate('common.loginWithEmail')}
             </TextView>
+            </View>
           </View>
 
           <InputFields
