@@ -17,7 +17,7 @@ const styles = StyleSheet.create({
     sectionCont: {
         width: wp(85),
         alignSelf: "center",
-        paddingVertical: hp(2)
+        // paddingVertical: hp(2)
     },
     loginBTxt: {
         fontSize: RF(1.6),
@@ -45,7 +45,12 @@ const styles = StyleSheet.create({
     },
     contentContainer: {
         flex: 1,
+        // backgroundColor: 'red'
     },
+    padding: {
+        padding: wp('5%'),
+        paddingBottom: 0,
+      },
 })
 
 export default styles;

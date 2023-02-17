@@ -86,8 +86,8 @@ const HomeScreen = ({ navigation }) => {
   const [isSuccessVisible, setSuccessVisible] = useState(modalState);
   const [isNotificationVisible, setNotificationVisible] = useState(false);
   const [online, setOnline] = useState(false);
-  const [openState, setOpenState] = useState(false);
-  const [index, setIndex] = useState(0);
+  const [openFilter, setOpenFilter] = useState(false);
+  const [tabIndex, setTabIndex] = useState(0);
 
   const [screen, setScreen] = useState('');
   const [sortOption, setSortOption] = useState(0);
@@ -112,12 +112,12 @@ const HomeScreen = ({ navigation }) => {
     { key: 'hotCollection', title: translate('common.hotcollection') },
   ]);
 
-  const onStateChange = ({ open }) => setOpenState(open);
+  const onFilterStateChange = ({ open }) => setOpenFilter(open);
 
   //===================== UseEffect Function =========================
   useFocusEffect(
     React.useCallback(() => {
-      return () => setOpenState(false);
+      return () => setOpenFilter(false);
     }, []),
   );
 
@@ -151,7 +151,7 @@ const HomeScreen = ({ navigation }) => {
   }, [sortOption]);
 
   useEffect(() => {
-    const removeNetInfoSubscription = NetInfo.addEventListener(state => {
+    const netInfoSubscription = NetInfo.addEventListener(state => {
       const offline = !state.isConnected;
       if (state.isInternetReachable) {
         if (offline) {
@@ -165,13 +165,14 @@ const HomeScreen = ({ navigation }) => {
         }
       }
     });
-    AppState.addEventListener('change', appStateChange);
+    const appStateEvent = AppState.addEventListener('change', appStateChange);
     if (requestAppId) {
       navigation.navigate('Connect', { appId: requestAppId });
     }
 
     return () => {
-      removeNetInfoSubscription();
+      netInfoSubscription();
+      appStateEvent
     };
   }, [requestAppId]);
 
@@ -186,7 +187,7 @@ const HomeScreen = ({ navigation }) => {
 
   // function handleBackButtonClick() {
   //   //navigation.goBack();
-  //   if (index != 0) {
+  //   if (tabIndex != 0) {
   //     //this.props.jumpTo('launch');
   //     return true;
   //   } else {
@@ -202,7 +203,7 @@ const HomeScreen = ({ navigation }) => {
   //       handleBackButtonClick,
   //     );
   //   };
-  // }, [index]);
+  // }, [tabIndex]);
 
   //================== App State Change Function =======================
   const appStateChange = async nextAppState => {
@@ -298,20 +299,20 @@ const HomeScreen = ({ navigation }) => {
     );
   };
 
-  const renderFooter = () => {
-    if (artistLoading) {
-      return (
-        <View style={styles.artistLoader1}>
-          <ActivityIndicator size="small" color={colors.themeR} />
-        </View>
-      );
-    }
-    return null;
-  };
+  // const renderFooter = () => {
+  //   if (artistLoading) {
+  //     return (
+  //       <View style={styles.artistLoader1}>
+  //         <ActivityIndicator size="small" color={colors.themeR} />
+  //       </View>
+  //     );
+  //   }
+  //   return null;
+  // };
 
-  const keyExtractor = (item, index) => {
-    return 'item_' + index;
-  };
+  // const keyExtractor = (item, index) => {
+  //   return 'item_' + index;
+  // };
 
   const renderArtistList = () => {
     return (
@@ -425,7 +426,7 @@ const HomeScreen = ({ navigation }) => {
   const renderNFTCategoriesTabs = () => {
     return (
       <TabViewScreen
-        index={index}
+        index={tabIndex}
         routes={routes}
         switchRoutes={r => renderScene(r)}
         indexChange={i => handleIndexChange(i)}
@@ -435,14 +436,14 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleIndexChange = index => {
-    setIndex(index);
+    setTabIndex(index);
   };
 
   useEffect(() => {
-    if (index) {
+    if (tabIndex) {
       const backAction = () => {
-        if (index !== 0) {
-          setIndex(0);
+        if (tabIndex !== 0) {
+          setTabIndex(0);
         } else {
           BackHandler.exitApp();
         }
@@ -456,7 +457,7 @@ const HomeScreen = ({ navigation }) => {
 
       return () => backHandler.remove();
     }
-  }, [index]);
+  }, [tabIndex]);
 
   const renderScene = ({ route }) => {
     switch (route.key) {
@@ -604,7 +605,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   //=============== Filter Component Functions =================
-  const fabActions = useMemo(() => {
+  const filtersAction = useMemo(() => {
     return [
       {
         id: 0,
@@ -761,12 +762,12 @@ const HomeScreen = ({ navigation }) => {
     ];
   }, [screen, active]);
 
-  const fab = () => {
+  const filters = () => {
     return (
       <FAB.Group
-        open={openState}
+        open={openFilter}
         icon={
-          openState
+          openFilter
             ? 'close'
             : props => (
               <FontAwesome5
@@ -776,29 +777,29 @@ const HomeScreen = ({ navigation }) => {
               />
             )
         }
-        fabStyle={{ backgroundColor: Colors.themeColor }}
-        actions={fabActions}
-        onStateChange={onStateChange}
+        fabStyle={styles.fabLabelStyle1}
+        actions={filtersAction}
+        onStateChange={onFilterStateChange}
         onPress={() => {
-          if (openState) {
+          if (openFilter) {
             // do something if the speed dial is open
           }
         }}
       />
     );
   };
-  const FilterComponent = React.memo(fab);
+  const FilterComponent = React.memo(filters);
 
   //=====================(Main return Function)=============================
   return (
     <>
-      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+      <SafeAreaView style={styles.trendCont}>
         {renderAppHeader()}
         {renderArtistList()}
         {online && (showSuccess ? null : renderNFTCategoriesTabs())}
       </SafeAreaView>
       {renderAppModal()}
-      {index !== 0 && index !== 9 && index !== 3 && <FilterComponent />}
+      {[0, 1, 9].indexOf(tabIndex) === -1 && <FilterComponent />}
     </>
   );
 };

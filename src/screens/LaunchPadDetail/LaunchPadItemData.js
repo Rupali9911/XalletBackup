@@ -155,7 +155,7 @@ export default function LaunchPadItemData(props) {
           </Text>
         )}
         <Text style={styles.statusText}>
-          {status === 1 ? translate('common.ongoinglaunch') : ''}
+          {status === 1 ? translate('common.LAUNCH_COMPLETED') : translate('common.ongoinglaunch')}
         </Text>
       </View>
     );

@@ -782,7 +782,8 @@
     "ENTER_INVALID_AMOUNT": "送金可能な残高数量を入力ください",
     "COMING_SOON": "近日公開",
     "alertTitle": "アラート",
-    "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…"
+    "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…",
+    "LAUNCH_COMPLETED": "発売終了"
   },
   "AwardPage": {},
   "wallet": {
@@ -958,7 +959,7 @@
       "payByWallet": "ウォレットで支払う",
       "payByGold": "ゴールドで支払う（アプリ内）",
       "totalAmount": "合計",
-      "me": "設定",
+      "me": "プロフィール",
       "alert": "確認",
       "legalHint1": "XALLETアプリの利用規約と",
       "legalHint2": "プライバシーポリシーをご確認ください。",
@@ -977,7 +978,7 @@
       "balanceAmount": "購入金額",
       "paste": "貼り付け",
       "AECredit": "クレジット カードの追加/編集",
-      "security": "パスコード設定",
+      "security": "セキュリティ",
       "notifications": "通知",
       "language": "言語",
       "version": "アプリのバージョン",
