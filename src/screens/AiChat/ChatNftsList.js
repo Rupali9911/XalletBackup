@@ -162,7 +162,7 @@ const ChatNftsList = ({tabTitle}) => {
         onPress={() => {
           dispatch(setTabTitle(tabTitle));
           navigation.navigate('ChatDetail', {
-            chatDetailData: renderNavigationData
+            chatDetailData: renderNavigationData,
           });
         }}>
         <View style={styles.nftItemContainer}>
@@ -186,12 +186,14 @@ const ChatNftsList = ({tabTitle}) => {
   return (
     <View style={styles.mainListContainer}>
       {tabTitle === 'Animated' ? (
-        <FlatList
-          showsVerticalScrollIndicator={true}
-          data={INFT}
-          keyExtractor={keyExtractor}
-          renderItem={memoizedValue}
-        />
+        <View style={styles.nftListContainer}>
+          <FlatList
+            showsVerticalScrollIndicator={true}
+            data={INFT}
+            keyExtractor={keyExtractor}
+            renderItem={memoizedValue}
+          />
+        </View>
       ) : isNftLoading && nftPageChange == 1 ? (
         <View style={styles.centerViewStyle}>
           <Loader />

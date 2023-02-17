@@ -95,6 +95,8 @@ import ChatDefaultProfile from 'src/assets/svgs/ChatDefaultProfile.svg';
 import InfoIcon from 'src/assets/svgs/icon-info.svg';
 import ComingSoonInfoIcon from 'src/assets/svgs/info.svg';
 import ChangeBackground from 'src/assets/svgs/change-bg.svg';
+import Mic from 'src/assets/svgs/Mic.svg';
+import RedMic from 'src/assets/svgs/RedMic.svg';
 
 export default {
   GirlIcon,
@@ -191,5 +193,8 @@ export default {
   InfoIcon,
   ComingSoonInfoIcon,
   InstaIcon,
-  ChangeBackground
+  ChangeBackground,
+  Mic,
+  RedMic
+
 };
