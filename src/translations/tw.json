@@ -782,7 +782,8 @@
     "ENTER_INVALID_AMOUNT": "請輸入有效交易金額。",
     "COMING_SOON": "近日發布",
     "alertTitle": "警報",
-    "EMAIL_AUTHORIZATION_MSG": "正在處理電子郵件授權，請稍候..."
+    "EMAIL_AUTHORIZATION_MSG": "正在處理電子郵件授權，請稍候...",
+    "INVALID_LANGUAGE": "請使用英文或日文留言。"
   },
   "AwardPage": {},
   "wallet": {
