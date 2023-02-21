@@ -783,7 +783,8 @@
     "COMING_SOON": "近日公開",
     "alertTitle": "アラート",
     "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…",
-    "LAUNCH_COMPLETED": "発売終了"
+    "LAUNCH_COMPLETED": "発売終了",
+    "bidWinner": "NFTの落札"
   },
   "AwardPage": {},
   "wallet": {

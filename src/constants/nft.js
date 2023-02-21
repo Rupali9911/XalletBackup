@@ -262,25 +262,21 @@ export const SERVICE_FEE = 2.5
 
 export const FILTER_TRADING_HISTORY_OPTIONS = [
     {
-        // label: 'Minted',
         label: 'minted',
         value: 15,
         label1: 'MINT_NFT',
     },
     {
-        // label: 'Listing (Fixed Price)',
         label: 'sales',
         value: 0,
         label1: 'PUT_ON_SALE',
     },
     {
-        // label: 'Listing (Auction)',
         label: 'OnAuction',
         value: 19,
         label1: 'PUT_AUCTION',
     },
     {
-        // label: 'Cancel Listing (Fixed Price)',
         label: 'cancelListingFixed',
         value: 2,
         label1: 'CANCEL_SALE_NFT',
@@ -291,70 +287,64 @@ export const FILTER_TRADING_HISTORY_OPTIONS = [
     //     label1: 'EDIT_ORDER',
     // },
     {
-        // label: 'Sold (Fixed Price)',
         label: 'soldFixed',
         value: 3,
         label1: 'BUY_NFT',
     },
     {
-        // label: 'Bid Placed',
         label: 'bidPlaced',
         value: 20,
         label1: 'BID_NFT',
     },
     {
-        // label: 'Bid Accepted',
         label: 'bidAccepted',
         value: 25,
         label1: 'ACCEPT_BID_NFT',
     },
     {
-        // label: 'Cancel Listing (Auction)',
         label: 'cancelListingAuction',
         value: 22,
         label1: 'CANCEL_BID_NFT',
     },
     {
-        // label: 'Bid Reclaimed',
         label: 'bidReclaimed',
         value: 24,
         label1: 'RECLAIM_BID_NFT',
     },
     {  
-        // label: 'Offer Made',
         label: 'offerMade',
         value: 1,
         label1: 'OFFER_MADE',
     },
     {
-        // label: 'Offer Accepted',
         label: 'offerAccepted',
         value: 4,
         label1: 'OFFER_ACCEPTED',
     },
     {
-        // label: 'Offer Canceled',
         label: 'offerCanceled',
         value: 9,
         label1: 'CANCEL_MAKE_OFFER',
     },
     {
-        // label: 'Offer Reclaimed',
         label: 'offerReclaimed',
         value: 10,
         label1: 'RECLAIM_MAKE_OFFER',
     },
     {
-        // label: 'NFT Reclaimed',
         label: 'NFTReclaimed',
         value: 26,
         label1: 'NFT_RECLAIMED',
     },
     {
-        // label: 'Cancel Auction',
         label: 'cancelAuction',
         value: 18,
         label1: 'CANCEL_AUCTION',
+    }, 
+    {
+        label: 'bidWinner',
+        value: 23,
+        label1: 'WINNER_BID_NFT',
     },
 ]
 

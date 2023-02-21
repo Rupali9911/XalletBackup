@@ -783,7 +783,8 @@
     "COMING_SOON": "近日發布",
     "alertTitle": "警報",
     "EMAIL_AUTHORIZATION_MSG": "正在處理電子郵件授權，請稍候...",
-    "LAUNCH_COMPLETED": "完全的"
+    "LAUNCH_COMPLETED": "完全的",
+    "bidWinner": "中標者出價 NFT"
   },
   "AwardPage": {},
   "wallet": {

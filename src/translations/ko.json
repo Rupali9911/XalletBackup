@@ -783,7 +783,8 @@
     "COMING_SOON": "곧 출시",
     "alertTitle": "알리다",
     "EMAIL_AUTHORIZATION_MSG": "이메일 승인이 진행되는 동안 잠시 기다려 주십시오...",
-    "LAUNCH_COMPLETED": "완전한"
+    "LAUNCH_COMPLETED": "완전한",
+    "bidWinner": "NFT 낙찰"
   },
   "AwardPage": {},
   "wallet": {
