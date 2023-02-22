@@ -1,4 +1,4 @@
-package com.xanaliaMarketplace.app;
+package com.xallet.app;
 
 import android.os.Bundle;
 
