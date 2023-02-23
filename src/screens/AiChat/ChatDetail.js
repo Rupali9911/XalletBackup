@@ -8,8 +8,8 @@ import {
   FlatList,
   ImageBackground,
 } from 'react-native';
-import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getAiChat,
   chatLoadingSuccess,
@@ -22,39 +22,41 @@ import {
   chatBotUpdate,
   aiMessageUpdate,
 } from '../../store/actions/chatAction';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import ImageSrc from '../../constants/Images';
 import styles from './style';
-import {C_Image, Loader} from '../../components';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { C_Image, Loader } from '../../components';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
-import {PLATFORM, SIZE, SVGS} from '../../constants';
+import { PLATFORM, SIZE, SVGS } from '../../constants';
 import moment from 'moment';
 import Toast from 'react-native-toast-message';
-import {Platform} from 'expo-modules-core';
-import {ImagekitType} from '../../common/ImageConstant';
+import { Platform } from 'expo-modules-core';
+import { ImagekitType } from '../../common/ImageConstant';
 import ImagePicker from 'react-native-image-crop-picker';
-import {confirmationAlert} from '../../common/function';
-import {openSettings} from 'react-native-permissions';
+import { confirmationAlert } from '../../common/function';
+import { openSettings } from 'react-native-permissions';
 import axios from 'axios';
 import AppBackground from '../../components/appBackground';
 import BackIcon from 'react-native-vector-icons/MaterialIcons';
-import {colors} from '../../res';
+import { colors } from '../../res';
+import { checkEngJpLang } from '../../utils'
+import AIAudio from '../../components/AIAudio'
 import {
   Menu,
   MenuOption,
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {hp} from '../../constants/responsiveFunct';
-const {ThreeDotsVerticalIcon} = SVGS;
+import { hp } from '../../constants/responsiveFunct';
+const { ThreeDotsVerticalIcon } = SVGS;
 
-const {ChatDefaultProfile, ChangeBackground} = SVGS;
+const { ChatDefaultProfile, ChangeBackground } = SVGS;
 
-const ChatDetail = ({route, navigation}) => {
+const ChatDetail = ({ route, navigation }) => {
   // const {nftDetail, nftImage, bot_name, collectionAddress, nftId, tokenId} =
   //   route.params;
-    const {chatDetailData} =
+  const { chatDetailData } =
     route.params;
 
   //================== Components State Declaration ===================
@@ -78,10 +80,10 @@ const ChatDetail = ({route, navigation}) => {
     aiBgImageLoading,
     updateMesaage,
   } = useSelector(state => state.chatReducer);
-  const {userData} = useSelector(state => state.UserReducer);
+  const { userData } = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
-  const {reducerTabTitle} = useSelector(state => state.chatReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { reducerTabTitle } = useSelector(state => state.chatReducer);
 
   const isOwnedTab = reducerTabTitle === 'Owned' ? true : false;
 
@@ -218,9 +220,9 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   //======================== Show Bubbles =============================
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
-      <View style={{marginVertical: 8}}>
+      <View style={{ marginVertical: 8 }}>
         {item?.type == 'sender' ? (
           <View style={styles.rightBubbleContainer}>
             <View style={styles.talkBubble(false)}>
@@ -229,14 +231,14 @@ const ChatDetail = ({route, navigation}) => {
                 <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>
-            <View style={[styles.timeFormat, {marginRight: 10}]}>
+            <View style={[styles.timeFormat, { marginRight: 10 }]}>
               {renderImage()}
               <Text style={styles.statusText}>{item?.time}</Text>
             </View>
           </View>
         ) : (
           <View style={styles.leftBubbleContainer}>
-            <View style={[styles.timeFormat, {marginLeft: 10}]}>
+            <View style={[styles.timeFormat, { marginLeft: 10 }]}>
               <C_Image
                 imageType={'profile'}
                 uri={item?.receiverImage}
@@ -301,53 +303,63 @@ const ChatDetail = ({route, navigation}) => {
   const showToast = msg => {
     toastRef.current.show({
       type: 'info',
-      text1: msg ? msg : translate('common.exceededToastWord'),
-    });
+      text1: msg ? msg : translate('common.exceededToastWord')
+        });
   };
 
   // ===================== Send Message ===================================
   const sendMessage = (msg, time) => {
-    let timeConversion = moment(time).format('h:mm A');
-    if (msg && msg != '') {
-      let sendObj = {
-        message: msg,
-        type: 'sender',
-        time: timeConversion,
-        senderImage: userData?.avatar,
-        senderName:
-          userData.userName != ''
-            ? userData.userName
-            : userData?.userWallet?.address.substring(0, 6),
-      };
-      setChatBotData(chatBotData => [sendObj, ...chatBotData]);
+    const msgLanguage = checkEngJpLang(msg)
 
-      dispatch(
-        getAiChat(
-          userData?.userWallet?.address,
-          chatDetailData?.bot_name,
-          chatDetailData?.collectionAddress,
-          selectedLanguageItem?.language_name,
-          chatDetailData?.nftId,
-          msg,
-          chatDetailData?.tokenId,
-        ),
-      )
-        .then(response => {
-          if (response?.messageCode || response?.description) {
-            showToast();
-          } else {
-            let receiveObj = {
-              message: response?.data?.response,
-              type: 'receiver',
-              time: timeConversion,
-              receiverImage: chatDetailData?.nftImage,
-              receiverName: chatDetailData?.bot_name,
-              question: response?.data?.question,
-            };
-            setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
-          }
-        })
-        .catch(err => {});
+    if (msgLanguage === 'en' || msgLanguage === 'ja') {
+      let timeConversion = moment(time).format('h:mm A');
+      if (msg && msg != '') {
+        let sendObj = {
+          message: msg,
+          type: 'sender',
+          time: timeConversion,
+          senderImage: userData?.avatar,
+          senderName:
+            userData.userName != ''
+              ? userData.userName
+              : userData?.userWallet?.address.substring(0, 6),
+        };
+        setChatBotData(chatBotData => [sendObj, ...chatBotData]);
+
+        dispatch(
+          getAiChat(
+            userData?.userWallet?.address,
+            chatDetailData?.bot_name,
+            chatDetailData?.collectionAddress,
+            msgLanguage,
+            chatDetailData?.nftId,
+            msg,
+            chatDetailData?.tokenId,
+          ),
+        )
+          .then(response => {
+            if (response?.messageCode || response?.description) {
+              showToast();
+            } else {
+              let receiveObj = {
+                message: response?.data?.response,
+                type: 'receiver',
+                time: timeConversion,
+                receiverImage: chatDetailData?.nftImage,
+                receiverName: chatDetailData?.bot_name,
+                question: response?.data?.question,
+              };
+               setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
+              console.log('reducerTabTitle and message', reducerTabTitle, response?.data?.response)
+              if(reducerTabTitle === 'Animated'){
+                AIAudio(response?.data?.response, msgLanguage)
+              }
+            }
+          })
+          .catch(err => { });
+      }
+    } else {
+      showToast(translate('common.INVALID_LANGUAGE'))
     }
   };
 
@@ -371,7 +383,7 @@ const ChatDetail = ({route, navigation}) => {
     return (
       <ImageBackground
         key={bannerImage}
-        source={{uri: aiBgImageData?.background_image + '?' + Date.now()}}
+        source={{ uri: aiBgImageData?.background_image + '?' + Date.now() }}
         style={styles.bannerImgContainer}>
         <C_Image
           uri={
@@ -410,7 +422,7 @@ const ChatDetail = ({route, navigation}) => {
                   </Text>
                 )}
               </View>
-              {reducerTabTitle != 'Animated' && ( remainCount > 0 && (
+              {reducerTabTitle != 'Animated' && (remainCount > 0 && (
                 <Text style={styles.remainWordText}>
                   {translate('common.remainWordCount')} {parseInt(remainCount)}
                 </Text>
@@ -437,15 +449,15 @@ const ChatDetail = ({route, navigation}) => {
         extraHeight={editMessage?.message ? hp(9) : hp(4)}
         keyboardShouldPersistTaps={'always'}
         keyboardOpeningTime={0}>
-        <View style={{flex: 0.4}}>
+        <View style={{ flex: 0.4 }}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>{chatDetailData?.bot_name}</Text>
-            <View style={[styles.separator, {width: '80%'}]} />
+            <View style={[styles.separator, { width: '80%' }]} />
             {!chatBotData?.response ? (
               <View>
                 <Text
-                  style={[styles.nftName, {marginVertical: 3}]}
+                  style={[styles.nftName, { marginVertical: 3 }]}
                   numberOfLines={2}>
                   {chatLoadSuccess?.data?.response}
                 </Text>
@@ -479,7 +491,7 @@ const ChatDetail = ({route, navigation}) => {
           </View>
         </View>
 
-        <View style={{flex: 0.6}}>
+        <View style={{ flex: 0.6 }}>
           <ListHeader />
           <View style={styles.chatContainer}>
             <FlatList
@@ -509,7 +521,7 @@ const ChatDetail = ({route, navigation}) => {
               } else {
                 sendMessage(message, new Date());
                 chatBotData.length > 0 &&
-                  flatList.current.scrollToIndex({animated: true, index: 0});
+                  flatList.current.scrollToIndex({ animated: true, index: 0 });
               }
             }}
           />

@@ -783,7 +783,8 @@
     "COMING_SOON": "곧 출시",
     "alertTitle": "알리다",
     "EMAIL_AUTHORIZATION_MSG": "이메일 승인이 진행되는 동안 잠시 기다려 주십시오...",
-    "LAUNCH_COMPLETED": "완전한"
+    "LAUNCH_COMPLETED": "완전한",
+    "INVALID_LANGUAGE": "메시지는 영어 또는 일본어를 사용하십시오."
   },
   "AwardPage": {},
   "wallet": {

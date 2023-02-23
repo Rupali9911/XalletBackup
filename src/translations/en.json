@@ -782,7 +782,8 @@
     "COMING_SOON": "Coming Soon",
     "alertTitle": "Alert",
     "EMAIL_AUTHORIZATION_MSG": "Please wait while the Email Authorization is in Process…",
-    "LAUNCH_COMPLETED": "Completed"
+    "LAUNCH_COMPLETED": "Completed",
+    "INVALID_LANGUAGE": "Please send message in English or Japanese"
   },
   "AwardPage": {},
   "wallet": {
