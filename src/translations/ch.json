@@ -784,7 +784,13 @@
     "alertTitle": "警报",
     "EMAIL_AUTHORIZATION_MSG": "正在处理电子邮件授权，请稍候...",
     "LAUNCH_COMPLETED": "完全的",
-    "bidWinner": "中标者出价 NFT"
+    "bidWinner": "中标者出价 NFT",
+    "CURRENCY_CONVERSION": "货币转换",
+    "SELECT_CURRENCY": "选择货币",
+    "USD": "USD - 美元",
+    "JPY": "JPY - 日元",
+    "KRW": "KRW - 韩元",
+    "CNY": "CNY - 人民币"
   },
   "AwardPage": {},
   "wallet": {

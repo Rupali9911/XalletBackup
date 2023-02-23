@@ -783,7 +783,13 @@
     "alertTitle": "Alert",
     "EMAIL_AUTHORIZATION_MSG": "Please wait while the Email Authorization is in Process…",
     "LAUNCH_COMPLETED": "Completed",
-    "bidWinner": "Winner bid NFT"
+    "bidWinner": "Winner bid NFT",
+    "CURRENCY_CONVERSION": "Currency Conversion",
+    "SELECT_CURRENCY": "Select Currency",
+    "USD": "USD - United States Dollar",
+    "JPY": "JPY - Japanese Yen",
+    "KRW": "KRW - Korean Won",
+    "CNY": "CNY - Chinese Yuan"
   },
   "AwardPage": {},
   "wallet": {

@@ -784,7 +784,13 @@
     "alertTitle": "アラート",
     "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…",
     "LAUNCH_COMPLETED": "発売終了",
-    "bidWinner": "NFTの落札"
+    "bidWinner": "NFTの落札",
+    "CURRENCY_CONVERSION": "通貨換算",
+    "SELECT_CURRENCY": "通貨を選択",
+    "USD": "USD - USドル",
+    "JPY": "JPY - 日本円",
+    "KRW": "KRW - 韓国ウォン",
+    "CNY": "CNY - 中国元"
   },
   "AwardPage": {},
   "wallet": {
