@@ -31,9 +31,7 @@ const MessageInput = props => {
 
   const setAudioToTextFunc = audio => {
     if (audio.length) {
-      audio.map((result, index) => {
-        setMessage(result);
-      });
+      setMessage(audio[0]);
     } else {
       setMessage('');
     }
