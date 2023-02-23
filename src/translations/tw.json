@@ -782,7 +782,8 @@
     "ENTER_INVALID_AMOUNT": "請輸入有效交易金額。",
     "COMING_SOON": "近日發布",
     "alertTitle": "警報",
-    "EMAIL_AUTHORIZATION_MSG": "正在處理電子郵件授權，請稍候..."
+    "EMAIL_AUTHORIZATION_MSG": "正在處理電子郵件授權，請稍候...",
+    "UPDATED_RECOVERY_PHRASE": "由於未設置助記詞，該功能暫時受限。您的助記詞非常重要，因為它會在您的設備丟失或被盜時用於找回您的錢包和資金。"
   },
   "AwardPage": {},
   "wallet": {

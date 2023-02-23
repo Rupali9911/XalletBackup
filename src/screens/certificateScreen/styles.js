@@ -771,9 +771,9 @@ const styles = StyleSheet.create({
   deleteRedImg: {
     alignSelf: 'center',
   },
-  dangerIconStyle:{
+  dangerIconStyle: {
     height: hp(8),
-    width: hp(8.8)
+    width: hp(8.8),
   },
   reclaimView: {
     flexDirection: 'row',
@@ -792,7 +792,7 @@ const styles = StyleSheet.create({
   deleteAccountText: {
     // fontWeight: 'bold',
     fontSize: SIZE(25),
-    textAlign: 'center'
+    textAlign: 'center',
   },
   textView: {
     flexDirection: 'row',
@@ -809,7 +809,7 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: Colors.BLACK1,
   },
-  descriptionJustify:{
+  descriptionJustify: {
     textAlign: 'justify',
     lineHeight: 16,
     color: Colors.BLACK1,
@@ -1126,13 +1126,29 @@ const styles = StyleSheet.create({
     bottom: 12,
     zIndex: 10,
   },
-  socialView:{
+  socialView: {
     height: 40,
     width: '15%',
     borderWidth: 0.3,
     borderColor: colors.GREY12,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingBottom: 25,
+  },
+  button: {
+    width: '48%',
+    ...CommonStyles.button,
+    marginTop: hp('3%'),
+  },
+  outlinedButton: {
+    width: '48%',
+    ...CommonStyles.outlineButton,
+    marginTop: hp('3%'),
   },
 });
 

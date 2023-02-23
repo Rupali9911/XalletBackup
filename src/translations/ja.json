@@ -782,7 +782,8 @@
     "ENTER_INVALID_AMOUNT": "送金可能な残高数量を入力ください",
     "COMING_SOON": "近日公開",
     "alertTitle": "アラート",
-    "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…"
+    "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…",
+    "UPDATED_RECOVERY_PHRASE": "復元フレーズが設定されていたないため一時的に機能制限しています。復元フレーズは、デバイスが紛失または盗難された場合等に、ウォレットや資金の復元に使用されるため、非常に重要です。"
   },
   "AwardPage": {},
   "wallet": {
