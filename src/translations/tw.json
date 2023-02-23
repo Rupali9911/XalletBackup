@@ -784,7 +784,8 @@
     "alertTitle": "警報",
     "EMAIL_AUTHORIZATION_MSG": "正在處理電子郵件授權，請稍候...",
     "LAUNCH_COMPLETED": "完全的",
-    "bidWinner": "中標者出價 NFT"
+    "bidWinner": "中標者出價 NFT",
+    "INVALID_LANGUAGE": "請使用英文或日文留言。"
   },
   "AwardPage": {},
   "wallet": {

@@ -784,7 +784,8 @@
     "alertTitle": "アラート",
     "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…",
     "LAUNCH_COMPLETED": "発売終了",
-    "bidWinner": "NFTの落札"
+    "bidWinner": "NFTの落札",
+    "INVALID_LANGUAGE": "メッセージは、英語または日本語を使用してください。"
   },
   "AwardPage": {},
   "wallet": {
