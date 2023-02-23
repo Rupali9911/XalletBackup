@@ -45,6 +45,7 @@ import {ImagekitType} from '../../common/ImageConstant';
 import * as Tabs from 'react-native-collapsible-tab-view';
 import SocialMediaLinks from '../../components/SocialMediaLinks/index';
 import {SocketHandler} from './socketHandler';
+import MultiActionModal from '../certificateScreen/MultiActionModal';
 
 const {
   SettingIcon,
@@ -61,6 +62,7 @@ function Profile({navigation, connector, route}) {
   const actionSheetRef = useRef(null);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
+  const [backupPhrasePopup, setBackupPhrasePopup] = useState(false);
 
   // =============== Getting data from reducer ========================
   const {
@@ -71,6 +73,7 @@ function Profile({navigation, connector, route}) {
     userData,
     profilePullToRefresh,
   } = useSelector(state => state.UserReducer);
+  const {isBackup} = useSelector(state => state.UserReducer);
 
   //================== Components State Defination ===================
   const [openDial, setOpenDial] = useState({
@@ -323,7 +326,9 @@ function Profile({navigation, connector, route}) {
       return (
         <TouchableOpacity
           key={userDetails?.avatar}
-          onPress={() => onSelect('profile')}>
+          onPress={() =>
+            isBackup ? onSelect('profile') : setBackupPhrasePopup(true)
+          }>
           {renderImage()}
         </TouchableOpacity>
       );
@@ -410,7 +415,9 @@ function Profile({navigation, connector, route}) {
           {!route.params && (
             <TouchableOpacity
               style={styles.editImage}
-              onPress={() => onSelect('banner')}>
+              onPress={() =>
+                isBackup ? onSelect('banner') : setBackupPhrasePopup(true)
+              }>
               <EditImage width={SIZE(12)} height={SIZE(12)} />
             </TouchableOpacity>
           )}
@@ -454,7 +461,11 @@ function Profile({navigation, connector, route}) {
                 height: hp(4),
                 marginTop: SIZE(5),
               }}
-              onPress={() => navigation.navigate('EditProfile', {userDetails})}>
+              onPress={() =>
+                isBackup
+                  ? navigation.navigate('EditProfile', {userDetails})
+                  : setBackupPhrasePopup(true)
+              }>
               <EditButtonText>
                 {translate('wallet.common.editprofile')}
               </EditButtonText>
@@ -470,6 +481,12 @@ function Profile({navigation, connector, route}) {
             onPress={selectActionSheet}
           />
         </View>
+
+        <MultiActionModal
+          isVisible={backupPhrasePopup}
+          closeModal={() => setBackupPhrasePopup(false)}
+          navigation={navigation}
+        />
       </View>
     );
   };
@@ -512,10 +529,10 @@ function Profile({navigation, connector, route}) {
           key={'profileCreated'}>
           <NFTCreated id={id} isFocused={isFocused} />
         </Tabs.Tab>
-        <Tabs.Tab 
-        name={translate('wallet.common.owned')}
-        label={translate('wallet.common.owned')}
-        key={'nftOwned'}>
+        <Tabs.Tab
+          name={translate('wallet.common.owned')}
+          label={translate('wallet.common.owned')}
+          key={'nftOwned'}>
           <NFTOwned id={id} isFocused={isFocused} />
         </Tabs.Tab>
       </Tabs.Container>

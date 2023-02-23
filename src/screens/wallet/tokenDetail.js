@@ -1,4 +1,3 @@
-import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import NumberFormat from 'react-number-format';
@@ -32,10 +31,10 @@ import {balance} from './functions';
 import {networkType} from '../../common/networkType';
 import {Loader} from '../../components';
 import sendRequest, {getWallet} from '../../helpers/AxiosApiRequest';
+import MultiActionModal from '../certificateScreen/MultiActionModal';
 
 const TokenDetail = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const isFocused = useIsFocused();
   const environment = IsTestNet ? 'testnet' : 'mainnet';
 
   const {
@@ -57,6 +56,8 @@ const TokenDetail = ({route, navigation}) => {
   const [wallet, setWallet] = useState(null);
 
   const config = getConfigDetailsFromEnviorment(networkType?.name, item.type);
+  const [backupPhrasePopup, setBackupPhrasePopup] = useState(false);
+  const {isBackup} = useSelector(state => state.UserReducer);
 
   useEffect(async () => {
     setLoading(true);
@@ -296,17 +297,23 @@ const TokenDetail = ({route, navigation}) => {
           <View style={[styles.headerBtns, styles.headerBottomCont]}>
             <HeaderBtns
               onPress={() => {
-                navigation.navigate('send', {
-                  item,
-                  type: item.type,
-                  tokenInfo: route.params.tokenInfo,
-                });
+                isBackup
+                  ? navigation.navigate('send', {
+                      item,
+                      type: item.type,
+                      tokenInfo: route.params.tokenInfo,
+                    })
+                  : setBackupPhrasePopup(true);
               }}
               image={ImagesSrc.send}
               label={translate('wallet.common.send')}
             />
             <HeaderBtns
-              onPress={() => navigation.navigate('receive', {item})}
+              onPress={() =>
+                isBackup
+                  ? navigation.navigate('receive', {item})
+                  : setBackupPhrasePopup(true)
+              }
               image={ImagesSrc.receive}
               label={translate('wallet.common.receive')}
             />
@@ -316,6 +323,11 @@ const TokenDetail = ({route, navigation}) => {
               label={translate('wallet.common.buy')}
             /> */}
           </View>
+          <MultiActionModal
+            isVisible={backupPhrasePopup}
+            closeModal={() => setBackupPhrasePopup(false)}
+            navigation={navigation}
+          />
         </View>
       </GradientBackground>
       {loading ? <Loader /> : <History coin={item} onRefresh={getData} />}
