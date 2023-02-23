@@ -19,7 +19,7 @@ import {maxLength50, validateEmail} from '../../../utils';
 import {modalAlert} from '../../../common/function';
 import {translate} from '../../../walletUtils';
 import {InputFields} from './components';
-import {getAddress, requestConnectToDApp, signMessage} from './magic-link';
+import {getAddress, requestConnectToDApp, signMessage, requestDisconnectDApp}  from './magic-link';
 import styles from './styles';
 import {SIGN_MESSAGE} from '../../../common/constants';
 import TextView from '../../../components/appText';
@@ -61,6 +61,7 @@ const LoginCrypto = ({navigation}) => {
   const collectWallet = async timeout => {
     try {
       Keyboard.dismiss();
+      await requestDisconnectDApp();
       let token = await requestConnectToDApp(email);
       if (token) {
         dispatch(startLoading());
@@ -120,10 +121,12 @@ const LoginCrypto = ({navigation}) => {
         KeyboardShiftStyle={styles.keyboardShift}>
         <View style={styles.sectionCont}>
           <View style={styles.contentContainer}>
+          <View style={styles.padding}>
             <AppLogo />
             <TextView style={styles.title}>
               {translate('common.loginWithEmail')}
             </TextView>
+            </View>
           </View>
 
           <InputFields

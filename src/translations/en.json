@@ -782,7 +782,8 @@
     "COMING_SOON": "Coming Soon",
     "alertTitle": "Alert",
     "EMAIL_AUTHORIZATION_MSG": "Please wait while the Email Authorization is in Process…",
-    "UPDATED_RECOVERY_PHRASE": "This functionality is temporarily restricted because the Recovery phrase was not set.The Recovery Phrase is extremely important because it can be used to recover wallets and funds etc. if a device is lost or stolen."
+    "UPDATED_RECOVERY_PHRASE": "This functionality is temporarily restricted because the Recovery phrase was not set.The Recovery Phrase is extremely important because it can be used to recover wallets and funds etc. if a device is lost or stolen.",
+    "LAUNCH_COMPLETED": "Completed"
   },
   "AwardPage": {},
   "wallet": {
@@ -1045,7 +1046,6 @@
       "reject": "Reject",
       "connectionRequest": "{{name}} wants to connect with your wallet!",
       "noAppConnect": "No app connected to show",
-      "paymentComplete": "Complete",
       "paymentFailed": "Payment Failed",
       "remittanceFailure": "Remittance Failure",
       "Dislike": "Dislike",
