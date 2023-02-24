@@ -8,9 +8,12 @@ import cancelImg from '../../../assets/images/cancel.png';
 import {translate} from '../../walletUtils';
 import {SIZE} from '../../constants';
 import Checkbox from '../../components/checkbox';
-import {hp, wp} from '../../constants/responsiveFunct';
 import Colors from '../../constants/Colors';
 import {Portal} from '@gorhom/portal';
+import {RF, wp} from '../../constants/responsiveFunct';
+import AppButton from '../../components/appButton';
+import CommonStyles from '../../constants/styles';
+import Fonts from '../../constants/Fonts';
 
 const ShowModal = props => {
   const {
@@ -32,6 +35,8 @@ const ShowModal = props => {
     checkBoxDescription,
     isCheck,
     onChecked,
+    onLaterPress,
+    backupPhraseWithLater,
   } = props;
 
   return (
@@ -116,58 +121,87 @@ const ShowModal = props => {
               </View>
             ) : null}
 
-            <View style={styles.groupButtonView}>
-              <GroupButton
-                leftText={
-                  leftButtonTitle ? leftButtonTitle : translate('common.Cancel')
-                }
-                leftDisabled={leftDisabled ? leftDisabled : false}
-                leftLoading={false}
-                onLeftPress={() =>
-                  backupPhrase
-                    ? onBackUpNowPress()
-                    : closeModal
-                    ? closeModal()
-                    : onLeftPress()
-                }
-                leftStyle={
-                  isDelete
-                    ? styles.reClaimRightGroupButton
-                    : styles.rightGroupButton
-                }
-                leftTextStyle={
-                  isDelete
-                    ? styles.reClaimrightGroupButtonText
-                    : styles.rightGroupButtonText
-                }
-                rightText={
-                  rightButtonTitle
-                    ? rightButtonTitle
-                    : translate('common.Confirm')
-                }
-                rightDisabled={
-                  checkBoxDescription
-                    ? isCheck
-                      ? rightDisabled
+            {backupPhraseWithLater ? (
+              <View style={styles.rowContainer}>
+                <AppButton
+                  label={translate('wallet.common.later')}
+                  containerStyle={styles.outlinedButton}
+                  labelStyle={[
+                    CommonStyles.outlineButtonLabel,
+                    CommonStyles.text(
+                      Fonts.ARIAL,
+                      Colors.greyButtonLabel,
+                      RF(1.55),
+                    ),
+                  ]}
+                  onPress={() => onLaterPress()}
+                />
+                <AppButton
+                  label={translate('wallet.common.backupNow')}
+                  containerStyle={styles.button}
+                  labelStyle={[
+                    CommonStyles.buttonLabel,
+                    CommonStyles.text(Fonts.ARIAL, Colors.white, RF(1.55)),
+                  ]}
+                  onPress={() => onBackUpNowPress()}
+                />
+              </View>
+            ) : (
+              <View style={styles.groupButtonView}>
+                <GroupButton
+                  leftText={
+                    leftButtonTitle
+                      ? leftButtonTitle
+                      : translate('common.Cancel')
+                  }
+                  leftDisabled={leftDisabled ? leftDisabled : false}
+                  leftLoading={false}
+                  onLeftPress={() =>
+                    backupPhrase
+                      ? onBackUpNowPress()
+                      : closeModal
+                      ? closeModal()
+                      : onLeftPress()
+                  }
+                  leftStyle={
+                    isDelete
+                      ? styles.reClaimRightGroupButton
+                      : styles.rightGroupButton
+                  }
+                  leftTextStyle={
+                    isDelete
+                      ? styles.reClaimrightGroupButtonText
+                      : styles.rightGroupButtonText
+                  }
+                  rightText={
+                    rightButtonTitle
+                      ? rightButtonTitle
+                      : translate('common.Confirm')
+                  }
+                  rightDisabled={
+                    checkBoxDescription
+                      ? isCheck
                         ? rightDisabled
-                        : false
-                      : true
-                    : rightDisabled
-                    ? rightDisabled
-                    : false
-                }
-                rightLoading={rightLoading ? rightLoading : false}
-                onRightPress={onRightPress}
-                rightStyle={
-                  checkBoxDescription
-                    ? isCheck
-                      ? {backgroundColor: Colors.RED3}
-                      : styles.rightDeleteDisabled
-                    : styles.reClaimRightGroupButton
-                }
-                rightTextStyle={styles.reClaimrightGroupButtonText}
-              />
-            </View>
+                          ? rightDisabled
+                          : false
+                        : true
+                      : rightDisabled
+                      ? rightDisabled
+                      : false
+                  }
+                  rightLoading={rightLoading ? rightLoading : false}
+                  onRightPress={onRightPress}
+                  rightStyle={
+                    checkBoxDescription
+                      ? isCheck
+                        ? {backgroundColor: Colors.RED3}
+                        : styles.rightDeleteDisabled
+                      : styles.reClaimRightGroupButton
+                  }
+                  rightTextStyle={styles.reClaimrightGroupButtonText}
+                />
+              </View>
+            )}
           </View>
         </Modal>
       </Portal>

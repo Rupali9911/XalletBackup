@@ -785,12 +785,17 @@
     "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…",
     "LAUNCH_COMPLETED": "発売終了",
     "bidWinner": "NFTの落札",
+<<<<<<< HEAD
     "CURRENCY_CONVERSION": "通貨換算",
     "SELECT_CURRENCY": "通貨を選択",
     "USD": "USD - USドル",
     "JPY": "JPY - 日本円",
     "KRW": "KRW - 韓国ウォン",
     "CNY": "CNY - 中国元"
+=======
+    "INVALID_LANGUAGE": "メッセージは、英語または日本語を使用してください。",
+    "UPDATED_RECOVERY_PHRASE": "復元フレーズが設定されていたないため一時的に機能制限しています。復元フレーズは、デバイスが紛失または盗難された場合等に、ウォレットや資金の復元に使用されるため、非常に重要です。",
+>>>>>>> 5179ccef6389cec9f22e062ee3cad8ec62678c44
   },
   "AwardPage": {},
   "wallet": {

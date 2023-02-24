@@ -203,3 +203,18 @@ export const convertValue = value => {
   }
   return shortValue + suffixes[suffixNum];
 };
+
+
+export const checkEngJpLang = text => {
+  const isEnglish = new RegExp(/[a-zA-Z0-9!@#$%^&*()-_+={}[\]/,.?"':;|<>~` ]$/,)
+  const isJpanese = new RegExp(`/[\u3000-\u303F]|[\u3040-\u309F]|[\u30A0-\u30FF]|[\uFF00-\uFFEF]|[\u4E00-\u9FAF]|[\u2605-\u2606]|[\u2190-\u2195]|\u203B/`,)
+  if(isEnglish.test(text)){
+    return 'en'
+  }else if (isJpanese.test(text)){
+    return 'ja'
+  }else{
+    return 'none'
+  }
+  
+
+};
