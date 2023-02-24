@@ -785,17 +785,14 @@
     "EMAIL_AUTHORIZATION_MSG": "正在處理電子郵件授權，請稍候...",
     "LAUNCH_COMPLETED": "完全的",
     "bidWinner": "中標者出價 NFT",
-<<<<<<< HEAD
     "CURRENCY_CONVERSION": "貨幣轉換",
     "SELECT_CURRENCY": "選擇貨幣",
     "USD": "USD - 美元",
     "JPY": "JPY - 日元",
     "KRW": "KRW - 韓元",
-    "CNY": "CNY - 人民幣"
-=======
+    "CNY": "CNY - 人民幣",
     "INVALID_LANGUAGE": "請使用英文或日文留言。",
     "UPDATED_RECOVERY_PHRASE": "由於未設置助記詞，該功能暫時受限。您的助記詞非常重要，因為它會在您的設備丟失或被盜時用於找回您的錢包和資金。",
->>>>>>> 5179ccef6389cec9f22e062ee3cad8ec62678c44
   },
   "AwardPage": {},
   "wallet": {

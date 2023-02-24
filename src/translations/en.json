@@ -784,17 +784,14 @@
     "EMAIL_AUTHORIZATION_MSG": "Please wait while the Email Authorization is in Process…",
     "LAUNCH_COMPLETED": "Completed",
     "bidWinner": "Winner bid NFT",
-<<<<<<< HEAD
     "CURRENCY_CONVERSION": "Currency Conversion",
     "SELECT_CURRENCY": "Select Currency",
     "USD": "USD - United States Dollar",
     "JPY": "JPY - Japanese Yen",
     "KRW": "KRW - Korean Won",
-    "CNY": "CNY - Chinese Yuan"
-=======
+    "CNY": "CNY - Chinese Yuan",
     "INVALID_LANGUAGE": "Please send message in English or Japanese",
     "UPDATED_RECOVERY_PHRASE": "This functionality is temporarily restricted because the Recovery phrase was not set.The Recovery Phrase is extremely important because it can be used to recover wallets and funds etc. if a device is lost or stolen.",
->>>>>>> 5179ccef6389cec9f22e062ee3cad8ec62678c44
   },
   "AwardPage": {},
   "wallet": {

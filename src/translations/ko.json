@@ -785,17 +785,14 @@
     "EMAIL_AUTHORIZATION_MSG": "이메일 승인이 진행되는 동안 잠시 기다려 주십시오...",
     "LAUNCH_COMPLETED": "완전한",
     "bidWinner": "NFT 낙찰",
-<<<<<<< HEAD
     "CURRENCY_CONVERSION": "통화 변환",
     "SELECT_CURRENCY": "통화 선택",
     "USD": "USD - 미국 달러",
     "JPY": "JPY - 일본 엔",
     "KRW": "KRW - 한국 원",
-    "CNY": "CNY - 중국 위안"
-=======
+    "CNY": "CNY - 중국 위안",
     "INVALID_LANGUAGE": "메시지는 영어 또는 일본어를 사용하십시오.",
     "UPDATED_RECOVERY_PHRASE": "복구 문구가 설정되지 않아 기능이 일시적으로 제한됩니다. 복구 문구는 장치를 분실하거나 도난당한 경우 지갑과 자금을 복구하는 데 사용되므로 매우 중요합니다.",
->>>>>>> 5179ccef6389cec9f22e062ee3cad8ec62678c44
   },
   "AwardPage": {},
   "wallet": {
