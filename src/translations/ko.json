@@ -787,6 +787,7 @@
     "bidWinner": "NFT 낙찰",
     "INVALID_LANGUAGE": "메시지는 영어 또는 일본어를 사용하십시오.",
     "UPDATED_RECOVERY_PHRASE": "복구 문구가 설정되지 않아 기능이 일시적으로 제한됩니다. 복구 문구는 장치를 분실하거나 도난당한 경우 지갑과 자금을 복구하는 데 사용되므로 매우 중요합니다.",
+    "AI_ANIMATED": "생기 있는"
   },
   "AwardPage": {},
   "wallet": {

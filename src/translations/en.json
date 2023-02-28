@@ -786,6 +786,7 @@
     "bidWinner": "Winner bid NFT",
     "INVALID_LANGUAGE": "Please send message in English or Japanese",
     "UPDATED_RECOVERY_PHRASE": "This functionality is temporarily restricted because the Recovery phrase was not set.The Recovery Phrase is extremely important because it can be used to recover wallets and funds etc. if a device is lost or stolen.",
+    "AI_ANIMATED": "Animated"
   },
   "AwardPage": {},
   "wallet": {
