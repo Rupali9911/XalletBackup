@@ -308,10 +308,17 @@ function Setting({route, navigation}) {
           />
           <MultiButtonModal
             isVisible={logoutPopup}
-            onOkPress={() => {
+            closeModal={() => setLogoutPopup(false)}
+            title={translate('wallet.common.verification')}
+            description={translate('wallet.common.logOutQ')}
+            leftButtonText={translate('common.Cancel')}
+            rightButtonText={translate('common.OK')}
+            onRightPress={() => {
               logoutConfirm();
             }}
-            closeModal={() => setLogoutPopup(false)}
+            onLeftPress={() => {
+              setLogoutPopup(false);
+            }}
           />
 
           {/*<TouchableHighlight onPress={_pressHandler}>*/}
