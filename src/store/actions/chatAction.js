@@ -200,46 +200,61 @@ export const remainWordCountData = count => ({
 //=====================Chat=====================
 export const getAiChat =
   (address, name, collectionAddress, locale, nftId, text, tokenId) =>
-    (dispatch, getState) => {
-      let bot_name = name?.split(' ').slice?.(1)?.[0]
-        ? name?.split(' ').slice?.(1)?.[0]
-        : name;
-      const { reducerTabTitle } = getState().chatReducer;
-      dispatch(chatLoadingStart(true));
-      return new Promise((resolve, reject) => {
-        let url = `https://prod-backend.xanalia.com/xana-genesis-chat/chat-bot-ai`;
-        let data = {
-          address,
-          bot_name,
-          collectionAddress,
-          locale,
-          nftId: nftId.toString(),
-          text,
-          tokenId,
-          is_owned: reducerTabTitle === 'Owned' ? true : false,
-        };
-        sendRequest({
-          url,
-          method: 'POST',
-          data,
+  (dispatch, getState) => {
+    const {reducerTabTitle} = getState().chatReducer;
+
+    let bot_name = name?.includes('#')
+      ? reducerTabTitle === 'Animated'
+        ? name?.split(' ')[2]
+        : name?.split(' ')[1]
+      : name;
+
+    dispatch(chatLoadingStart(true));
+    return new Promise((resolve, reject) => {
+      let url =
+        reducerTabTitle === 'Animated'
+          ? `${xana_base_url}/chat-bot-test`
+          : `${xana_base_url}/chat-bot-ai`;
+
+      let commonParam = {
+        address,
+        bot_name,
+        locale,
+        text,
+        tokenId,
+      } 
+      let requestParams = reducerTabTitle === 'Animated' ? {...commonParam, is_owned: true, }: {...commonParam, 
+        collectionAddress,
+        nftId: nftId.toString(),
+        is_owned: reducerTabTitle === 'Owned' ? true : false
+      };
+      
+      sendRequest({
+        url,
+        method: 'POST',
+        data: requestParams,
+      })
+        .then(res => {
+          dispatch(chatLoadingStart(false));
+          if (reducerTabTitle != 'Animated') {
+            res?.data
+              ? (dispatch(chatLoadingSuccess(res)),
+                dispatch(
+                  remainWordCountData(res?.remainWordLimit?.userWordLimit),
+                ),
+                resolve(res))
+              : (dispatch(chatLoadingSuccess(res)), resolve(res));
+          } else {
+            dispatch(chatLoadingSuccess(res));
+            resolve(res);
+          }
         })
-          .then(res => {
-            dispatch(chatLoadingStart(false));
-            if (res?.data) {
-              dispatch(chatLoadingSuccess(res));
-              dispatch(remainWordCountData(res?.remainWordLimit?.userWordLimit));
-              resolve(res);
-            } else {
-              dispatch(chatLoadingSuccess(res));
-              resolve(res);
-            }
-          })
-          .catch(err => {
-            dispatch(chatLoadFail(err));
-            reject(err);
-          });
-      });
-    };
+        .catch(err => {
+          dispatch(chatLoadFail(err));
+          reject(err);
+        });
+    });
+  };
 
 //==================================Owned-Other==============================
 export const getNftCollections =
@@ -251,7 +266,7 @@ export const getNftCollections =
         ? `${xana_base_url}/my-data`
         : `${xana_base_url}/other-data`;
 
-    const data = {
+    const requestParams = {
       cursor: '',
       owner: address,
       page: page,
@@ -260,14 +275,14 @@ export const getNftCollections =
 
     (tabTitle === 'Owned'
       ? sendRequest({
-        url,
-        method: 'POST',
-      })
+          url,
+          method: 'POST',
+        })
       : sendRequest({
-        url,
-        method: 'POST',
-        data,
-      })
+          url,
+          method: 'POST',
+          data: requestParams,
+        })
     )
       .then(response => {
         if (response) {
@@ -356,7 +371,7 @@ export const getChatBotHistory =
   };
 
 //================================== Owned APIs==============================
-export const uploadAIBgImage = 
+export const uploadAIBgImage =
   (file, collections_address, token_id) => async (dispatch, getState) => {
     dispatch(getAIBackgroundImageStart());
 

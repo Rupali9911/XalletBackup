@@ -133,13 +133,13 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.xanaliaMarketplace.app"
+        applicationId "com.xallet.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         // minSdkVersion 24
         multiDexEnabled true
-        versionCode 6
-        versionName "3.01.20"
+        versionCode 11
+        versionName "3.02.10"
         missingDimensionStrategy 'react-native-camera', 'general'
         missingDimensionStrategy 'store', 'play'
         vectorDrawables.useSupportLibrary = true

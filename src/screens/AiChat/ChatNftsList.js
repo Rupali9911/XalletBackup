@@ -18,6 +18,7 @@ import {translate} from '../../walletUtils';
 import styles from './style';
 import {ActivityIndicator} from 'react-native-paper';
 import {ImagekitType} from '../../common/ImageConstant';
+import {INFT} from '../../constants/GenesisAnimated';
 
 const ChatNftsList = ({tabTitle}) => {
   // =============== Getting data from States =========================
@@ -132,17 +133,36 @@ const ChatNftsList = ({tabTitle}) => {
 
   // ========================== Reender Item of Flatlist ==========================================
   const renderItem = ({item, index}) => {
-    const renderImg = item?.smallImage;
-    const imgUrl = renderImg?.slice(0, renderImg?.lastIndexOf('.'));
-    const imgExtension = renderImg?.slice(renderImg?.lastIndexOf('.'));
-    const ImgNfts = imgUrl + '-thumb' + imgExtension + '?tr=w-120,tr=h-120';
+    const getImg = tabTitle === 'Animated' ? item?.image : item?.smallImage;
+    const renderImg = getImg.includes('.png')
+      ? getImg.replace('.png', '-thumb.png')
+      : getImg;
+
+    const renderName =
+      tabTitle === 'Animated'
+        ? item?.displayName
+          ? item?.displayName
+          : item?.nftName
+        : item?.name.slice(item?.name.lastIndexOf('#'));
+
+    const renderNavigationData = {
+      listItems: item,
+      nftImage: renderImg,
+      bot_name: renderName,
+      collectionAddress:
+        tabTitle === 'Animated'
+          ? item?.collectionAddress
+          : item?.collection?.address,
+      nftId: tabTitle === 'Animated' ? item?.nftId : item?.id,
+      tokenId: tabTitle === 'Animated' ? item?.token_id : item?.tokenId,
+    };
+
     return (
       <TouchableOpacity
         onPress={() => {
           dispatch(setTabTitle(tabTitle));
           navigation.navigate('ChatDetail', {
-            nftDetail: item,
-            nftImage: ImgNfts,
+            chatDetailData: renderNavigationData
           });
         }}>
         <View style={styles.nftItemContainer}>
@@ -150,13 +170,11 @@ const ChatNftsList = ({tabTitle}) => {
             <C_Image
               imageType={'profile'}
               size={ImagekitType.AVATAR}
-              uri={ImgNfts}
+              uri={renderImg}
               imageStyle={styles.cImageContainer}
             />
           </View>
-          <Text style={styles.nftTextShow}>
-            {item?.name.slice(item?.name.lastIndexOf('#'))}
-          </Text>
+          <Text style={styles.nftTextShow}>{renderName}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -167,7 +185,14 @@ const ChatNftsList = ({tabTitle}) => {
   //=====================(Main return Function)=============================
   return (
     <View style={styles.mainListContainer}>
-      {isNftLoading && nftPageChange == 1 ? (
+      {tabTitle === 'Animated' ? (
+        <FlatList
+          showsVerticalScrollIndicator={true}
+          data={INFT}
+          keyExtractor={keyExtractor}
+          renderItem={memoizedValue}
+        />
+      ) : isNftLoading && nftPageChange == 1 ? (
         <View style={styles.centerViewStyle}>
           <Loader />
         </View>

@@ -8,6 +8,9 @@ let NEXT_PUBLIC_SOCKET_DOMAIN = '';
 let NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY = '';
 let XANALIA_WEB = '';
 let CORPORATE_COLLAB_URL = '';
+const GET_JPAUDIO_FROM_TEXT = 'https://test-ai.xanalia.com/japanese_text_to_speech/?id1=1&text='
+const GET_ENAUDIO_FROM_TEXT = 'http://api.voicerss.org/?key=ac968af69f5d4ff9830083f708fcdfbe&hl=en-ca&v=Clara&src='
+
 if (networkType === 'mainnet') {
   BASE_URL = 'https://api.xanalia.com';
   NEW_BASE_URL = 'https://prod-backend.xanalia.com';
@@ -58,5 +61,7 @@ export {
   NEXT_PUBLIC_MAGIC_PUBLISHABLE_KEY,
   XANALIA_WEB,
   CORPORATE_COLLAB_URL,
-  CORPORATE_NAME
+  CORPORATE_NAME,
+  GET_ENAUDIO_FROM_TEXT,
+  GET_JPAUDIO_FROM_TEXT
 };

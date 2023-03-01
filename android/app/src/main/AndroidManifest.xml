@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.xanaliaMarketplace.app"
+  package="com.xallet.app"
   xmlns:tools="http://schemas.android.com/tools"
   >
 
@@ -13,7 +13,7 @@
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
     <application
-      android:name="com.xanaliaMarketplace.app.MainApplication"
+      android:name="com.xallet.app.MainApplication"
       android:largeHeap="true"
       android:label="@string/app_name"
       android:icon="@mipmap/ic_launcher"
@@ -24,7 +24,7 @@
       tools:targetApi="28"
       android:theme="@style/AppTheme">
       <activity
-        android:name="com.xanaliaMarketplace.app.MainActivity"
+        android:name="com.xallet.app.MainActivity"
           android:exported= "true"
         android:label="@string/app_name"
         android:configChanges="keyboard|keyboardHidden|orientation|screenSize|uiMode"
