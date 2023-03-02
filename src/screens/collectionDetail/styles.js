@@ -1,22 +1,24 @@
-import {StyleSheet} from 'react-native';
+import { StyleSheet } from 'react-native';
 import Colors from '../../constants/Colors';
 
-import {SIZE} from '../../common/responsiveFunction';
-import {colors, fonts} from '../../res';
+import { SIZE } from '../../common/responsiveFunction';
+import { colors, fonts } from '../../res';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
   responsiveFontSize as RF,
 } from '../../common/responsiveFunction';
-import {Dimensions} from 'react-native';
-const {height, width} = Dimensions.get('window');
+import { Dimensions } from 'react-native';
+const { height, width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   loaderParentActivity: {
     height: height / 6,
     width: width,
   },
-  loaderParent: {marginTop: height / 8},
+  loaderParent: {
+    marginTop: height / 8
+  },
   backIcon: {
     width: SIZE(16),
     height: SIZE(16),
@@ -36,7 +38,7 @@ const styles = StyleSheet.create({
   },
   bannerView: {
     width: '100%',
-    height: SIZE(200),
+    //height: SIZE(200),
   },
   bannerImage: {
     width: '100%',
@@ -47,12 +49,12 @@ const styles = StyleSheet.create({
     width: '100%',
     position: 'absolute',
     alignItems: 'center',
-    top: SIZE(158),
+    top: SIZE(33),
     zIndex: 1,
   },
   bannerIcon: {
-    width: SIZE(85),
-    height: SIZE(85),
+    width: SIZE(80),
+    height: SIZE(80),
     borderRadius: SIZE(43),
   },
   collectionName: {
@@ -325,9 +327,16 @@ const styles = StyleSheet.create({
     margin: SIZE(10),
     fontSize: SIZE(12),
   },
-  text: {margin: SIZE(10), fontSize: SIZE(12)},
-  themeColor: {color: Colors.themeColor},
-  blackTextColor: {color: Colors.black},
+  text: {
+    margin: SIZE(10),
+    fontSize: SIZE(12)
+  },
+  themeColor: {
+    color: Colors.themeColor
+  },
+  blackTextColor: {
+    color: Colors.black
+  },
   mainNftText: {
     width: '65%',
     marginTop: SIZE(55),
