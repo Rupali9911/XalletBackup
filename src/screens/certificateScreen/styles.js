@@ -617,6 +617,7 @@ const styles = StyleSheet.create({
   checkBoxLabel: {
     marginRight: 0,
     color: Colors.BLACK1,
+    lineHeight: 16,
   },
   groupButtonView: {
     flexDirection: 'row',
@@ -788,11 +789,13 @@ const styles = StyleSheet.create({
   reclaimText: {
     fontWeight: 'bold',
     fontSize: SIZE(25),
+    lineHeight: 26,
   },
   deleteAccountText: {
     // fontWeight: 'bold',
     fontSize: SIZE(25),
     textAlign: 'center',
+    lineHeight: 26,
   },
   textView: {
     flexDirection: 'row',
@@ -803,6 +806,7 @@ const styles = StyleSheet.create({
     color: Colors.GREY1,
     margin: SIZE(10),
     fontSize: SIZE(12),
+    lineHeight: 13,
   },
   descriptionCenter: {
     textAlign: 'center',

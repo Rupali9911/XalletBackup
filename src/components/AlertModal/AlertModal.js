@@ -42,6 +42,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: '8%',
     marginTop: SIZE(20),
     textAlign: 'center',
+    lineHeight: 20,
   },
   modalView: {
     backgroundColor: 'white',
@@ -55,6 +56,7 @@ export const styles = StyleSheet.create({
     fontFamily: 'Arial',
     color: COLORS.Black,
     marginTop: SIZE(25),
+    lineHeight: 24,
   },
   okButtonTitle: {
     textAlign: 'center',
