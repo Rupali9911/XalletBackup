@@ -1,7 +1,7 @@
-import {useNavigation} from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   BackHandler,
   Dimensions,
@@ -11,18 +11,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {FONT, SVGS} from 'src/constants';
-import {C_Image, Loader} from '../../components';
+import { FONT, SVGS, IMAGES } from 'src/constants';
+import { C_Image, Loader } from '../../components';
 import AppBackground from '../../components/appBackground';
-import {COLORS, SIZE} from '../../constants';
+import { COLORS, SIZE } from '../../constants';
 import ImageSrc from '../../constants/Images';
-import {fonts} from '../../res';
-import {getHotCollectionDetail} from '../../store/actions/hotCollectionAction';
-import {translate} from '../../walletUtils';
+import { fonts } from '../../res';
+import { getHotCollectionDetail } from '../../store/actions/hotCollectionAction';
+import { translate } from '../../walletUtils';
 import styles from './styles';
-import {NEW_BASE_URL} from '../../common/constants';
-import {modalAlert} from '../../common/function';
-import {wp} from '../../constants/responsiveFunct';
+import { NEW_BASE_URL } from '../../common/constants';
+import { modalAlert } from '../../common/function';
+import { wp } from '../../constants/responsiveFunct';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import ActivityTab from './activityTab';
 import GalleryTab from './galleryTab';
@@ -30,15 +30,15 @@ import OnSaleTab from './onSaleTab';
 import OwnedTab from './ownedTab';
 import SoldOutTab from './soldOutTab';
 import CollectionTab from './collectionTab';
-import {networkType} from '../../common/networkType';
+import { networkType } from '../../common/networkType';
 import TabViewScreen from '../../components/TabView/TabViewScreen';
-import {useDispatch, useSelector} from 'react-redux';
-import {ImagekitType} from '../../common/ImageConstant';
+import { useDispatch, useSelector } from 'react-redux';
+import { ImagekitType } from '../../common/ImageConstant';
 import CommonStyles from '../../constants/styles';
 import PopupMenu from '../../components/PopupMenu';
 import SocialMediaLinks from '../../components/SocialMediaLinks'
 
-const {height} = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 const {
   ThreeDotsVerticalIcon,
@@ -49,9 +49,9 @@ const {
 } = SVGS;
 
 function CollectionDetail(props) {
-  const {route} = props;
-  const {networkName, contractAddress, launchpadId} = route.params;
-  const {NftDataCollectionReducer} = useSelector(state => state);
+  const { route } = props;
+  const { networkName, contractAddress, launchpadId } = route.params;
+  const { NftDataCollectionReducer } = useSelector(state => state);
   const collectionList = NftDataCollectionReducer.nftDataCollectionList;
   const [collection, setCollection] = useState({});
   const [loading, setLoading] = useState(true);
@@ -61,22 +61,27 @@ function CollectionDetail(props) {
   const isLaunchPad = launchpadId ? true : false;
 
   const [index, setIndex] = useState(0);
+  const [desiredHeight, setDesiredHeight] = useState(0);
+
+  const minBannerHeight = 73
+  const maxBannerHeight = 200
+  const colImgHalfHeight = SIZE(40)
 
   const [routes] = useState(
     !launchpadId
       ? [
-          {key: 'onSale', title: translate('common.onSale')},
-          {key: 'notOnSell', title: translate('common.notOnSell')},
-          {key: 'owned', title: translate('wallet.common.owned')},
-          {key: 'gallery', title: translate('common.gallery')},
-          {key: 'activity', title: translate('common.activity')},
-        ]
+        { key: 'onSale', title: translate('common.onSale') },
+        { key: 'notOnSell', title: translate('common.notOnSell') },
+        { key: 'owned', title: translate('wallet.common.owned') },
+        { key: 'gallery', title: translate('common.gallery') },
+        { key: 'activity', title: translate('common.activity') },
+      ]
       : networkType === 'mainnet'
-      ? [
-          {key: 'collection', title: translate('common.collected')},
-          {key: 'gallery', title: translate('common.gallery')},
+        ? [
+          { key: 'collection', title: translate('common.collected') },
+          { key: 'gallery', title: translate('common.gallery') },
         ]
-      : [{key: 'gallery', title: translate('common.gallery')}],
+        : [{ key: 'gallery', title: translate('common.gallery') }],
   );
 
   useEffect(() => {
@@ -115,7 +120,7 @@ function CollectionDetail(props) {
             setCollection(res);
             setLoading(false);
           })
-          .catch(err => {});
+          .catch(err => { });
       } else {
         const collectionArray = await getHotCollectionDetail(
           networkName,
@@ -130,18 +135,32 @@ function CollectionDetail(props) {
     }
   };
 
+  const RemoteImage = ({ uri, desiredWidth }) => {
+    uri && Image.getSize(uri, (width, height) => {
+      setDesiredHeight((desiredWidth / width) * height);
+    })
+
+    return (
+      <C_Image
+        size={ImagekitType.FULLIMAGE}
+        uri={uri}
+        imageStyle={{
+          width: desiredWidth,
+          height: desiredHeight ? desiredHeight : minBannerHeight,
+          maxHeight: maxBannerHeight,
+        }}
+      />
+    );
+  };
+
   const renderBanner = () => {
-    // let bannerUrl = collection?.bannerImage;
-    let bannerUrl = collection?.thumbCollectionImage
-      ? collection?.thumbCollectionImage
-      : collection.bannerImage;
+    let bannerUrl = collection?.bannerImage;
 
     return (
       <View style={styles.bannerView}>
-        <C_Image
-          size={ImagekitType.FULLIMAGE}
+        <RemoteImage
           uri={bannerUrl}
-          imageStyle={styles.bannerImage}
+          desiredWidth={wp('100%')}
         />
       </View>
     );
@@ -151,7 +170,13 @@ function CollectionDetail(props) {
     let bannerUrl = collection?.iconImage;
 
     return (
-      <View style={styles.bannerIconWrap}>
+      <View style={[styles.bannerIconWrap, {
+        top: desiredHeight
+          ? desiredHeight >= maxBannerHeight
+            ? maxBannerHeight - colImgHalfHeight
+            : desiredHeight - colImgHalfHeight
+          : 33
+      }]}>
         <C_Image
           size={ImagekitType.PROFILE}
           uri={bannerUrl}
@@ -259,7 +284,7 @@ function CollectionDetail(props) {
           <View style={styles.floorPriceVw}>
             <Image source={ImageSrc.etherium1} style={styles.cryptoIcon} />
             <Text style={styles.collectionTableRowText} numberOfLines={1}>
-            {volTraded && volTraded !== 'NaN' ? volTraded : '--'}
+              {volTraded && volTraded !== 'NaN' ? volTraded : '--'}
             </Text>
           </View>
           <Text style={styles.collectionTableRowDec} numberOfLines={1}>
@@ -273,7 +298,7 @@ function CollectionDetail(props) {
   // ======================= Render Verified Collection Function =======================
   const renderVerifiedCollection = () => {
     return (
-      <VerficationIcon width={SIZE(20)} height={SIZE(20)}/>
+      <VerficationIcon width={SIZE(20)} height={SIZE(20)} />
     );
   };
 
@@ -283,14 +308,14 @@ function CollectionDetail(props) {
         <Text numberOfLines={1} style={styles.collectionName}>
           {collection?.name}
         </Text>
-        {route?.params?.isLaunchPad === true || collection?.isOfficial === 1
+        {collection?.name && (route?.params?.isLaunchPad === true || collection?.isOfficial === 1)
           ? renderVerifiedCollection()
           : null}
       </View>
     );
   };
 
-  const renderScene = ({route}, tab) => {
+  const renderScene = ({ route }, tab) => {
     if (tab) {
       switch (route.key) {
         case 'onSale':
@@ -388,7 +413,7 @@ function CollectionDetail(props) {
         contentContainerStyle={{
           flexGrow: 1,
         }}
-        style={{flex: 1}}>
+        style={{ flex: 1 }}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
           style={styles.backButtonWrap}>
@@ -397,10 +422,10 @@ function CollectionDetail(props) {
         <View style={styles.headerContent}>
           <PopupMenu
             items={[
-              {label: `${translate('common.reportCollection')}`},
-              {label: `${translate('common.blockUser')}`},
+              { label: `${translate('common.reportCollection')}` },
+              { label: `${translate('common.blockUser')}` },
             ]}
-            textStyle={{...CommonStyles.titleStyle}}
+            textStyle={{ ...CommonStyles.titleStyle }}
             onSelect={value => {
               modalAlert(
                 translate('common.Confirm'),
@@ -412,16 +437,16 @@ function CollectionDetail(props) {
             children={<ThreeDotsVerticalIcon />}
           />
         </View>
-        {renderBanner()}        
+        {renderBanner()}
         {renderSubBanner()}
         {renderTitle()}
         {renderDetailList()}
-        <View style={{...CommonStyles.socialSiteView}}>
+        <View style={{ ...CommonStyles.socialSiteView }}>
           <SocialMediaLinks socialSiteData={collection?.user} />
         </View>
         {/* {renderChainList()} */}
         {renderDescription()}
-        <View style={{height: height / 1.5}}>
+        <View style={{ height: height / 1.5 }}>
           {!loading && !isLaunchPad ? (
             renderTabView(true)
           ) : isLaunchPad && !loading ? (

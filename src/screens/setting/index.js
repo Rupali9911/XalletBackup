@@ -35,9 +35,16 @@ import { languageArray, translate} from '../../walletUtils';
 import { requestDisconnectDApp } from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
 import ShowModal from '../certificateScreen/modal';
+<<<<<<< HEAD
 import { getWallet } from '../../helpers/AxiosApiRequest';
 
 import SelectionModal from '../../components/SelectionModal'
+=======
+import {getWallet} from '../../helpers/AxiosApiRequest';
+import {Portal} from '@gorhom/portal';
+import Images from '../../constants/Images';
+import MultiButtonModal from '../../components/MultiButtonModal';
+>>>>>>> fbf13477b594b8be8e5fee6e86ce627c33ea9cca
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -115,6 +122,7 @@ function Setting({ route, navigation }) {
   const [isCheckService, setIsCheckService] = useState(false);
   const [isBackupPhraseService, setIsBackupPhraseService] = useState(false);
   const [wallet, setWallet] = useState(null);
+  const [logoutPopup, setLogoutPopup] = useState(false);
 
 
  const currencyArray = [
@@ -182,14 +190,7 @@ function Setting({ route, navigation }) {
     if (!isBackup) {
       setBackupPhrasePopup(true);
     } else {
-      confirmationAlert(
-        translate('wallet.common.verification'),
-        translate('wallet.common.logOutQ'),
-        translate('wallet.common.cancel'),
-        '',
-        logoutConfirm,
-        () => null,
-      );
+      setLogoutPopup(true);
     }
   };
 
@@ -293,6 +294,20 @@ function Setting({ route, navigation }) {
             rightText={``}
             noArrow={true}
             label={translate('common.Logout')}
+          />
+          <MultiButtonModal
+            isVisible={logoutPopup}
+            closeModal={() => setLogoutPopup(false)}
+            title={translate('wallet.common.verification')}
+            description={translate('wallet.common.logOutQ')}
+            leftButtonText={translate('common.Cancel')}
+            rightButtonText={translate('common.OK')}
+            onRightPress={() => {
+              logoutConfirm();
+            }}
+            onLeftPress={() => {
+              setLogoutPopup(false);
+            }}
           />
 
           {/*<TouchableHighlight onPress={_pressHandler}>*/}
