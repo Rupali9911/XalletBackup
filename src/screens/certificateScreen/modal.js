@@ -44,7 +44,8 @@ const ShowModal = props => {
       <Portal>
         <Modal
           isVisible={isVisible}
-          onBackdropPress={onBackdrop ? null : closeModal}>
+          onBackdropPress={onBackdrop ? null : closeModal}
+          useNativeDriver={true}>
           <View
             style={[
               styles.reClaimcontainer,

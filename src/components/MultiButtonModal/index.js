@@ -17,7 +17,10 @@ const MultiButtonModal = props => {
 
   return (
     <View>
-      <Modal isVisible={isVisible} onBackdropPress={closeModal}>
+      <Modal
+        isVisible={isVisible}
+        onBackdropPress={closeModal}
+        useNativeDriver={true}>
         <View style={styles.modalView}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.description}>{description}</Text>

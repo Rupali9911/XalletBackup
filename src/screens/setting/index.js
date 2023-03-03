@@ -215,7 +215,8 @@ function Setting({route, navigation}) {
           backdropTransitionOutTiming={600}
           onRequestClose={() => {
             setShowLanguage(false);
-          }}>
+          }}
+          useNativeDriver={true}>
           <View style={styles.modalCont}>
             <Text style={styles.modalTitle}>
               {translate('wallet.common.selectLanguage')}
