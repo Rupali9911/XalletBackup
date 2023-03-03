@@ -786,6 +786,12 @@
     "LAUNCH_COMPLETED": "発売終了",
     "INVALID_LANGUAGE": "メッセージは、英語または日本語を使用してください。",
     "bidWinner": "NFTの落札",
+    "CURRENCY_CONVERSION": "通貨換算",
+    "SELECT_CURRENCY": "通貨を選択",
+    "USD": "USD - USドル",
+    "JPY": "JPY - 日本円",
+    "KRW": "KRW - 韓国ウォン",
+    "CNY": "CNY - 中国元",
     "INVALID_LANGUAGE": "メッセージは、英語または日本語を使用してください。",
     "UPDATED_RECOVERY_PHRASE": "復元フレーズが設定されていたないため一時的に機能制限しています。復元フレーズは、デバイスが紛失または盗難された場合等に、ウォレットや資金の復元に使用されるため、非常に重要です。",
     "AI_ANIMATED": "アニメーション"

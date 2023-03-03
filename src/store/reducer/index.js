@@ -9,6 +9,7 @@ import MyCollectionReducer from './myCollectionReducer';
 import UserReducer from './userReducer';
 import WalletReducer from './walletReducer';
 import LanguageReducer from './languageReducer';
+import CurrencyReducer from './currencyReducer';
 import PaymentReducer from './paymentReducer';
 import AsyncReducer from './asyncStorageReducer';
 import PermissionReducer from './cameraPermission';
@@ -34,6 +35,7 @@ const RootReducer = combineReducers({
   UserReducer,
   WalletReducer,
   LanguageReducer,
+  CurrencyReducer,
   PaymentReducer,
   AsyncReducer,
   PermissionReducer,

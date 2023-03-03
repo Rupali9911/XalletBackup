@@ -105,7 +105,6 @@ export const getAllLanguages = () => dispatch =>
           return o;
         });
       }
-
       dispatch(updateAllLanguages(languages));
     })
     .catch(error => {

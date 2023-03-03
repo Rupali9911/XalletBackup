@@ -785,6 +785,12 @@
     "LAUNCH_COMPLETED": "Completed",
     "INVALID_LANGUAGE": "Please send message in English or Japanese",
     "bidWinner": "Winner bid NFT",
+    "CURRENCY_CONVERSION": "Currency Conversion",
+    "SELECT_CURRENCY": "Select Currency",
+    "USD": "USD - United States Dollar",
+    "JPY": "JPY - Japanese Yen",
+    "KRW": "KRW - Korean Won",
+    "CNY": "CNY - Chinese Yuan",
     "INVALID_LANGUAGE": "Please send message in English or Japanese",
     "UPDATED_RECOVERY_PHRASE": "This functionality is temporarily restricted because the Recovery phrase was not set.The Recovery Phrase is extremely important because it can be used to recover wallets and funds etc. if a device is lost or stolen.",
     "AI_ANIMATED": "Animated"

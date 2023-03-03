@@ -7,7 +7,6 @@ import { ScanBottomView } from './components/scanBottomView';
 import { useSelector, useDispatch } from 'react-redux';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
-import PriceText from '../../components/priceText';
 import Separator from '../../components/separator';
 import GradientBackground from '../../components/gradientBackground';
 import Colors from '../../constants/Colors';
