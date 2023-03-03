@@ -41,7 +41,9 @@ const SelectionModal = props => {
         backdropTransitionOutTiming={600}
         onRequestClose={() => {
           closeModal()
-        }}>
+        }}
+        hideModalContentWhileAnimating
+        useNativeDriver={true}>
         <View style={styles.modalCont}>
           <Text style={styles.modalTitle}>
             {title}

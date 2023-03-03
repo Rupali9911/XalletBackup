@@ -18,12 +18,12 @@ const PriceText = props => {
   }, [props.price]);
 
   const getPrice = () => {
-    console.log('selectedCurrency.currency_name', selectedCurrency.currency_name)
-    if (selectedCurrency.currency_id === 1) {
+    console.log('selectedCurrency.currency_name', selectedCurrency?.currency_name)
+    if (selectedCurrency?.currency_id === 1) {
       setPrice(props.price)
     } else {
       if (props.price > 0) {
-        convertCurrency(props.price, 'USD', selectedCurrency.currency_name)
+        convertCurrency(props.price, 'USD', selectedCurrency?.currency_name)
           .then(price => {
             setPrice(price)
           }).catch(err => {
@@ -38,7 +38,7 @@ const PriceText = props => {
 
   return (
     <View style={[styles.paymentCont, props.containerStyle]}>
-      {props?.isDollar && <Text style={[styles.paymentTxt, textColor]}>{selectedCurrency.currency_sign}</Text>}
+      {props?.isDollar && <Text style={[styles.paymentTxt, textColor]}>{selectedCurrency?.currency_sign}</Text>}
       <NumberFormat
         // value={props.price || '0.00'}
         value={price}

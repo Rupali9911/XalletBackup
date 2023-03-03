@@ -315,7 +315,7 @@ function Setting({ route, navigation }) {
         onSelect={(currency) => updateCurrency(currency)}
         arrToRender={currencyArray}
         title={translate('common.SELECT_CURRENCY')}
-        selectedValue={selectedCurrency.currency_id}
+        selectedValue={selectedCurrency?.currency_id}
         compareParam={'currency_id'}
         displayParam={'currency_display'}
         showIcon={false}
