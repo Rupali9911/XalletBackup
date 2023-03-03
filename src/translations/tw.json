@@ -784,14 +784,10 @@
     "alertTitle": "警報",
     "EMAIL_AUTHORIZATION_MSG": "正在處理電子郵件授權，請稍候...",
     "LAUNCH_COMPLETED": "完全的",
-<<<<<<< HEAD
-    "INVALID_LANGUAGE": "請使用英文或日文留言。"
-=======
-    "bidWinner": "中標者出價 NFT",
     "INVALID_LANGUAGE": "請使用英文或日文留言。",
+    "bidWinner": "中標者出價 NFT",
     "UPDATED_RECOVERY_PHRASE": "由於未設置助記詞，該功能暫時受限。您的助記詞非常重要，因為它會在您的設備丟失或被盜時用於找回您的錢包和資金。",
     "AI_ANIMATED": "動畫"
->>>>>>> fbf13477b594b8be8e5fee6e86ce627c33ea9cca
   },
   "AwardPage": {},
   "wallet": {
