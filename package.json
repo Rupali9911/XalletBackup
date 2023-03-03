@@ -85,6 +85,7 @@
     "react-native-dropdown-picker": "^5.1.23",
     "react-native-encrypted-storage": "^4.0.2",
     "react-native-fast-image": "^8.6.3",
+    "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "^1.10.3",
     "react-native-get-random-values": "^1.8.0",
     "react-native-hyperlink": "^0.0.19",

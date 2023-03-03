@@ -38,6 +38,7 @@ import ShowModal from '../certificateScreen/modal';
 import {getWallet} from '../../helpers/AxiosApiRequest';
 import {Portal} from '@gorhom/portal';
 import Images from '../../constants/Images';
+import MultiButtonModal from '../../components/MultiButtonModal';
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -120,6 +121,7 @@ function Setting({route, navigation}) {
   const [isCheckService, setIsCheckService] = useState(false);
   const [isBackupPhraseService, setIsBackupPhraseService] = useState(false);
   const [wallet, setWallet] = useState(null);
+  const [logoutPopup, setLogoutPopup] = useState(false);
 
   useEffect(async () => {
     // dispatch(getAllCards(userData.access_token));
@@ -172,14 +174,7 @@ function Setting({route, navigation}) {
     if (!isBackup) {
       setBackupPhrasePopup(true);
     } else {
-      confirmationAlert(
-        translate('wallet.common.verification'),
-        translate('wallet.common.logOutQ'),
-        translate('wallet.common.cancel'),
-        '',
-        logoutConfirm,
-        () => null,
-      );
+      setLogoutPopup(true);
     }
   };
 
@@ -310,6 +305,20 @@ function Setting({route, navigation}) {
             rightText={``}
             noArrow={true}
             label={translate('common.Logout')}
+          />
+          <MultiButtonModal
+            isVisible={logoutPopup}
+            closeModal={() => setLogoutPopup(false)}
+            title={translate('wallet.common.verification')}
+            description={translate('wallet.common.logOutQ')}
+            leftButtonText={translate('common.Cancel')}
+            rightButtonText={translate('common.OK')}
+            onRightPress={() => {
+              logoutConfirm();
+            }}
+            onLeftPress={() => {
+              setLogoutPopup(false);
+            }}
           />
 
           {/*<TouchableHighlight onPress={_pressHandler}>*/}

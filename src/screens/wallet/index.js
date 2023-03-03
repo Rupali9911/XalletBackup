@@ -39,9 +39,10 @@ import Tokens from './components/Tokens';
 import {balance, currencyInDollar} from './functions';
 import NetInfo from '@react-native-community/netinfo';
 import {modalAlert} from '../../common/function';
+import MultiActionModal from '../certificateScreen/MultiActionModal';
 
-const Wallet = ({route, navigation}) => {
-  let wallet = null;
+const Wallet = ({navigation}) => {
+  const [backupPhrasePopup, setBackupPhrasePopup] = useState(false);
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
 
@@ -224,15 +225,21 @@ const Wallet = ({route, navigation}) => {
           label={translate('wallet.common.send')}
           onPress={() => {
             setIsSend(true);
-            setSelectTokenVisible(true);
+            isBackup ? setSelectTokenVisible(true) : setBackupPhrasePopup(true);
           }}
+        />
+
+        <MultiActionModal
+          isVisible={backupPhrasePopup}
+          closeModal={() => setBackupPhrasePopup(false)}
+          navigation={navigation}
         />
         <HeaderBtns
           image={ImagesSrc.receive}
           label={translate('wallet.common.receive')}
           onPress={() => {
             setIsSend(false);
-            setSelectTokenVisible(true);
+            isBackup ? setSelectTokenVisible(true) : setBackupPhrasePopup(true);
           }}
         />
         {/* <HeaderBtns

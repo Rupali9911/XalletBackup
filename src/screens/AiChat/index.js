@@ -21,7 +21,7 @@ const AiChat = () => {
   const [index, setIndex] = React.useState(0);
   const [routes] = React.useState([
     {key: 'Owner', title: translate('wallet.common.owned')},
-    {key: 'Animated', title: 'Animated'},
+    {key: 'Animated', title: translate('common.AI_ANIMATED')},
     {key: 'Others', title: translate('common.others')},
   ]);
   const dispatch = useDispatch();
