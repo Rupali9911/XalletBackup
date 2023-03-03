@@ -295,3 +295,8 @@ export const IMAGE_BANNER_END = 'IMAGE_BANNER_END';
 export const DELETE_ACCOUNT_START = 'DELETE_ACCOUNT_START';
 export const DELETE_ACCOUNT_SUCCESS = 'DELETE_ACCOUNT_SUCCESS';
 export const DELETE_ACCOUNT_FAILD = 'DELETE_ACCOUNT_FAILD';
+
+//================= Currency Reducer =========================
+
+export const SET_CURRENCY_SELECTED = 'SET_CURRENCY_SELECTED';
+

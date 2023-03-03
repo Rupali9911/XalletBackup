@@ -1,48 +1,30 @@
 
-import React, { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-
+import React from 'react';
 import {
-  SafeAreaView,
-  ScrollView,
   Text,
   TouchableOpacity,
   View,
   Image,
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { languageArray, translate } from '../../walletUtils';
 import styles from './style';
 import { Portal } from '@gorhom/portal';
 import Images from '../../constants/Images';
-import { setAppLanguage } from '../../store/reducer/languageReducer';
-import { CommonActions } from '@react-navigation/native';
+import {
+  heightPercentageToDP as hp,
+} from '../../common/responsiveFunction';
+import Colors from '../../constants/Colors';
 
 const SelectionModal = props => {
-  const {closeModal,navigation,isVisible,arrToRender} = props
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { showIcon, closeModal, isVisible, arrToRender, onSelect, title, selectedValue, compareParam, displayJaParam, displayParam } = props
 
-  const JapaneseLangTrans = {
-    en: '英語（イギリス）',
-    ko: '韓国語',
-    tw: '中国語（繁体）',
-    ch: '中国語（簡体）',
-  };
-  
-  const updateLanguage = language => {
-    if (selectedLanguageItem.language_name !== language.language_name) {
-      dispatch(setAppLanguage(language));
-      closeModal
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{ name: 'Me' }],
-        }),
-      );
-    } else {
-      closeModal
-    }
-  };
+  const getText = (v) => {
+    let txt = displayJaParam ? selectedValue[compareParam] === 'ja'
+      ? v[displayJaParam]
+      : v[displayParam]
+      : v[displayParam]
+    return txt
+  }
 
   return (
     <Portal>
@@ -50,7 +32,7 @@ const SelectionModal = props => {
         isVisible={isVisible}
         backdropColor="#B4B3DB"
         backdropOpacity={0.8}
-        onBackdropPress={() =>{ closeModal}}
+        onBackdropPress={() => closeModal()}
         animationIn="zoomInDown"
         animationOut="zoomOutUp"
         animationInTiming={600}
@@ -58,36 +40,34 @@ const SelectionModal = props => {
         backdropTransitionInTiming={600}
         backdropTransitionOutTiming={600}
         onRequestClose={() => {
-          closeModal
+          closeModal()
         }}>
         <View style={styles.modalCont}>
           <Text style={styles.modalTitle}>
-            {translate('wallet.common.selectLanguage')}
+            {title}
           </Text>
           <View style={{ marginTop: hp('2%') }}>
             {arrToRender.map((v, i) => {
-              const selectedLanguage =
-                selectedLanguageItem.language_name == v.language_name
+              const selectedStyle =
+                selectedValue == v[compareParam]
                   ? { color: Colors.themeColor }
                   : {};
               return (
                 <TouchableOpacity
                   key={i}
                   onPress={() => {
-                    updateLanguage(v);
+                    onSelect(v);
                   }}
                   style={styles.selectLanguageView}>
                   <View style={styles.titleView}>
-                    <Image style={styles.iconStyle} source={v.icon} />
-                    <Text style={{ ...styles.titleStyle, ...selectedLanguage }}>
-                      {selectedLanguageItem.language_name === 'ja'
-                        ? JapaneseLangTrans[v.language_name]
-                          ? JapaneseLangTrans[v.language_name]
-                          : v.language_display
-                        : v.language_display}
+                    {showIcon &&
+                     <Image style={styles.iconStyle} source={v.icon} />
+                    }
+                    <Text style={{ ...styles.titleStyle, ...selectedStyle }}>
+                      {getText(v)}
                     </Text>
                   </View>
-                  {selectedLanguageItem.language_name == v.language_name ? (
+                  {selectedValue == v[compareParam] ? (
                     <Image style={styles.tickIcon} source={Images.tick} />
                   ) : null}
                 </TouchableOpacity>

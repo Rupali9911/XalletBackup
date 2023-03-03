@@ -38,7 +38,7 @@ const styles = StyleSheet.create({
     paddingVertical: hp('1.5%'),
     width: '100%',
     justifyContent: 'space-between',
-    paddingHorizontal: wp('5%'),
+     paddingHorizontal: wp('3%'),
   },
   titleView: {
     flexDirection: 'row',

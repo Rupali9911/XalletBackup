@@ -24,13 +24,14 @@ import { AppHeader } from '../../components';
 import Colors from '../../constants/Colors';
 import { colors } from '../../res';
 import { setAppLanguage } from '../../store/reducer/languageReducer';
+import { setAppCurrency } from '../../store/reducer/currencyReducer';
 import { getAllCards } from '../../store/reducer/paymentReducer';
 import {
   endMainLoading,
   _logout,
   deleteAccountApi,
 } from '../../store/reducer/userReducer';
-import { languageArray, translate } from '../../walletUtils';
+import { languageArray, translate} from '../../walletUtils';
 import { requestDisconnectDApp } from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
 import ShowModal from '../certificateScreen/modal';
@@ -100,7 +101,9 @@ function Setting({ route, navigation }) {
   const dispatch = useDispatch();
   // const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
+  const [showCurrency, setShowCurrency] = useState(false);
   const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { selectedCurrency } = useSelector(state => state.CurrencyReducer);
   const { myCards } = useSelector(state => state.PaymentReducer);
   const { userData } = useSelector(state => state.UserReducer);
   const [deletePopup, setDeletePopup] = useState(false);
@@ -113,6 +116,34 @@ function Setting({ route, navigation }) {
   const [isBackupPhraseService, setIsBackupPhraseService] = useState(false);
   const [wallet, setWallet] = useState(null);
 
+
+ const currencyArray = [
+    {
+      currency_id: 1,
+      currency_display: translate("common.USD"),
+      currency_name: 'USD',
+      currency_sign: '$'
+    },
+    {
+      currency_id: 2,
+      currency_display: translate("common.JPY"),
+      currency_name: 'JPY',
+      currency_sign: '¥'
+    },
+    {
+      currency_id: 3,
+      currency_display: translate("common.KRW"),
+      currency_name: 'KRW',
+      currency_sign: '₩'
+    },
+    {
+      currency_id: 4,
+      currency_display: translate("common.CNY"),
+      currency_name: 'CNY',
+      currency_sign: '¥'
+    }
+  ];
+
   useEffect(async () => {
     // dispatch(getAllCards(userData.access_token));
     let getData = await getWallet();
@@ -124,7 +155,7 @@ function Setting({ route, navigation }) {
     }
   }, [route]);
 
- 
+
 
   const logoutConfirm = async () => {
     const _selectedLanguageItem = selectedLanguageItem;
@@ -183,7 +214,29 @@ function Setting({ route, navigation }) {
       });
   };
 
-  
+  const updateLanguage = language => {
+    if (selectedLanguageItem.language_name !== language.language_name) {
+      dispatch(setAppLanguage(language));
+      setShowLanguage(false)
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 0,
+      //     routes: [{ name: 'Me' }],
+      //   }),
+      // );
+    } else {
+      setShowLanguage(false)
+    }
+  };
+
+  const updateCurrency = currency => {
+    if (selectedCurrency.currency_id !== currency.currency_id) {
+      dispatch(setAppCurrency(currency));
+      setShowCurrency(false)
+    } else {
+      setShowCurrency(false)
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -209,7 +262,7 @@ function Setting({ route, navigation }) {
           <View style={{ ...styles.separator, width: wp('81%') }} />
 
           <ListItem
-            onPress={() => setShowLanguage(true)}
+            onPress={() => setShowCurrency(true)}
             label={translate('common.CURRENCY_CONVERSION')}
           />
           <View style={{ ...styles.separator, width: wp('81%') }} />
@@ -248,12 +301,31 @@ function Setting({ route, navigation }) {
         </View>
       </ScrollView>
 
-      {/* <SelectionModal
+      <SelectionModal
+        isVisible={showCurrency}
+        closeModal={() => setShowCurrency(false)}
+        onSelect={(currency) => updateCurrency(currency)}
+        arrToRender={currencyArray}
+        title={translate('common.SELECT_CURRENCY')}
+        selectedValue={selectedCurrency.currency_id}
+        compareParam={'currency_id'}
+        displayParam={'currency_display'}
+        showIcon={false}
+      />
+
+      <SelectionModal
         isVisible={showLanguage}
-        closeModal={setShowLanguage(false)}
+        closeModal={() => setShowLanguage(false)}
+        onSelect={(language) => updateLanguage(language)}
         arrToRender={languageArray}
-        navigation={navigation}
-        /> */}
+        title={translate('wallet.common.selectLanguage')}
+        selectedValue={selectedLanguageItem.language_name}
+        compareParam={'language_name'}
+        displayParam={'language_display'}
+        displayJaParam={'language_ja_display'}
+        showIcon={true}
+      />
+
       <ShowModal
         isDelete={true}
         isVisible={deletePopup}

@@ -5,12 +5,12 @@ import NumberFormat from 'react-number-format';
 import CommonStyles from '../constants/styles';
 import Fonts from '../constants/Fonts';
 import Colors from '../constants/Colors';
-import { hp, RF, wp } from '../constants/responsiveFunct';
-import sendRequest from '../helpers/AxiosApiRequest';
+import { hp, RF } from '../constants/responsiveFunct';
+import { convertCurrency } from '../store/reducer/walletReducer';
 
 const PriceText = props => {
-  const [price, setPrice]= useState()
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const [price, setPrice] = useState()
+  const { selectedCurrency } = useSelector(state => state.CurrencyReducer);
   let textColor = { color: props.isWhite ? Colors.white : Colors.black };
 
   useEffect(() => {
@@ -18,44 +18,27 @@ const PriceText = props => {
   }, [props.price]);
 
   const getPrice = () => {
-    if (selectedLanguageItem.language_name === 'en') {
+    console.log('selectedCurrency.currency_name', selectedCurrency.currency_name)
+    if (selectedCurrency.currency_id === 1) {
       setPrice(props.price)
     } else {
-      if (props.price > 0){
-        let amount = props.price;
-        let symbol = 'usd';
-        let convert = 'jpy'
-        let CMC_PRO_API_KEY = '67c4c255-a649-49df-9e23-5d58ec5f5d24'
-        let url = `https://pro-api.coinmarketcap.com/v2/tools/price-conversion`;
-        sendRequest({
-          url,
-          method: 'GET',
-          params: {
-            amount,
-            symbol,
-            convert,
-            CMC_PRO_API_KEY,
-          },
-        })
-          .then(res => {
-              console.log('Response of conversion api', res)
-              console.log('Response of conversion api',  res?.data[0]?.amount)
-
-              setPrice(res?.data[0]?.amount)
-          })
-          .catch(err => {
+      if (props.price > 0) {
+        convertCurrency(props.price, 'USD', selectedCurrency.currency_name)
+          .then(price => {
+            setPrice(price)
+          }).catch(err => {
             console.log('Error from conversion api', err)
             setPrice('0.00')
           });
-      }else{
-        setPrice('0.00')                   
+      } else {
+        setPrice('0.00')
       }
     }
   }
 
   return (
     <View style={[styles.paymentCont, props.containerStyle]}>
-      {props?.isDollar && <Text style={[styles.paymentTxt, textColor]}>$</Text>}
+      {props?.isDollar && <Text style={[styles.paymentTxt, textColor]}>{selectedCurrency.currency_sign}</Text>}
       <NumberFormat
         // value={props.price || '0.00'}
         value={price}

@@ -72,8 +72,8 @@ function Profile({navigation, connector, route}) {
     imageBannerLoading,
     userData,
     profilePullToRefresh,
+    isBackup
   } = useSelector(state => state.UserReducer);
-  const {isBackup} = useSelector(state => state.UserReducer);
 
   //================== Components State Defination ===================
   const [openDial, setOpenDial] = useState({

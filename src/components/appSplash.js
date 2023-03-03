@@ -7,6 +7,9 @@ import {
   getAllLanguages,
   setAppLanguage,
 } from '../store/reducer/languageReducer';
+import {
+  setAppCurrency,
+} from '../store/reducer/currencyReducer';
 import {languageArray, regionLanguage} from '../walletUtils';
 import * as RNLocalize from 'react-native-localize';
 import {getAccessToken} from '../helpers/AxiosApiRequest';
@@ -30,6 +33,7 @@ const appSplash = () => {
           '@BackedUp',
           '@apps',
           '@language',
+          '@currency',
         ]);
         asyncData['userData'] = JSON.parse(values[0][1]);
         asyncData['BackedUp'] = values[1][1]
@@ -39,8 +43,10 @@ const appSplash = () => {
           ? JSON.parse(values[2][1])
           : values[2][1];
         let value = values[3][1] ? JSON.parse(values[3][1]) : values[3][1];
+        let currency = values[4][1] ? JSON.parse(values[4][1]) : values[4][1];
         dispatch(loadFromAsync(asyncData));
         dispatch(setAppLanguage(value));
+        dispatch(setAppCurrency(currency));
       } else {
         let regionalLanguage = languageArray.find(
           language => language.language_name == regionLanguage,

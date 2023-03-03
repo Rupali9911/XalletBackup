@@ -21,7 +21,6 @@ import ImagesSrc from '../../constants/Images';
 import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import {getWallet} from '../../helpers/AxiosApiRequest';
-import SingleSocket from '../../helpers/SingleSocket';
 import {updateCreateState} from '../../store/reducer/userReducer';
 import {
   updateBalances,
