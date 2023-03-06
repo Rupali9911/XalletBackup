@@ -16,11 +16,7 @@ const AlertPopup = () => {
         onBackdropPress={() => dispatch(alertAction({status: false}))}
         onBackButtonPress={() => dispatch(alertAction({status: false}))}
         useNativeDriver={true}
-<<<<<<< HEAD
-        hideModalContentWhileAnimating={true}>
-=======
         hideModalContentWhileAnimating>
->>>>>>> cee221783f732de3ba7f73cb9d0eb0f6584965b7
         <View style={styles.modalView}>
           <Text style={styles.title}>{state?.title}</Text>
           <Text style={styles.description}>{state?.description}</Text>

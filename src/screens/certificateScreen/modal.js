@@ -1,16 +1,16 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, Image } from 'react-native';
+import {View, Text, TouchableOpacity, Image} from 'react-native';
 import styles from './styles';
-import { GroupButton } from '../../components';
+import {GroupButton} from '../../components';
 import Modal from 'react-native-modal';
 import Images from '../../constants/Images';
 import cancelImg from '../../../assets/images/cancel.png';
-import { translate } from '../../walletUtils';
-import { SIZE } from '../../constants';
+import {translate} from '../../walletUtils';
+import {SIZE} from '../../constants';
 import Checkbox from '../../components/checkbox';
 import Colors from '../../constants/Colors';
-import { Portal } from '@gorhom/portal';
-import { RF, wp } from '../../constants/responsiveFunct';
+import {Portal} from '@gorhom/portal';
+import {RF, wp} from '../../constants/responsiveFunct';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
 import Fonts from '../../constants/Fonts';
@@ -40,24 +40,6 @@ const ShowModal = props => {
   } = props;
 
   return (
-<<<<<<< HEAD
-    <View style={styles.modalContainer}>
-      <Portal>
-        <Modal
-          isVisible={isVisible}
-          onBackdropPress={onBackdrop ? null : closeModal}
-          useNativeDriver={true}
-          hideModalContentWhileAnimating={true}>
-          <View
-            style={[
-              styles.reClaimcontainer,
-              isDelete && styles.deleteAccount,
-              backupPhrase && styles.backupPhraseContainer,
-            ]}>
-            <TouchableOpacity
-              style={styles.reClaimCancelBTNview}
-              onPress={closeModal}>
-=======
     <Portal>
       <Modal
         isVisible={isVisible}
@@ -79,8 +61,7 @@ const ShowModal = props => {
             />
           </TouchableOpacity>
           {isDelete ? (
-            <View style={{ paddingTop: SIZE(25) }}>
->>>>>>> cee221783f732de3ba7f73cb9d0eb0f6584965b7
+            <View style={{paddingTop: SIZE(25)}}>
               <Image
                 source={backupPhrase ? Images.dangerIcon : Images.deleteRed}
                 style={[
@@ -97,9 +78,7 @@ const ShowModal = props => {
               paddingTop: isDelete ? SIZE(15) : {},
             }}>
             <View
-              style={
-                isDelete ? styles.deleteAccountView : styles.reclaimView
-              }>
+              style={isDelete ? styles.deleteAccountView : styles.reclaimView}>
               <Text
                 style={
                   isDelete ? styles.deleteAccountText : styles.reclaimText
@@ -170,9 +149,7 @@ const ShowModal = props => {
             <View style={styles.groupButtonView}>
               <GroupButton
                 leftText={
-                  leftButtonTitle
-                    ? leftButtonTitle
-                    : translate('common.Cancel')
+                  leftButtonTitle ? leftButtonTitle : translate('common.Cancel')
                 }
                 leftDisabled={leftDisabled ? leftDisabled : false}
                 leftLoading={false}
@@ -180,8 +157,8 @@ const ShowModal = props => {
                   backupPhrase
                     ? onBackUpNowPress()
                     : closeModal
-                      ? closeModal()
-                      : onLeftPress()
+                    ? closeModal()
+                    : onLeftPress()
                 }
                 leftStyle={
                   isDelete
@@ -206,15 +183,15 @@ const ShowModal = props => {
                         : false
                       : true
                     : rightDisabled
-                      ? rightDisabled
-                      : false
+                    ? rightDisabled
+                    : false
                 }
                 rightLoading={rightLoading ? rightLoading : false}
                 onRightPress={onRightPress}
                 rightStyle={
                   checkBoxDescription
                     ? isCheck
-                      ? { backgroundColor: Colors.RED3 }
+                      ? {backgroundColor: Colors.RED3}
                       : styles.rightDeleteDisabled
                     : styles.reClaimRightGroupButton
                 }
