@@ -216,7 +216,8 @@ function Setting({route, navigation}) {
           onRequestClose={() => {
             setShowLanguage(false);
           }}
-          useNativeDriver={true}>
+          useNativeDriver={true}
+          hideModalContentWhileAnimating={true}>
           <View style={styles.modalCont}>
             <Text style={styles.modalTitle}>
               {translate('wallet.common.selectLanguage')}
