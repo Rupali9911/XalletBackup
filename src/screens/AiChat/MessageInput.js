@@ -3,6 +3,7 @@ import styles from './style';
 import React, {useState, useEffect, useRef} from 'react';
 import {translate} from '../../walletUtils';
 import {colors} from '../../res';
+import VoiceRecognition from './VoiceRecognition';
 
 const MessageInput = props => {
   const inputRef = useRef(null);
@@ -26,6 +27,14 @@ const MessageInput = props => {
         <Text style={[styles.sendBtnTxt, props.labelStyle]}>{props.label}</Text>
       </TouchableOpacity>
     );
+  };
+
+  const setAudioToTextFunc = audio => {
+    if (audio.length) {
+      setMessage(audio[0]);
+    } else {
+      setMessage('');
+    }
   };
 
   const onSendPress = () => {
@@ -83,6 +92,7 @@ const MessageInput = props => {
             label={translate('wallet.common.send')}
           />
         ) : null}
+        <VoiceRecognition setAudioToTextFunc={setAudioToTextFunc} />
       </View>
       {props.message ? renderSaveLayout() : null}
     </View>

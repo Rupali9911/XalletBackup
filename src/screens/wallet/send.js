@@ -54,6 +54,7 @@ import {
 } from '../wallet/functions/transactionFunctions';
 import AppModal from '../../components/appModal';
 import SuccessModalContent from '../../components/successModal';
+import { convertCurrency } from '../../store/reducer/walletReducer';
 
 const verifyAddress = address => {
   return new Promise((resolve, reject) => {
@@ -272,7 +273,8 @@ const SendScreen = React.memo(props => {
   const { item, type, tokenInfo, setLoading, loading } = props;
 
   //====================== Getting data from reducers =========================
-  const { userData } = useSelector(state => state.UserReducer);
+  const { selectedCurrency } = useSelector(state => state.CurrencyReducer);
+
   const {
     ethBalance,
     bnbBalance,
@@ -299,6 +301,7 @@ const SendScreen = React.memo(props => {
   const [gasFee, setGasFee] = useState(0);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [isMaxButtonPress, setIsMaxButtonPress] = useState(false)
+  const [currency, setCurrency] = useState(0.00)
   const [alertMessage, setAlertMessage] = useState({
     isAddressInvalid: false,
     isPaymentFielDisable: false,
@@ -309,12 +312,22 @@ const SendScreen = React.memo(props => {
   });
 
   //==================== Global Variables =======================
-  let gasFeeAlert = null;
 
   //====================== Use Effect Start =========================
   useEffect(async () => {
     let walletAddress = await getWallet();
     setWallet(walletAddress);
+    if (tokenInfo.tokenDollarValue > 0) {
+      convertCurrency(tokenInfo.tokenDollarValue, 'USD', selectedCurrency.currency_name)
+        .then(price => {
+          setCurrency(price)
+        }).catch(err => {
+          console.log('Error from conversion api', err)
+          setCurrency('0.00')
+        });
+    } else {
+      setCurrency('0.00')
+    }
   }, []);
 
   useEffect(() => {
@@ -696,13 +709,13 @@ const SendScreen = React.memo(props => {
                 )}
               />
               <NumberFormat
-                value={tokenInfo.tokenDollarValue}
+                value={currency}
                 displayType={'text'}
                 decimalScale={2}
                 thousandSeparator={true}
                 renderText={formattedValue => (
                   <TextView style={styles.balanceText}>
-                    {`($${formattedValue})`}
+                    {`(${selectedCurrency.currency_sign}${formattedValue})`}
                   </TextView>
                 )}
               />

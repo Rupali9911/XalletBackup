@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
     fontSize: RF(2.5),
     color: Colors.blackShadeOne,
     textAlign: 'center',
+    lineHeight: 24,
   },
   tickIcon: {
     width: SIZE(14),
@@ -117,6 +118,7 @@ const styles = StyleSheet.create({
     fontSize: RF(1.9),
     color: Colors.blackShadeOne,
     marginHorizontal: 10,
+    lineHeight: 20,
   },
 });
 

@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {CommonActions} from '@react-navigation/native';
-import React, {useState, useEffect} from 'react';
+import { CommonActions } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
 import {
   SafeAreaView,
   ScrollView,
@@ -11,33 +11,32 @@ import {
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import Modal from 'react-native-modal';
 import EntypoIcon from 'react-native-vector-icons/Entypo';
-import {useDispatch, useSelector} from 'react-redux';
-import {confirmationAlert, modalAlert} from '../../common/function';
-import {alertWithSingleBtn} from '../../utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { confirmationAlert, modalAlert } from '../../common/function';
+import { alertWithSingleBtn } from '../../utils';
 import {
   heightPercentageToDP as hp,
   responsiveFontSize as RF,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {AppHeader} from '../../components';
+import { AppHeader } from '../../components';
 import Colors from '../../constants/Colors';
-import {colors} from '../../res';
-import {setAppLanguage} from '../../store/reducer/languageReducer';
-import {getAllCards} from '../../store/reducer/paymentReducer';
+import { colors } from '../../res';
+import { setAppLanguage } from '../../store/reducer/languageReducer';
+import { setAppCurrency } from '../../store/reducer/currencyReducer';
+import { getAllCards } from '../../store/reducer/paymentReducer';
 import {
   endMainLoading,
   _logout,
   deleteAccountApi,
 } from '../../store/reducer/userReducer';
-import {languageArray, translate} from '../../walletUtils';
-import {requestDisconnectDApp} from '../AuthScreens/nonCryptoAuth/magic-link';
+import { languageArray, translate} from '../../walletUtils';
+import { requestDisconnectDApp } from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
 import ShowModal from '../certificateScreen/modal';
+import SelectionModal from '../../components/SelectionModal'
 import {getWallet} from '../../helpers/AxiosApiRequest';
-import {Portal} from '@gorhom/portal';
-import Images from '../../constants/Images';
 import MultiButtonModal from '../../components/MultiButtonModal';
 
 const optionalConfigObject = {
@@ -76,7 +75,7 @@ const ListItem = props => {
         {props.rightText ? (
           <Text style={styles.listLabel}>{props.rightText}</Text>
         ) : props.right ? (
-          <View style={{flexDirection: 'row'}}>
+          <View style={{ flexDirection: 'row' }}>
             <Text style={styles.listLabel}>{props.right}</Text>
             <EntypoIcon
               size={RF(2.5)}
@@ -98,30 +97,53 @@ const ListItem = props => {
   );
 };
 
-const JapaneseLangTrans = {
-  en: '英語（イギリス）',
-  ko: '韓国語',
-  tw: '中国語（繁体）',
-  ch: '中国語（簡体）',
-};
-
-function Setting({route, navigation}) {
+function Setting({ route, navigation }) {
   const dispatch = useDispatch();
   // const [toggle, setToggle] = useState(false);
   const [showLanguage, setShowLanguage] = useState(false);
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
-  const {myCards} = useSelector(state => state.PaymentReducer);
-  const {userData} = useSelector(state => state.UserReducer);
+  const [showCurrency, setShowCurrency] = useState(false);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { selectedCurrency } = useSelector(state => state.CurrencyReducer);
+  const { myCards } = useSelector(state => state.PaymentReducer);
+  const { userData } = useSelector(state => state.UserReducer);
   const [deletePopup, setDeletePopup] = useState(false);
   const [backupPhrasePopup, setBackupPhrasePopup] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const {deleteAccountLoading, isBackup} = useSelector(
+  const { deleteAccountLoading, isBackup } = useSelector(
     state => state.UserReducer,
   );
   const [isCheckService, setIsCheckService] = useState(false);
   const [isBackupPhraseService, setIsBackupPhraseService] = useState(false);
   const [wallet, setWallet] = useState(null);
   const [logoutPopup, setLogoutPopup] = useState(false);
+
+
+ const currencyArray = [
+    {
+      currency_id: 1,
+      currency_display: translate("common.USD"),
+      currency_name: 'USD',
+      currency_sign: '$'
+    },
+    {
+      currency_id: 2,
+      currency_display: translate("common.JPY"),
+      currency_name: 'JPY',
+      currency_sign: '¥'
+    },
+    {
+      currency_id: 3,
+      currency_display: translate("common.KRW"),
+      currency_name: 'KRW',
+      currency_sign: '₩'
+    },
+    {
+      currency_id: 4,
+      currency_display: translate("common.CNY"),
+      currency_name: 'CNY',
+      currency_sign: '¥'
+    }
+  ];
 
   useEffect(async () => {
     // dispatch(getAllCards(userData.access_token));
@@ -134,20 +156,7 @@ function Setting({route, navigation}) {
     }
   }, [route]);
 
-  const updateLanguage = language => {
-    if (selectedLanguageItem.language_name !== language.language_name) {
-      dispatch(setAppLanguage(language));
-      setShowLanguage(false);
-      navigation.dispatch(
-        CommonActions.reset({
-          index: 0,
-          routes: [{name: 'Me'}],
-        }),
-      );
-    } else {
-      setShowLanguage(false);
-    }
-  };
+
 
   const logoutConfirm = async () => {
     const _selectedLanguageItem = selectedLanguageItem;
@@ -161,7 +170,7 @@ function Setting({route, navigation}) {
         '@apps',
         '@CURRENT_NETWORK_CHAIN_ID',
       ],
-      err => {},
+      err => { },
     ).then(() => {
       requestDisconnectDApp();
       dispatch(_logout());
@@ -199,6 +208,7 @@ function Setting({route, navigation}) {
       });
   };
 
+<<<<<<< HEAD
   const languageModal = () => {
     return (
       <Portal>
@@ -256,20 +266,44 @@ function Setting({route, navigation}) {
         </Modal>
       </Portal>
     );
+=======
+  const updateLanguage = language => {
+    if (selectedLanguageItem.language_name !== language.language_name) {
+      dispatch(setAppLanguage(language));
+      setShowLanguage(false)
+      // navigation.dispatch(
+      //   CommonActions.reset({
+      //     index: 0,
+      //     routes: [{ name: 'Me' }],
+      //   }),
+      // );
+    } else {
+      setShowLanguage(false)
+    }
+  };
+
+  const updateCurrency = currency => {
+    if (selectedCurrency.currency_id !== currency.currency_id) {
+      dispatch(setAppCurrency(currency));
+      setShowCurrency(false)
+    } else {
+      setShowCurrency(false)
+    }
+>>>>>>> cee221783f732de3ba7f73cb9d0eb0f6584965b7
   };
 
   return (
-    <SafeAreaView style={{flex: 1}}>
-      <View style={{width: '100%', backgroundColor: '#fff'}}>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ width: '100%', backgroundColor: '#fff' }}>
         <AppHeader title={translate('wallet.common.settings')} showBackButton />
       </View>
       <ScrollView>
-        <View style={[styles.section2, {marginTop: 0}]}>
+        <View style={[styles.section2, { marginTop: 0 }]}>
           <ListItem
             onPress={() => navigation.navigate('SecurityScreen')}
             label={translate('wallet.common.security')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() =>
               modalAlert(
@@ -279,13 +313,19 @@ function Setting({route, navigation}) {
             }
             label={translate('wallet.common.notifications')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
+
+          <ListItem
+            onPress={() => setShowCurrency(true)}
+            label={translate('common.CURRENCY_CONVERSION')}
+          />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
 
           <ListItem
             onPress={() => setShowLanguage(true)}
             label={translate('wallet.common.language')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => null}
             rightText={`${DeviceInfo.getVersion()} ${DeviceInfo.getBuildNumber().slice(
@@ -294,14 +334,14 @@ function Setting({route, navigation}) {
             )}`}
             label={translate('wallet.common.version')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={() => handleDeletePopup(true)}
             rightText={``}
             noArrow={true}
             label={translate('common.deleteAccount')}
           />
-          <View style={{...styles.separator, width: wp('81%')}} />
+          <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
             onPress={onLogout}
             rightText={``}
@@ -329,7 +369,31 @@ function Setting({route, navigation}) {
         </View>
       </ScrollView>
 
-      {languageModal()}
+      <SelectionModal
+        isVisible={showCurrency}
+        closeModal={() => setShowCurrency(false)}
+        onSelect={(currency) => updateCurrency(currency)}
+        arrToRender={currencyArray}
+        title={translate('common.SELECT_CURRENCY')}
+        selectedValue={selectedCurrency?.currency_id}
+        compareParam={'currency_id'}
+        displayParam={'currency_display'}
+        showIcon={false}
+      />
+
+      <SelectionModal
+        isVisible={showLanguage}
+        closeModal={() => setShowLanguage(false)}
+        onSelect={(language) => updateLanguage(language)}
+        arrToRender={languageArray}
+        title={translate('wallet.common.selectLanguage')}
+        selectedValue={selectedLanguageItem.language_name}
+        compareParam={'language_name'}
+        displayParam={'language_display'}
+        displayJaParam={'language_ja_display'}
+        showIcon={true}
+      />
+
       <ShowModal
         isDelete={true}
         isVisible={deletePopup}
@@ -364,7 +428,7 @@ function Setting({route, navigation}) {
         onBackUpNowPress={() => {
           setBackupPhrasePopup(false);
           setTimeout(() => {
-            navigation.navigate('recoveryPhrase', {isSetting: true, wallet});
+            navigation.navigate('recoveryPhrase', { isSetting: true, wallet });
           }, 500);
         }}
         rightButtonTitle={translate('common.Logout')}

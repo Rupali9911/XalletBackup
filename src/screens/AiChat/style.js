@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     height: hp(5),
     borderColor: '#ced4da',
     borderWidth: 2,
-    width: message ? '100%' : '80%',
+    width: message ? wp(85) : wp(65),
     borderRightColor: message ? '#ced4da' : '#3c7bde',
     borderRightWidth: message ? 2 : 0,
   }),
@@ -352,6 +352,15 @@ const styles = StyleSheet.create({
   remainWordCountView: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  micContainer: {
+    backgroundColor: '#3c7bde',
+    width: SIZE(40),
+    height: SIZE(40),
+    borderRadius: SIZE(40 / 2),
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: SIZE(5),
   },
 });
 
