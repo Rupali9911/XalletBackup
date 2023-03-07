@@ -6,23 +6,19 @@ import ViewShot from "react-native-view-shot";
 import { useSelector } from 'react-redux';
 import Share from 'react-native-share';
 import Clipboard from '@react-native-clipboard/clipboard';
-import { BlurView } from "@react-native-community/blur";
 import Colors from '../../constants/Colors';
 import Fonts from '../../constants/Fonts';
 import { RF, hp, wp } from '../../constants/responsiveFunct';
 import { translate } from '../../walletUtils';
 import AppBackground from '../../components/appBackground';
 import AppHeader from '../../components/appHeader';
-import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import AppButton from '../../components/appButton';
 import CommonStyles from '../../constants/styles';
 import TextView from '../../components/appText';
 import { HeaderBtns } from './components/HeaderButtons';
 import ImagesSrc from '../../constants/Images';
-import { Button } from 'react-native-paper';
-import VerticalSeparator from '../../components/verticalSeparator';
-import Separator from '../../components/separator';
 import { Portal } from '@gorhom/portal';
+import MultiButtonModal from '../../components/MultiButtonModal';
 
 // import { PaymentField } from './screenComponents';
 // import { alertWithSingleBtn } from "./commonFunction";
@@ -31,7 +27,6 @@ const QRScreen = () => {
 
     const navigation = useNavigation();
     const route = useRoute();
-
     const { item } = route.params;
     const { userData } = useSelector((state) => state.UserReducer);
     const wallet = userData?.userWallet;
@@ -39,8 +34,9 @@ const QRScreen = () => {
     const [price, setPrice] = useState("");
     const [showShare, setShowShare] = useState(false);
     const [qrData, setQrData] = useState(wallet?.address);
-    const [modalVisible, setModalVisible] = useState(false);
     const [copyAddress, setCopyAddress] = useState(false);
+    const [amountPopup, setAmountPopup] = useState(false)
+
 
     useEffect(() => {
         setQrData(wallet?.address + ' ');
@@ -115,7 +111,7 @@ const QRScreen = () => {
                         iconColor={Colors.headerIcon2}
                         labelStyle={styles.btnLabel}
                         bgColor={Colors.headerIconBg2}
-                        onPress={() => { setModalVisible(true) }}
+                        onPress={() => { setAmountPopup(true) }}
                     />
                     <HeaderBtns
                         image={ImagesSrc.topup}
@@ -137,57 +133,36 @@ const QRScreen = () => {
                     onPress={() => onSharing()} />
             }
             <Portal>
-                <Modal
-                    visible={modalVisible}
-                    transparent
+                <MultiButtonModal
+                    isVisible={amountPopup}
+                    setAmount={true}
+                    closeModal={() => setAmountPopup(false)}
+                    title={translate('wallet.common.enterAmount')}
+                    leftButtonText={translate('common.Cancel')}
+                    rightButtonText={translate('common.Confirm')}
+                    onLeftPress={() => {
+                        setAmountPopup(false)
+                        setPrice("")
+                    }}
+                    onRightPress={() =>
+                        setAmountPopup(false)
+
+                    }
+                    onChangeValue={(e) => {
+                        const reg = /^\d+(\.\d{0,8})?$/
+                        if (e.length > 0 && reg.test(e)) {
+                            setPrice(e)
+                        } else if (e.length == 1 && e === '.') {
+                            setPrice('0.')
+                        } else if (e.length == 0) {
+                            setPrice(e)
+                        }
+                    }}
+                    value={price}
+                    maxLength={10}
+                    keyboardType={'numeric'}
                 >
-                    <BlurView
-                        style={styles.absolute}
-                        blurType="light"
-                        blurAmount={10}
-                    >
-                        <KeyboardAwareScrollView contentContainerStyle={styles.modalContent}>
-                            <View style={styles.setAmountContainer}>
-                                <TextView style={styles.title}>{translate("wallet.common.enterAmount")}</TextView>
-                                <TextInput
-                                    style={styles.amountInput}
-                                    onChangeText={(e) => {
-                                        const reg = /^\d+(\.\d{0,8})?$/
-                                        if (e.length > 0 && reg.test(e)) {
-                                            setPrice(e)
-                                        } else if (e.length == 1 && e === '.') {
-                                            setPrice('0.')
-                                        } else if (e.length == 0) {
-                                            setPrice(e)
-                                        }
-                                    }}
-                                    value={price}
-                                    maxLength={10}
-                                    keyboardType={'numeric'}
-                                />
-                                <Separator style={styles.separator} />
-                                <View style={styles.optionContainer}>
-                                    <Button
-                                        color={Colors.headerIcon2}
-                                        style={styles.optionButton}
-                                        labelStyle={styles.optionLabel}
-                                        uppercase={false}
-                                        onPress={() => {
-                                            setModalVisible(false)
-                                            setPrice("")
-                                        }}>{translate("wallet.common.cancel")}</Button>
-                                    <VerticalSeparator />
-                                    <Button
-                                        color={Colors.headerIcon2}
-                                        style={styles.optionButton}
-                                        labelStyle={styles.optionLabel}
-                                        uppercase={false}
-                                        onPress={() => setModalVisible(false)}>{translate("wallet.common.confirm")}</Button>
-                                </View>
-                            </View>
-                        </KeyboardAwareScrollView>
-                    </BlurView>
-                </Modal>
+                </MultiButtonModal>
             </Portal>
         </View>
     )
@@ -276,16 +251,8 @@ const styles = StyleSheet.create({
     valueLabel: {
         alignSelf: 'center'
     },
-    modalContent: {
-        flexGrow: 1,
-        justifyContent: 'center',
-        paddingHorizontal: wp("9%")
-    },
-    setAmountContainer: {
-        backgroundColor: Colors.lightBackground,
-        borderRadius: 10,
-        alignItems: 'center'
-    },
+
+
     title: {
         fontSize: RF(2.5),
         fontWeight: 'bold',
@@ -300,32 +267,11 @@ const styles = StyleSheet.create({
         right: 0,
         backgroundColor: "rgba(95, 148, 255, 0.6)"
     },
-    amountInput: {
-        backgroundColor: Colors.white,
-        width: "90%",
-        padding: wp("2%"),
-        borderRadius: 5,
-        marginVertical: hp("2%"),
-        color: Colors.black
-    },
-    optionContainer: {
-        width: '100%',
-        borderTopColor: Colors.borderColor,
-        borderTopWidth: 0,
-        flexDirection: 'row',
-    },
-    optionButton: {
-        flex: 1,
-        paddingVertical: hp("1%")
-    },
-    optionLabel: {
-        fontFamily: Fonts.ARIAL,
-        fontWeight: 'bold',
-        fontSize: RF(1.8)
-    },
-    separator: {
-        backgroundColor: Colors.borderColorGrey
-    }
 })
+
+
+
+
+
 
 export default Receive;

@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text} from 'react-native';
+import { View, Text, TextInput } from 'react-native';
 import Modal from 'react-native-modal';
 import styles from './styles';
 import GroupButton from '../groupButton';
@@ -14,6 +14,11 @@ const MultiButtonModal = props => {
     onRightPress,
     leftButtonText,
     rightButtonText,
+    onChangeValue,
+    value,
+    maxLength,
+    keyboardType,
+    setAmount
   } = props;
 
   return (
@@ -22,10 +27,17 @@ const MultiButtonModal = props => {
         isVisible={isVisible}
         onBackdropPress={closeModal}
         useNativeDriver={true}
-        hideModalContentWhileAnimating>
+        hideModalContentWhileAnimating={true}>
         <View style={styles.modalView}>
           <Text style={styles.titleText}>{title}</Text>
-          <Text style={styles.descriptionText}>{description}</Text>
+
+          {setAmount ? (<TextInput
+            style={[styles.descriptionText, styles.amountInput]}
+            onChangeText={onChangeValue}
+            value={value}
+            maxLength={maxLength}
+            keyboardType={keyboardType}
+          />) : (<Text style={styles.descriptionText}>{description}</Text>)}
 
           <View style={styles.groupButtonView}>
             <GroupButton

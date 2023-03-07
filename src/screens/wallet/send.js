@@ -715,7 +715,7 @@ const SendScreen = React.memo(props => {
                 thousandSeparator={true}
                 renderText={formattedValue => (
                   <TextView style={styles.balanceText}>
-                    {`(${selectedCurrency.currency_sign}${formattedValue})`}
+                    {`(${selectedCurrency ? selectedCurrency?.currency_sign : '$'}${formattedValue})`}
                   </TextView>
                 )}
               />
