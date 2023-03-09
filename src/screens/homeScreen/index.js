@@ -68,6 +68,9 @@ import Carousel from 'react-native-reanimated-carousel';
 const HomeScreen = ({ navigation }) => {
   const artistRef = useRef(null);
 
+  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+
+
   // =============== Getting data from reducer ========================
   const isNonCrypto = useSelector(
     state => state.UserReducer?.userData?.isNonCrypto,
@@ -99,7 +102,7 @@ const HomeScreen = ({ navigation }) => {
 
   let artistLimit = 12;
 
-  const [routes] = useState([
+  const tabs = [
     { key: 'launch', title: translate('common.launchPad') },
     { key: 'collect', title: translate('wallet.common.collection') },
     { key: 'allNft', title: translate('common.allNft') },
@@ -110,11 +113,17 @@ const HomeScreen = ({ navigation }) => {
     { key: 'movie', title: translate('common.video') },
     { key: 'music', title: translate('common.music') },
     { key: 'hotCollection', title: translate('common.hotcollection') },
-  ]);
+  ]
+
+  const [routes, setRoutes] = useState(tabs);
 
   const onFilterStateChange = ({ open }) => setOpenFilter(open);
 
   //===================== UseEffect Function =========================
+  useEffect(() => {
+    setRoutes(tabs)
+  }, [selectedLanguageItem]);
+
   useFocusEffect(
     React.useCallback(() => {
       return () => setOpenFilter(false);
