@@ -31,12 +31,12 @@ import {
   _logout,
   deleteAccountApi,
 } from '../../store/reducer/userReducer';
-import { languageArray, translate} from '../../walletUtils';
+import { languageArray, translate } from '../../walletUtils';
 import { requestDisconnectDApp } from '../AuthScreens/nonCryptoAuth/magic-link';
 import styles from './styled';
 import ShowModal from '../certificateScreen/modal';
-import SelectionModal from '../../components/SelectionModal'
-import {getWallet} from '../../helpers/AxiosApiRequest';
+import SelectionModal from '../../components/SelectionModal';
+import { getWallet } from '../../helpers/AxiosApiRequest';
 import MultiButtonModal from '../../components/MultiButtonModal';
 
 const optionalConfigObject = {
@@ -117,32 +117,31 @@ function Setting({ route, navigation }) {
   const [wallet, setWallet] = useState(null);
   const [logoutPopup, setLogoutPopup] = useState(false);
 
-
- const currencyArray = [
+  const currencyArray = [
     {
       currency_id: 1,
-      currency_display: translate("common.USD"),
+      currency_display: translate('common.USD'),
       currency_name: 'USD',
-      currency_sign: '$'
+      currency_sign: '$',
     },
     {
       currency_id: 2,
-      currency_display: translate("common.JPY"),
+      currency_display: translate('common.JPY'),
       currency_name: 'JPY',
-      currency_sign: '¥'
+      currency_sign: '¥',
     },
     {
       currency_id: 3,
-      currency_display: translate("common.KRW"),
+      currency_display: translate('common.KRW'),
       currency_name: 'KRW',
-      currency_sign: '₩'
+      currency_sign: '₩',
     },
     {
       currency_id: 4,
-      currency_display: translate("common.CNY"),
+      currency_display: translate('common.CNY'),
       currency_name: 'CNY',
-      currency_sign: '¥'
-    }
+      currency_sign: '¥',
+    },
   ];
 
   useEffect(async () => {
@@ -155,8 +154,6 @@ function Setting({ route, navigation }) {
       }, 500);
     }
   }, [route]);
-
-
 
   const logoutConfirm = async () => {
     const _selectedLanguageItem = selectedLanguageItem;
@@ -211,7 +208,7 @@ function Setting({ route, navigation }) {
   const updateLanguage = language => {
     if (selectedLanguageItem.language_name !== language.language_name) {
       dispatch(setAppLanguage(language));
-      setShowLanguage(false)
+      setShowLanguage(false);
       // navigation.dispatch(
       //   CommonActions.reset({
       //     index: 0,
@@ -219,16 +216,16 @@ function Setting({ route, navigation }) {
       //   }),
       // );
     } else {
-      setShowLanguage(false)
+      setShowLanguage(false);
     }
   };
 
   const updateCurrency = currency => {
     if (selectedCurrency.currency_id !== currency.currency_id) {
       dispatch(setAppCurrency(currency));
-      setShowCurrency(false)
+      setShowCurrency(false);
     } else {
-      setShowCurrency(false)
+      setShowCurrency(false);
     }
   };
 
@@ -312,7 +309,7 @@ function Setting({ route, navigation }) {
       <SelectionModal
         isVisible={showCurrency}
         closeModal={() => setShowCurrency(false)}
-        onSelect={(currency) => updateCurrency(currency)}
+        onSelect={currency => updateCurrency(currency)}
         arrToRender={currencyArray}
         title={translate('common.SELECT_CURRENCY')}
         selectedValue={selectedCurrency?.currency_id}
@@ -324,7 +321,7 @@ function Setting({ route, navigation }) {
       <SelectionModal
         isVisible={showLanguage}
         closeModal={() => setShowLanguage(false)}
-        onSelect={(language) => updateLanguage(language)}
+        onSelect={language => updateLanguage(language)}
         arrToRender={languageArray}
         title={translate('wallet.common.selectLanguage')}
         selectedValue={selectedLanguageItem.language_name}
@@ -369,7 +366,7 @@ function Setting({ route, navigation }) {
           setBackupPhrasePopup(false);
           setTimeout(() => {
             navigation.navigate('recoveryPhrase', { isSetting: true, wallet });
-          }, 500);
+          }, 0.01);
         }}
         rightButtonTitle={translate('common.Logout')}
         leftButtonTitle={translate('common.BACKUP_NOW')}
