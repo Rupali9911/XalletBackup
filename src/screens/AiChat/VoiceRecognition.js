@@ -97,8 +97,8 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
 
   const customMicrophoneAlert = () => {
     return confirmationAlert(
-      'This feature requires microphone access',
-      'To enable access, tap Settings and enable microphone',
+      translate('wallet.common.microphonePermissionHeader'),
+      translate('wallet.common.microphonePermissionDescription'),
       translate('common.Cancel'),
       translate('wallet.common.settings'),
       () => openSettings(),
@@ -108,8 +108,8 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
 
   const customSpeechAlert = () => {
     return confirmationAlert(
-      'This feature requires speech recognition access',
-      'To enable access, tap Settings and enable speech recognition',
+      translate('wallet.common.speechPermissionHeader'),
+      translate('wallet.common.speechPermissionDescription'),
       translate('common.Cancel'),
       translate('wallet.common.settings'),
       () => openSettings(),
@@ -143,10 +143,8 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
 
     if (isPermissionGranted) {
       try {
-        console.log('Mic Test : ', micOn);
         setTimeout(() => {
           if (micOn) {
-            console.log('Input set : ', audioResult, results);
             stopRecognizing();
             setAudioToTextFunc(audioResult);
           } else {
@@ -161,7 +159,6 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
         return;
       }
     } else {
-      console.log('else part');
       if (Platform.OS === 'android') {
         customMicrophoneAlert();
       } else {

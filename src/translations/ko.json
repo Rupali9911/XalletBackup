@@ -784,7 +784,6 @@
     "alertTitle": "알리다",
     "EMAIL_AUTHORIZATION_MSG": "이메일 승인이 진행되는 동안 잠시 기다려 주십시오...",
     "LAUNCH_COMPLETED": "완전한",
-    "INVALID_LANGUAGE": "메시지는 영어 또는 일본어를 사용하십시오.",
     "bidWinner": "NFT 낙찰",
     "CURRENCY_CONVERSION": "통화 변환",
     "SELECT_CURRENCY": "통화 선택",
@@ -1138,7 +1137,11 @@
       "closeTimeWarn": "마감 시간은 오픈 시간보다 커야 합니다.",
       "descriptionCreate": "컬렉션 설명",
       "reflectInHistory": "(완료 후 거래 내역에 반영됩니다)",
-      "loginSuccess": "사용자가 성공적으로 로그인했습니다."
+      "loginSuccess": "사용자가 성공적으로 로그인했습니다.",
+      "microphonePermissionHeader": "이 기능을 사용하려면 마이크 액세스가 필요합니다.",
+      "microphonePermissionDescription": "액세스를 활성화하려면 설정을 누르고 마이크를 활성화하십시오.",
+      "speechPermissionHeader": "이 기능을 사용하려면 음성 인식 액세스가 필요합니다.",
+      "speechPermissionDescription": "액세스를 활성화하려면 설정을 누르고 음성 인식을 활성화하십시오."
     },
     "backendmessage": {
       "error": {},

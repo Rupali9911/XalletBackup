@@ -5,7 +5,6 @@ import {useSelector, useDispatch} from 'react-redux';
 import {
   newNftLoadStart,
   newNFTData,
-  newPageChange,
   newNftListReset,
 } from '../../store/actions/newNFTActions';
 import styles from './styles';
@@ -15,19 +14,16 @@ import {translate} from '../../walletUtils';
 import NFTItem from '../../components/NFTItem';
 import {CATEGORY_VALUE} from '../../constants';
 
-const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const ArtNFT = ({sortOption, screen}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  let timer = null;
 
   // =============== Getting data from reducer ========================
   const {NewNFTListReducer} = useSelector(state => state);
-  // const { sort } = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
-  // const [isSort, setIsSort] = useState(0);
 
   const [end, setEnd] = useState();
 
@@ -43,11 +39,17 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       dispatch(newNftListReset(category));
       getNFTlist(category, sortCategory, limit, 1);
       setIsFirstRender(false);
-      setSortOption(0);
-      // setPage(1);
-      screen(category);
+    } else {
+      if (
+        NewNFTListReducer.newArtNftCurrentFilter != sortCategory &&
+        screen === category
+      ) {
+        dispatch(newNftLoadStart());
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
+      }
     }
-  }, [sortOption, isFocused]);
+  }, [screen]);
 
   //===================== Dispatch Action to Fetch Art NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -112,10 +114,7 @@ const ArtNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       NewNFTListReducer.newArtNftTotalCount !==
         NewNFTListReducer.newArtNftList.length
     ) {
-      // let pageNum = NewNFTListReducer.newArtNftPage + 1;
-      // getNFTlist(category, sortOption, limit, pageNum);
       getNFTlist(category, sortOption, limit, NewNFTListReducer.newArtNftPage);
-      // setPage(pageNum);
     }
   };
 

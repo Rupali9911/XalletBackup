@@ -5,5 +5,7 @@
   Created by apple on 20/12/2021.
 
 */
-NSCameraUsageDescription = "Capture profile picture";
-NSPhotoLibraryUsageDescription="Access library";
+NSCameraUsageDescription = "Allow app to get access to Scan the QR Code or media for profile, banner and more";
+NSPhotoLibraryUsageDescription = "Allow app to get access to media for profile, banner and more.";
+NSMicrophoneUsageDescription = "Allow the app to access the microphone to record audio for speech recognition.";
+NSSpeechRecognitionUsageDescription = "Allow the app to convert audio to text.";

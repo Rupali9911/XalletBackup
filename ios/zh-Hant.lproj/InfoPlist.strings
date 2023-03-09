@@ -6,4 +6,8 @@
   
 */
 
-NSCameraUsageDescription = "捕获个人资料图片";
+
+NSCameraUsageDescription = "允許應用程序訪問掃描二維碼或媒體以獲取個人資料、橫幅等";
+NSPhotoLibraryUsageDescription = "允許應用訪問媒體以獲取個人資料、橫幅等。";
+NSMicrophoneUsageDescription = "允許應用程序訪問麥克風以錄製音頻以進行語音識別。";
+NSSpeechRecognitionUsageDescription = "允許應用程序將音頻轉換為文本。";
