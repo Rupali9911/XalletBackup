@@ -25,6 +25,7 @@ import {
 import ImagesSrc from "../../constants/Images";
 // import {BASE_URL} from "../../helpers/ApiRequest";
 import { BASE_URL } from '../../common/constants';
+import sendRequest from '../../helpers/AxiosApiRequest';
 
 const initialState = {
     ethTransactions: [],
@@ -362,3 +363,32 @@ export const setConnectedAppsToLocal = (data) => (dispatch) =>
         dispatch(setConnectedApps(data));
         resolve();
     });
+
+export const convertCurrency = (amount, symbol, convert) => {
+    return new Promise((resolve, reject) => {
+        let CMC_PRO_API_KEY = '67c4c255-a649-49df-9e23-5d58ec5f5d24'
+        let url = `https://pro-api.coinmarketcap.com/v2/tools/price-conversion`;
+        sendRequest({
+            url,
+            method: 'GET',
+            params: {
+                amount,
+                symbol,
+                convert,
+                CMC_PRO_API_KEY,
+            },
+        })
+            .then(res => {
+                console.log('Response of conversion api', res)
+                console.log('Response of conversion api', res?.data[0]?.amount)
+                console.log('Response of conversion api', res?.data[0]?.quote[convert]?.price)
+                //   setPrice(res?.data[0]?.quote[selectedCurrency.currency_name]?.price)
+                resolve(res?.data[0]?.quote[convert]?.price)
+            })
+            .catch(err => {
+                console.log('Error from conversion api', err)
+                reject();
+                //setPrice('0.00')
+            });
+    });
+}

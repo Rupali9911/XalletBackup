@@ -14,7 +14,9 @@ const AlertPopup = () => {
       <Modal
         isVisible={state?.status}
         onBackdropPress={() => dispatch(alertAction({status: false}))}
-        onBackButtonPress={() => dispatch(alertAction({status: false}))}>
+        onBackButtonPress={() => dispatch(alertAction({status: false}))}
+        useNativeDriver={true}
+        hideModalContentWhileAnimating>
         <View style={styles.modalView}>
           <Text style={styles.title}>{state?.title}</Text>
           <Text style={styles.description}>{state?.description}</Text>
@@ -42,6 +44,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: '8%',
     marginTop: SIZE(20),
     textAlign: 'center',
+    lineHeight: 20,
   },
   modalView: {
     backgroundColor: 'white',
@@ -55,6 +58,7 @@ export const styles = StyleSheet.create({
     fontFamily: 'Arial',
     color: COLORS.Black,
     marginTop: SIZE(25),
+    lineHeight: 24,
   },
   okButtonTitle: {
     textAlign: 'center',
