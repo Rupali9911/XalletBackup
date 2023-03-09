@@ -1128,7 +1128,11 @@
       "closeTimeWarn": "Close time should be greater than open time",
       "descriptionCreate": "Description",
       "reflectInHistory": "(After completion, it will be reflected in the transaction history)",
-      "loginSuccess": "User logged in successfully"
+      "loginSuccess": "User logged in successfully",
+      "microphonePermissionHeader": "This feature requires microphone access",
+      "microphonePermissionDescription": "To enable access, tap Settings and enable the microphone",
+      "speechPermissionHeader": "This feature requires speech recognition access",
+      "speechPermissionDescription": "To enable access, tap Settings and enable speech recognition"
     },
     "backendmessage": {
       "error": {},

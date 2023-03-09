@@ -15,19 +15,16 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import {CATEGORY_VALUE} from '../../constants';
 
-const Trending = ({screen, sortOption, setSortOption, page, setPage}) => {
+const Trending = ({sortOption, screen}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
-  let timer = null;
 
   // =============== Getting data from reducer ========================
   const {NewNFTListReducer} = useSelector(state => state);
-  const {sort} = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
-  // const [isSort, setIsSort] = useState(null);
 
   const [end, setEnd] = useState();
 
@@ -42,11 +39,17 @@ const Trending = ({screen, sortOption, setSortOption, page, setPage}) => {
       dispatch(newNftListReset(category));
       getNFTlist(category, sortCategory, limit, 1);
       setIsFirstRender(false);
-      setSortOption(0);
-      // setPage(1);
-      screen(category);
+    } else {
+      if (
+        NewNFTListReducer.newTrendingNftCurrentFilter != sortCategory &&
+        screen === category
+      ) {
+        dispatch(newNftLoadStart());
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
+      }
     }
-  }, [isFocused]);
+  }, [screen]);
 
   //===================== Dispatch Action to Fetch Hot NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -91,7 +94,6 @@ const Trending = ({screen, sortOption, setSortOption, page, setPage}) => {
         screenName="trending"
         image={imageUri}
         onPress={() => {
-          // dispatch(changeScreenName('Hot'));
           navigation.push('CertificateDetail', {
             networkName: item?.network?.networkName,
             collectionAddress: item?.collection?.address,
@@ -131,15 +133,12 @@ const Trending = ({screen, sortOption, setSortOption, page, setPage}) => {
       NewNFTListReducer.newTrendingNftTotalCount !==
         NewNFTListReducer.newTrendingNftList.length
     ) {
-      // let pageNum = NewNFTListReducer.newTrendingNftPage + 1;
-      // getNFTlist(category, sortOption, limit, pageNum);
       getNFTlist(
         category,
         sortOption,
         limit,
         NewNFTListReducer.newTrendingNftPage,
       );
-      // setPage(pageNum);
     }
   };
 

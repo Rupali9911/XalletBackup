@@ -6,4 +6,8 @@
   
 */
 
-NSCameraUsageDescription = "プロファイル画像を読み取る";
+NSCameraUsageDescription = "“XALLET”がカメラへのアクセスを求めています";
+NSPhotoLibraryUsageDescription = "画像設定のために、“XALLET”が写真へのアクセスを求めています";
+NSMicrophoneUsageDescription = "音声認識を実行するために、アプリがマイクへのアクセスを求めています";
+NSSpeechRecognitionUsageDescription = "音声をテキストに変換するために、アプリがアクセスを求めています";
+

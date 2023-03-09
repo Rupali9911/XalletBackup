@@ -4,12 +4,7 @@ import {ActivityIndicator, FlatList, StatusBar, Text, View} from 'react-native';
 import {useDispatch, useSelector} from 'react-redux';
 import {Loader} from '../../components';
 import {colors} from '../../res';
-// import {
-//   movieNFTList,
-//   nftListReset,
-//   nftLoadStart,
-//   pageChange,
-// } from '../../store/actions/nftTrendList';
+
 import {
   newNftLoadStart,
   newNFTData,
@@ -20,18 +15,15 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import {CATEGORY_VALUE} from '../../constants';
 
-const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const MovieNFT = ({ sortOption, screen }) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
-  let timer = null;
 
   // =============== Getting data from reducer ========================
   const {NewNFTListReducer} = useSelector(state => state);
-  const {sort} = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
-  const [isSort, setIsSort] = useState(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   const [end, setEnd] = useState();
@@ -47,11 +39,16 @@ const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       dispatch(newNftListReset(category));
       getNFTlist(category, sortCategory, limit, 1);
       setIsFirstRender(false);
-      setSortOption(0);
-      // setPage(1);
-      screen(category);
+    
     }
-  }, [sortOption, isFocused]);
+    else {
+      if ((NewNFTListReducer.newMovieNftCurrentFilter != sortCategory) && (screen === category)) {
+        dispatch(newNftLoadStart());
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
+      }
+    }
+  }, [screen]);
 
   //===================== Dispatch Action to Fetch Movie NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -108,7 +105,6 @@ const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const refreshFunc = () => {
     dispatch(newNftListReset(category));
     getNFTlist(category, sortOption, limit, 1);
-    // setPage(1);
   };
 
   const handleFlastListEndReached = () => {
@@ -117,15 +113,13 @@ const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       NewNFTListReducer.newMovieNftTotalCount !==
         NewNFTListReducer.newMovieNftList.length
     ) {
-      // let pageNum = NewNFTListReducer.newMovieNftPage + 1;
-      // getNFTlist(category, sortOption, limit, pageNum);
+      
       getNFTlist(
         category,
         sortOption,
         limit,
         NewNFTListReducer.newMovieNftPage,
       );
-      // setPage(pageNum);
     }
   };
 
@@ -146,7 +140,6 @@ const MovieNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
         item={item}
         image={imageUri}
         onPress={() => {
-          // dispatch(changeScreenName('movieNFT'));
           navigation.push('CertificateDetail', {
             networkName: item?.network?.networkName,
             collectionAddress: item?.collection?.address,

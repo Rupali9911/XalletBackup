@@ -28,24 +28,31 @@ const initialState = {
   newNftListLoading: true,
   newArtNftList: [],
   newArtNftPage: 1,
+  newArtNftCurrentFilter: 0,
   newArtNftTotalCount: 0,
   newAllNftList: [],
   newAllNftPage: 1,
+  newAllNftCurrentFilter: 0,
   newAllNftTotalCount: 0,
   newTrendingNftList: [],
   newTrendingNftPage: 1,
+  newTrendingNftCurrentFilter: 0,
   newTrendingNftTotalCount: 0,
   newImageNftList: [],
   newImageNftPage: 1,
+  newImageNftCurrentFilter: 0,
   newImageNftTotalCount: 0,
   newGifNftList: [],
   newGIFNftPage: 1,
+  newGIFNftCurrentFilter: 0,
   newGIFNftTotalCount: 0,
   newMovieNftList: [],
   newMovieNftPage: 1,
+  newMovieNftCurrentFilter: 0,
   newMovieNftTotalCount: 0,
   newMusicNftList: [],
   newMusicNftPage: 1,
+  newMusicNftCurrentFilter: 0,
   newMusicNftTotalCount: 0,
 
   favoriteNftList: [],
@@ -70,6 +77,7 @@ export default function NewNFTListReducer(state = initialState, action) {
         newArtNftList: [...state.newArtNftList, ...action.payload.list],
         newArtNftTotalCount: action.payload.count,
         newArtNftPage: action.payload.pageNum,
+        newArtNftCurrentFilter: action.payload.currentFilter,
         newNftListLoading: false,
       });
 
@@ -79,6 +87,7 @@ export default function NewNFTListReducer(state = initialState, action) {
         newAllNftList: [...state.newAllNftList, ...action.payload.list],
         newAllNftTotalCount: action.payload.count,
         newAllNftPage: action.payload.pageNum,
+        newAllNftCurrentFilter: action.payload.currentFilter,
         newNftListLoading: false,
       });
 
@@ -91,6 +100,7 @@ export default function NewNFTListReducer(state = initialState, action) {
         ],
         newTrendingNftTotalCount: action.payload.count,
         newTrendingNftPage: action.payload.pageNum,
+        newTrendingNftCurrentFilter: action.payload.currentFilter,
         newNftListLoading: false,
       });
 
@@ -100,6 +110,7 @@ export default function NewNFTListReducer(state = initialState, action) {
         newImageNftList: [...state.newImageNftList, ...action.payload.list],
         newImageNftTotalCount: action.payload.count,
         newImageNftPage: action.payload.pageNum,
+        newImageNftCurrentFilter: action.payload.currentFilter,
         newNftListLoading: false,
       });
 
@@ -109,6 +120,7 @@ export default function NewNFTListReducer(state = initialState, action) {
         newGifNftList: [...state.newGifNftList, ...action.payload.list],
         newGIFNftTotalCount: action.payload.count,
         newGIFNftPage: action.payload.pageNum,
+        newGIFNftCurrentFilter: action.payload.currentFilter,
         newNftListLoading: false,
       });
 
@@ -118,6 +130,7 @@ export default function NewNFTListReducer(state = initialState, action) {
         newMovieNftList: [...state.newMovieNftList, ...action.payload.list],
         newMovieNftTotalCount: action.payload.count,
         newMovieNftPage: action.payload.pageNum,
+        newMovieNftCurrentFilter: action.payload.currentFilter,
         newNftListLoading: false,
       });
 
@@ -127,6 +140,7 @@ export default function NewNFTListReducer(state = initialState, action) {
         newMusicNftList: [...state.newMusicNftList, ...action.payload.list],
         newMusicNftTotalCount: action.payload.count,
         newMusicNftPage: action.payload.pageNum,
+        newMusicNftCurrentFilter: action.payload.currentFilter,
         newNftListLoading: false,
       });
 

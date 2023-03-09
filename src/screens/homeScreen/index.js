@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import { useFocusEffect } from '@react-navigation/native';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import {useFocusEffect} from '@react-navigation/native';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
 import {
   ActivityIndicator,
   AppState,
@@ -13,9 +13,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  FlatList,
 } from 'react-native';
-import { FAB } from 'react-native-paper';
+import {FAB} from 'react-native-paper';
 import {
   checkNotifications,
   openSettings,
@@ -23,34 +22,33 @@ import {
 } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import { useDispatch, useSelector } from 'react-redux';
-import { NEW_BASE_URL } from '../../common/constants';
-import { ImagekitType } from '../../common/ImageConstant';
+import {useDispatch, useSelector} from 'react-redux';
+import {NEW_BASE_URL} from '../../common/constants';
+import {ImagekitType} from '../../common/ImageConstant';
 import {
   heightPercentageToDP as hp,
-  SIZE,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import { AppHeader, C_Image } from '../../components';
+import {AppHeader, C_Image} from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModalContent from '../../components/successModal';
 import TabViewScreen from '../../components/TabView/TabViewScreen';
-import { SORT_FILTER_OPTONS } from '../../constants';
+import {SORT_FILTER_OPTONS} from '../../constants';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import { colors } from '../../res';
-import { newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
-import { getAllArtist } from '../../store/actions/nftTrendList';
-import { setNetworkData } from '../../store/reducer/networkReducer';
+import {colors} from '../../res';
+import {newNFTData, newNftListReset} from '../../store/actions/newNFTActions';
+import {getAllArtist} from '../../store/actions/nftTrendList';
+import {setNetworkData} from '../../store/reducer/networkReducer';
 import {
   updateCreateState,
   updatePassStatus,
 } from '../../store/reducer/userReducer';
-import { updateNetworkType } from '../../store/reducer/walletReducer';
-import { modalAlert } from '../../common/function';
-import { translate } from '../../walletUtils';
+import {updateNetworkType} from '../../store/reducer/walletReducer';
+import {modalAlert} from '../../common/function';
+import {translate} from '../../walletUtils';
 import AllNFT from './allNFT';
 import ArtNFT from './artNFT';
 import Collection from './collection';
@@ -62,23 +60,24 @@ import MovieNFT from './movieNFT';
 import MusicNFT from './musicNFT';
 import styles from './styles';
 import Trending from './trending';
-import { Easing } from 'react-native-reanimated';
+import {Easing} from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
+import {CATEGORY_VALUE} from '../../constants';
 
-const HomeScreen = ({ navigation }) => {
+const HomeScreen = ({navigation}) => {
   const artistRef = useRef(null);
 
   // =============== Getting data from reducer ========================
   const isNonCrypto = useSelector(
     state => state.UserReducer?.userData?.isNonCrypto,
   );
-  const { passcodeAsyncStatus } = useSelector(state => state.UserReducer);
-  const { artistList, artistLoading, artistTotalCount } = useSelector(
+  const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
+  const {artistList, artistLoading, artistTotalCount} = useSelector(
     state => state.ListReducer,
   );
-  const { showSuccess } = useSelector(state => state.UserReducer);
+  const {showSuccess} = useSelector(state => state.UserReducer);
   const modalState = Platform.OS === 'android' ? false : showSuccess;
-  const { requestAppId } = useSelector(state => state.WalletReducer);
+  const {requestAppId} = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
   //================== Components State Defination ===================
@@ -91,28 +90,58 @@ const HomeScreen = ({ navigation }) => {
 
   const [screen, setScreen] = useState('');
   const [sortOption, setSortOption] = useState(0);
-  const [page, setPage] = useState(1);
 
   const [artistPage, setArtistPage] = useState(1);
-  const [end, setEnd] = useState();
   const [active, setActive] = useState(0);
 
   let artistLimit = 12;
 
   const [routes] = useState([
-    { key: 'launch', title: translate('common.launchPad') },
-    { key: 'collect', title: translate('wallet.common.collection') },
-    { key: 'allNft', title: translate('common.allNft') },
-    { key: 'trending', title: translate('common.trending') },
-    { key: 'art', title: translate('common.2DArt') },
-    { key: 'image', title: translate('common.image') },
-    { key: 'gif', title: translate('common.gif') },
-    { key: 'movie', title: translate('common.video') },
-    { key: 'music', title: translate('common.music') },
-    { key: 'hotCollection', title: translate('common.hotcollection') },
+    {key: 'launch', title: translate('common.launchPad'), category: ''},
+    {
+      key: 'collect',
+      title: translate('wallet.common.collection'),
+      category: '',
+    },
+    {
+      key: 'allNft',
+      title: translate('common.allNft'),
+      category: CATEGORY_VALUE.allNft,
+    },
+    {
+      key: 'trending',
+      title: translate('common.trending'),
+      category: CATEGORY_VALUE.trending,
+    },
+    {
+      key: 'art',
+      title: translate('common.2DArt'),
+      category: CATEGORY_VALUE.art,
+    },
+    {
+      key: 'image',
+      title: translate('common.image'),
+      category: CATEGORY_VALUE.image,
+    },
+    {key: 'gif', title: translate('common.gif'), category: CATEGORY_VALUE.gif},
+    {
+      key: 'movie',
+      title: translate('common.video'),
+      category: CATEGORY_VALUE.movie,
+    },
+    {
+      key: 'music',
+      title: translate('common.music'),
+      category: CATEGORY_VALUE.music,
+    },
+    {
+      key: 'hotCollection',
+      title: translate('common.hotcollection'),
+      category: '',
+    },
   ]);
 
-  const onFilterStateChange = ({ open }) => setOpenFilter(open);
+  const onFilterStateChange = ({open}) => setOpenFilter(open);
 
   //===================== UseEffect Function =========================
   useFocusEffect(
@@ -167,12 +196,12 @@ const HomeScreen = ({ navigation }) => {
     });
     const appStateEvent = AppState.addEventListener('change', appStateChange);
     if (requestAppId) {
-      navigation.navigate('Connect', { appId: requestAppId });
+      navigation.navigate('Connect', {appId: requestAppId});
     }
 
     return () => {
       netInfoSubscription();
-      appStateEvent
+      appStateEvent;
     };
   }, [requestAppId]);
 
@@ -214,13 +243,13 @@ const HomeScreen = ({ navigation }) => {
         setSuccessVisible(false);
         setModalVisible(false);
         dispatch(updatePassStatus(false));
-        navigation.navigate('PasscodeScreen', { screen: 'active' });
+        navigation.navigate('PasscodeScreen', {screen: 'active'});
       }
     }
   };
 
   const checkPermissions = async () => {
-    PushNotification.checkPermissions(async ({ alert }) => {
+    PushNotification.checkPermissions(async ({alert}) => {
       if (!alert) {
         setNotificationVisible(true);
       } else {
@@ -233,7 +262,6 @@ const HomeScreen = ({ navigation }) => {
     dispatch(newNftListReset(category));
     dispatch(newNFTData(category, sort, pageSize, pageNum));
     setSortOption(sort);
-    setPage(1);
   }, []);
 
   // ===================== Render Screen Header =================================
@@ -246,12 +274,12 @@ const HomeScreen = ({ navigation }) => {
             <View style={styles.headerMenuContainer}>
               <TouchableOpacity
                 onPress={() => onClickButton()}
-                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
+                hitSlop={{top: 5, bottom: 5, left: 5}}>
                 <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => onClickButton(isNonCrypto === 0 ? 'Create' : '')}
-                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
+                hitSlop={{top: 5, bottom: 5, left: 5}}>
                 <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
               </TouchableOpacity>
             </View>
@@ -272,7 +300,7 @@ const HomeScreen = ({ navigation }) => {
   };
 
   // ===================== Render Artist List ===================================
-  const renderArtistItem = ({ item, index }) => {
+  const renderArtistItem = ({item, index}) => {
     return (
       <TouchableOpacity
         activeOpacity={1}
@@ -289,7 +317,7 @@ const HomeScreen = ({ navigation }) => {
           <C_Image
             uri={item?.mediaUrl}
             size={ImagekitType.PROFILE}
-            imageStyle={{ width: '100%', height: '100%' }}
+            imageStyle={{width: '100%', height: '100%'}}
           />
           <Text numberOfLines={1} style={styles.userText}>
             {item?.name}
@@ -436,6 +464,8 @@ const HomeScreen = ({ navigation }) => {
   };
 
   const handleIndexChange = index => {
+    // {[0, 1, 9].indexOf(index) === -1 && setScreen(routes[index].category)}
+    setScreen(routes[index].category);
     setTabIndex(index);
   };
 
@@ -459,100 +489,28 @@ const HomeScreen = ({ navigation }) => {
     }
   }, [tabIndex]);
 
-  const renderScene = ({ route }) => {
+  const renderScene = ({route}) => {
     switch (route.key) {
       case 'launch':
         return <LaunchPad />;
       case 'allNft':
-        return (
-          <AllNFT
-            screen={num => setScreen(num)}
-            page={page}
-            setPage={setPage}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-        );
+        return <AllNFT sortOption={sortOption} screen={screen} />;
       case 'trending':
-        return (
-          <Trending
-            screen={num => setScreen(num)}
-            page={page}
-            setPage={setPage}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-        );
+        return <Trending sortOption={sortOption} screen={screen} />;
       case 'collect':
-        return (
-          <Collection
-            screen={num => setScreen(num)}
-            page={page}
-            setPage={setPage}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-        );
+        return <Collection />;
       case 'art':
-        return (
-          <ArtNFT
-            screen={num => setScreen(num)}
-            page={page}
-            setPage={setPage}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-        );
+        return <ArtNFT sortOption={sortOption} screen={screen} />;
       case 'image':
-        return (
-          <ImageNFT
-            screen={num => setScreen(num)}
-            page={page}
-            setPage={setPage}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-        );
+        return <ImageNFT sortOption={sortOption} screen={screen} />;
       case 'gif':
-        return (
-          <GifNFT
-            screen={num => setScreen(num)}
-            page={page}
-            setPage={setPage}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-        );
+        return <GifNFT sortOption={sortOption} screen={screen} />;
       case 'movie':
-        return (
-          <MovieNFT
-            screen={num => setScreen(num)}
-            page={page}
-            setPage={setPage}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-        );
+        return <MovieNFT sortOption={sortOption} screen={screen} />;
       case 'music':
-        return (
-          <MusicNFT
-            screen={num => setScreen(num)}
-            page={page}
-            setPage={setPage}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-        );
+        return <MusicNFT sortOption={sortOption} screen={screen} />;
       case 'hotCollection':
-        return (
-          <HotCollection
-            screen={num => setScreen(num)}
-            page={page}
-            setPage={setPage}
-            sortOption={sortOption}
-            setSortOption={setSortOption}
-          />
-        );
+        return <HotCollection />;
       default:
         return null;
     }
@@ -586,16 +544,16 @@ const HomeScreen = ({ navigation }) => {
             onDonePress={() => {
               setModalVisible(false);
               Platform.OS === 'ios'
-                ? checkNotifications().then(({ status, settings }) => {
-                  if (status == 'denied') {
-                    requestNotifications(['alert', 'sound']).then(
-                      ({ status, settings }) => { },
-                    );
-                  }
-                  if (status == 'blocked') {
-                    Linking.openSettings();
-                  }
-                })
+                ? checkNotifications().then(({status, settings}) => {
+                    if (status == 'denied') {
+                      requestNotifications(['alert', 'sound']).then(
+                        ({status, settings}) => {},
+                      );
+                    }
+                    if (status == 'blocked') {
+                      Linking.openSettings();
+                    }
+                  })
                 : openSettings();
             }}
           />
@@ -629,7 +587,6 @@ const HomeScreen = ({ navigation }) => {
             : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.mostLiked, 10, 1);
-          setPage(1);
           setActive(SORT_FILTER_OPTONS.mostLiked);
         },
       },
@@ -651,7 +608,6 @@ const HomeScreen = ({ navigation }) => {
             : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.onSale, 10, 1);
-          setPage(1);
           setActive(SORT_FILTER_OPTONS.onSale);
         },
       },
@@ -677,7 +633,6 @@ const HomeScreen = ({ navigation }) => {
             : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.recentlyCreated, 10, 1);
-          setPage(1);
           setActive(SORT_FILTER_OPTONS.recentlyCreated);
         },
       },
@@ -703,7 +658,6 @@ const HomeScreen = ({ navigation }) => {
             : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.lowToHighPrice, 10, 1);
-          setPage(1);
           setActive(SORT_FILTER_OPTONS.lowToHighPrice);
         },
       },
@@ -729,7 +683,6 @@ const HomeScreen = ({ navigation }) => {
             : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.highToLowPrice, 10, 1);
-          setPage(1);
           setActive(SORT_FILTER_OPTONS.highToLowPrice);
         },
       },
@@ -755,7 +708,6 @@ const HomeScreen = ({ navigation }) => {
             : styles.fabItemStyle,
         onPress: () => {
           getNFTlist(screen, SORT_FILTER_OPTONS.onAuction, 10, 1);
-          setPage(1);
           setActive(SORT_FILTER_OPTONS.onAuction);
         },
       },
@@ -770,12 +722,12 @@ const HomeScreen = ({ navigation }) => {
           openFilter
             ? 'close'
             : props => (
-              <FontAwesome5
-                name={'sort-amount-down'}
-                color={props.color}
-                size={props.size}
-              />
-            )
+                <FontAwesome5
+                  name={'sort-amount-down'}
+                  color={props.color}
+                  size={props.size}
+                />
+              )
         }
         fabStyle={styles.fabLabelStyle1}
         actions={filtersAction}

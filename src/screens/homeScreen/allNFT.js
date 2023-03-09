@@ -15,20 +15,16 @@ import {translate} from '../../walletUtils';
 import styles from './styles';
 import NFTItem from '../../components/NFTItem';
 
-const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const AllNFT = ({sortOption, screen}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  let timer = null;
 
   // =============== Getting data from reducer ========================
   const {NewNFTListReducer} = useSelector(state => state);
 
-  // const { sort } = useSelector(state => state.ListReducer);
-
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
-  // const [isSort, setIsSort] = useState(null);
   const [end, setEnd] = useState();
 
   let category = CATEGORY_VALUE.allNft;
@@ -41,12 +37,18 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       dispatch(newNftLoadStart());
       dispatch(newNftListReset(category));
       getNFTlist(category, sortCategory, limit, 1);
-      setSortOption(0);
-      // setPage(1);
       setIsFirstRender(false);
-      screen(category);
+    } else {
+      if (
+        NewNFTListReducer.newAllNftCurrentFilter != sortCategory &&
+        screen === category
+      ) {
+        dispatch(newNftLoadStart());
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
+      }
     }
-  }, [sortOption, isFocused]);
+  }, [screen]);
 
   //===================== Dispatch Action to Fetch Award NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -106,10 +108,7 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       NewNFTListReducer.newAllNftTotalCount !==
         NewNFTListReducer.newAllNftList.length
     ) {
-      // let pageNum = NewNFTListReducer.newAllNftPage + 1;
-      // getNFTlist(category, sortOption, limit, pageNum);
       getNFTlist(category, sortOption, limit, NewNFTListReducer.newAllNftPage);
-      // setPage(pageNum);
     }
   };
 
@@ -147,7 +146,6 @@ const AllNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const handleRefresh = () => {
     dispatch(newNftListReset(category));
     getNFTlist(category, sortOption, limit, 1);
-    // setPage(1);
   };
 
   const renderItemFIndIndex = item => {

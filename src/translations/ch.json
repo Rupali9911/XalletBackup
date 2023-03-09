@@ -1131,7 +1131,11 @@
       "closeTimeWarn": "关闭时间应大于打开时间",
       "descriptionCreate": "描述",
       "reflectInHistory": "（完成后会反映在交易记录中）",
-      "loginSuccess": "用户登录成功"
+      "loginSuccess": "用户登录成功",
+      "microphonePermissionHeader": "此功能需要使用麦克风",
+      "microphonePermissionDescription": "要启用访问权限，请点击设置并启用麦克风",
+      "speechPermissionHeader": "此功能需要语音识别访问权限",
+      "speechPermissionDescription": "要启用访问权限，请点击设置并启用语音识别"
     },
     "backendmessage": {
       "error": {},

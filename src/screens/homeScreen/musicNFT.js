@@ -14,18 +14,15 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import {CATEGORY_VALUE} from '../../constants';
 
-const MusicNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const MusicNFT = ({sortOption, screen}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const navigation = useNavigation();
-  let timer = null;
 
   // =============== Getting data from reducer ========================
   const {NewNFTListReducer} = useSelector(state => state);
-  const {sort} = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
-  const [isSort, setIsSort] = useState(null);
   const [isFirstRender, setIsFirstRender] = useState(true);
 
   const [end, setEnd] = useState();
@@ -41,11 +38,17 @@ const MusicNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       dispatch(newNftListReset(category));
       getNFTlist(category, sortCategory, limit, 1);
       setIsFirstRender(false);
-      setSortOption(0);
-      // setPage(1);
-      screen(category);
+    } else {
+      if (
+        NewNFTListReducer.newMusicNftCurrentFilter != sortCategory &&
+        screen === category
+      ) {
+        dispatch(newNftLoadStart());
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
+      }
     }
-  }, [sortOption, isFocused]);
+  }, [screen]);
 
   //===================== Dispatch Action to Fetch Movie NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -102,7 +105,6 @@ const MusicNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   const refreshFunc = () => {
     dispatch(newNftListReset(category));
     getNFTlist(category, sortOption, limit, 1);
-    // setPage(1);
   };
 
   const handleFlastListEndReached = () => {
@@ -111,15 +113,12 @@ const MusicNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       NewNFTListReducer.newMusicNftTotalCount !==
         NewNFTListReducer.newMusicNftList.length
     ) {
-      // let pageNum = NewNFTListReducer.newMusicNftPage + 1;
-      // getNFTlist(category, sortOption, limit, pageNum);
       getNFTlist(
         category,
         sortOption,
         limit,
         NewNFTListReducer.newMusicNftPage,
       );
-      // setPage(pageNum);
     }
   };
 
@@ -143,7 +142,6 @@ const MusicNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
         item={item}
         image={imageUri}
         onPress={() => {
-          // dispatch(changeScreenName('movieNFT'));
           navigation.push('CertificateDetail', {
             networkName: item?.network?.networkName,
             collectionAddress: item?.collection?.address,
