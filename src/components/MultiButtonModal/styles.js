@@ -44,7 +44,10 @@ const styles = StyleSheet.create({
     borderWidth: 0.2,
     borderRadius: 5,
     textAlign: 'left',
-    padding: 5,
+    paddingLeft: 10,
+    paddingBottom: 0,
+    paddingTop: 0,
+    fontSize: 18
   },
 
 });
