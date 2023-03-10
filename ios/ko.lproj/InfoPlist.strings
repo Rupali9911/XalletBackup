@@ -5,4 +5,11 @@
   Created by apple on 20/12/2021.
   
 */
-NSCameraUsageDescription = "프로필 사진 캡처";
+
+NSCameraUsageDescription = "앱이 프로필, 배너 등을 위해 QR 코드 또는 미디어 스캔에 액세스할 수 있도록 허용";
+NSPhotoLibraryUsageDescription = "앱이 프로필, 배너 등의 미디어에 액세스하도록 허용합니다.";
+NSMicrophoneUsageDescription = "앱이 음성 인식을 위해 오디오를 녹음하기 위해 마이크에 액세스하도록 허용합니다.";
+NSSpeechRecognitionUsageDescription = "앱이 오디오를 텍스트로 변환하도록 허용합니다.";
+
+
+

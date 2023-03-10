@@ -10,13 +10,19 @@ import {
 import {
   setAppCurrency,
 } from '../store/reducer/currencyReducer';
-import {languageArray, regionLanguage} from '../walletUtils';
+import {languageArray, regionLanguage, translate} from '../walletUtils';
 import * as RNLocalize from 'react-native-localize';
 import {getAccessToken} from '../helpers/AxiosApiRequest';
 
 const appSplash = () => {
   const dispatch = useDispatch();
 
+  const appCurrency =  {
+    currency_id: 1,
+    currency_display: translate("common.USD"),
+    currency_name: 'USD',
+    currency_sign: '$'
+  }
   React.useEffect(() => {
     loadAllData();
   }, []);
@@ -57,6 +63,7 @@ const appSplash = () => {
         } else {
           dispatch(setAppLanguage(regionalLanguage));
         }
+        dispatch(setAppCurrency(appCurrency));
         dispatch(loadFromAsync());
       }
     } catch (error) {}

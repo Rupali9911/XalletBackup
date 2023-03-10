@@ -118,7 +118,7 @@ export const newNFTData = (category, sort, limit, pageNum) => {
       },
     })
       .then(data => {
-        let temp = {...data, pageNum: pageNum + 1};
+        let temp = {...data, pageNum: pageNum + 1, currentFilter: sort};
         if (category === 0) {
           dispatch(newNftTrendingLoadSuccess(temp));
         }

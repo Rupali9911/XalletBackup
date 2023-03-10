@@ -14,19 +14,16 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import {CATEGORY_VALUE} from '../../constants';
 
-const ImageNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const ImageNFT = ({sortOption, screen}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  let timer = null;
 
   // =============== Getting data from reducer ========================
   const {NewNFTListReducer} = useSelector(state => state);
-  const {sort} = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
-  // const [isSort, setIsSort] = useState(null);
 
   const [end, setEnd] = useState();
 
@@ -41,11 +38,17 @@ const ImageNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       dispatch(newNftLoadStart());
       getNFTlist(category, sortCategory, limit, 1);
       setIsFirstRender(false);
-      setSortOption(0);
-      // setPage(1);
-      screen(category);
+    } else {
+      if (
+        NewNFTListReducer.newImageNftCurrentFilter != sortCategory &&
+        screen === category
+      ) {
+        dispatch(newNftLoadStart());
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
+      }
     }
-  }, [sortOption, isFocused]);
+  }, [screen]);
 
   //===================== Dispatch Action to Fetch Photo NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -111,15 +114,12 @@ const ImageNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       NewNFTListReducer.newImageNftTotalCount !==
         NewNFTListReducer.newImageNftList.length
     ) {
-      // let pageNum = NewNFTListReducer.newImageNftPage + 1;
-      // getNFTlist(category, sortOption, limit, pageNum);
       getNFTlist(
         category,
         sortOption,
         limit,
         NewNFTListReducer.newImageNftPage,
       );
-      // setPage(pageNum);
     }
   };
 
@@ -144,7 +144,6 @@ const ImageNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
         screenName="imageNFT"
         image={imageUri}
         onPress={() => {
-          // dispatch(changeScreenName('photoNFT'));
           navigation.push('CertificateDetail', {
             networkName: item?.network?.networkName,
             collectionAddress: item?.collection?.address,

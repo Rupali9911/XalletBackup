@@ -20,19 +20,16 @@ import NFTItem from '../../components/NFTItem';
 import styles from './styles';
 import {CATEGORY_VALUE} from '../../constants';
 
-const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
+const GifNFT = ({sortOption, screen}) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
   const isFocused = useIsFocused();
-  let timer = null;
 
   // =============== Getting data from reducer ========================
   const {NewNFTListReducer} = useSelector(state => state);
-  const {sort} = useSelector(state => state.ListReducer);
 
   //================== Components State Declaration ===================
   const [isFirstRender, setIsFirstRender] = useState(true);
-  // const [isSort, setIsSort] = useState(null);
 
   const [end, setEnd] = useState();
 
@@ -43,16 +40,21 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
   //===================== UseEffect Function =========================
   useEffect(() => {
     if (isFocused && isFirstRender) {
-      // setPage(1);
       dispatch(newNftLoadStart());
       dispatch(newNftListReset(category));
       getNFTlist(category, sortCategory, limit, 1);
       setIsFirstRender(false);
-      setSortOption(0);
-      // setPage(1);
-      screen(category);
+    } else {
+      if (
+        NewNFTListReducer.newGIFNftCurrentFilter != sortCategory &&
+        screen === category
+      ) {
+        dispatch(newNftLoadStart());
+        dispatch(newNftListReset(category));
+        getNFTlist(category, sortCategory, limit, 1);
+      }
     }
-  }, [sortOption, isFocused]);
+  }, [screen]);
 
   //===================== Dispatch Action to Fetch Gif NFT List =========================
   const getNFTlist = useCallback((category, sort, pageSize, pageNum) => {
@@ -118,10 +120,7 @@ const GifNFT = ({screen, sortOption, setSortOption, page, setPage}) => {
       NewNFTListReducer.newGIFNftTotalCount !==
         NewNFTListReducer.newGifNftList.length
     ) {
-      // let pageNum = NewNFTListReducer.newGIFNftPage + 1;
-      // getNFTlist(category, sortOption, limit, pageNum);
       getNFTlist(category, sortOption, limit, NewNFTListReducer.newGIFNftPage);
-      // setPage(pageNum);
     }
   };
 

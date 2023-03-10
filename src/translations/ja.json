@@ -784,7 +784,6 @@
     "alertTitle": "アラート",
     "EMAIL_AUTHORIZATION_MSG": "ただいま処理中です、しばらくお待ちください…",
     "LAUNCH_COMPLETED": "発売終了",
-    "INVALID_LANGUAGE": "メッセージは、英語または日本語を使用してください。",
     "bidWinner": "NFTの落札",
     "CURRENCY_CONVERSION": "通貨換算",
     "SELECT_CURRENCY": "通貨を選択",
@@ -1137,7 +1136,12 @@
       "closeTimeWarn": "閉店時間は開店時間より長くする必要があります",
       "descriptionCreate": "作品の詳細",
       "reflectInHistory": "（完了後、取引履歴に反映されます）",
-      "loginSuccess": "正常にログインが完了しました"
+      "loginSuccess": "正常にログインが完了しました",
+      "microphonePermissionHeader": "本機能を使用するには、マイクへのアクセスが必要です",
+      "microphonePermissionDescription": "「設定」をタップし、マイクを有効にしてください",
+      "speechPermissionHeader": "本機能を使用するには、音声認識へのアクセスが必要です",
+      "speechPermissionDescription": "「設定」をタップし、音声認識を有効にしてください"
+
     },
     "backendmessage": {
       "error": {},

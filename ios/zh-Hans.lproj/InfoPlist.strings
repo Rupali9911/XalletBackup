@@ -5,4 +5,8 @@
   Created by apple on 20/12/2021.
   
 */
-NSCameraUsageDescription = "捕获个人资料图片";
+
+NSCameraUsageDescription = "允许应用程序访问扫描二维码或媒体以获取个人资料、横幅等";
+NSPhotoLibraryUsageDescription = "允许应用访问媒体以获取个人资料、横幅等。";
+NSMicrophoneUsageDescription = "允许应用程序访问麦克风以录制音频以进行语音识别。";
+NSSpeechRecognitionUsageDescription = "允许应用程序将音频转换为文本。";
