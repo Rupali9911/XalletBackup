@@ -68,66 +68,66 @@ const ActivityTab = props => {
 
   const TRADING_HISTORY_DROPDOWN_OPTIONS = [
     {
-        label: translate('common.minted'),
-        value: 15,
+      label: translate('common.minted'),
+      value: 15,
     },
     {
-        label: translate('common.sales'),
-        value: 0,
+      label: translate('common.sales'),
+      value: 0,
     },
     {
-        label: translate('common.OnAuction'),
-        value: 19,
+      label: translate('common.OnAuction'),
+      value: 19,
     },
     {
-        label: translate('common.cancelListingFixed'),
-        value: 2,
+      label: translate('common.cancelListingFixed'),
+      value: 2,
     },
     {
-        label: translate('common.soldFixed'),
-        value: 3,
+      label: translate('common.soldFixed'),
+      value: 3,
     },
     {
-        label: translate('common.bidPlaced'),
-        value: 20,
+      label: translate('common.bidPlaced'),
+      value: 20,
     },
     {
-        label: translate('common.bidAccepted'),
-        value: 25,
+      label: translate('common.bidAccepted'),
+      value: 25,
     },
     {
-        label: translate('common.cancelListingAuction'),
-        value: 22,
+      label: translate('common.cancelListingAuction'),
+      value: 22,
     },
     {
-        label: translate('common.bidReclaimed'),
-        value: 24,
-    },
-    {  
-        label: translate('common.offerMade'),
-        value: 1,
+      label: translate('common.bidReclaimed'),
+      value: 24,
     },
     {
-        label: translate('common.offerAccepted'),
-        value: 4,
+      label: translate('common.offerMade'),
+      value: 1,
     },
     {
-        label: translate('common.offerCanceled'),
-        value: 9,
+      label: translate('common.offerAccepted'),
+      value: 4,
     },
     {
-        label: translate('common.offerReclaimed'),
-        value: 10,
+      label: translate('common.offerCanceled'),
+      value: 9,
     },
     {
-        label: translate('common.NFTReclaimed'),
-        value: 26,
+      label: translate('common.offerReclaimed'),
+      value: 10,
     },
     {
-        label: translate('common.cancelAuction'),
-        value: 18,
+      label: translate('common.NFTReclaimed'),
+      value: 26,
     },
-]
+    {
+      label: translate('common.cancelAuction'),
+      value: 18,
+    },
+  ];
 
   const limit = 6;
 
@@ -135,7 +135,7 @@ const ActivityTab = props => {
 
   useEffect(() => {
     if (isFocused) {
-      if (isFocused && !isDetailScreen && isFirstRender) {
+      if ((isFocused && !isDetailScreen) || isFirstRender) {
         dispatch(activityNftListStart(tabTitle));
         dispatch(activityNftListReset());
         if (filterTableValue.length > 0) {
