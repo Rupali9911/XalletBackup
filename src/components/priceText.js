@@ -28,10 +28,10 @@ const PriceText = props => {
             setPrice(price)
           }).catch(err => {
             console.log('Error from conversion api', err)
-            setPrice('0.00')
+            setPrice('0')
           });
       } else {
-        setPrice('0.00')
+        setPrice('0')
       }
     }
   }
