@@ -42,12 +42,12 @@ const NFTOwned = props => {
     }
   }, [props.isFocused]);
 
-  const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
-    dispatch(myNFTList(pageIndex, pageSize, address, category));
+  const getNFTlist = useCallback((pageIndex, pageSize, address, category, userId) => {
+    dispatch(myNFTList(pageIndex, pageSize, address, category, userId));
   }, []);
 
   const pressToggle = () => {
-    getNFTlist(1, 10, props.id, 2);
+    getNFTlist(1, 10, props.id, 2, props.userId);
   };
 
   const renderFooter = () => {
@@ -131,7 +131,7 @@ const NFTOwned = props => {
               MyNFTReducer.myNftOwnedTotalCount
           ) {
             let num = MyNFTReducer.myNftOwnedListPage + 1;
-            getNFTlist(num, 10, props.id, 2);
+            getNFTlist(num, 10, props.id, 2, props.userId);
           }
         }}
         onEndReachedThreshold={0.6}

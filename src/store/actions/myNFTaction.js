@@ -84,11 +84,11 @@ export const favoriteNftSuccess = data => ({
   payload: data,
 });
 
-export const myNFTList = (pageIndex, pageSize, address, category) => {
+export const myNFTList = (pageIndex, pageSize, address, category, userId) => {
   return dispatch => {
     
 
-    const url = `${NEW_BASE_URL}/nfts/nft-by-address-user?pageIndex=${pageIndex}&pageSize=${pageSize}&address=${address}&categoryFilter=${category}`;
+    const url = `${NEW_BASE_URL}/nfts/nft-by-address-user?pageIndex=${pageIndex}&pageSize=${pageSize}&address=${address}&categoryFilter=${category}&userId=${userId}&sortFilter=0`;
     fetch(url)
       .then(response => response.json())
       .then(data =>

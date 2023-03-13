@@ -42,12 +42,12 @@ const NFTCreated = props => {
     }
   }, [props.isFocused]);
 
-  const getNFTlist = useCallback((pageIndex, pageSize, address, category) => {
-    dispatch(myNFTList(pageIndex, pageSize, address, category));
+  const getNFTlist = useCallback((pageIndex, pageSize, address, category, userId) => {
+    dispatch(myNFTList(pageIndex, pageSize, address, category, userId));
   }, []);
 
   const pressToggle = () => {
-    getNFTlist(1, 10, props.id, 1);
+    getNFTlist(1, 10, props.id, 1, props.userId);
   };
 
   const renderFooter = () => {
@@ -131,7 +131,7 @@ const NFTCreated = props => {
               MyNFTReducer.myNftCreatedTotalCount
           ) {
             let num = MyNFTReducer.myNftCreatedListPage + 1;
-            getNFTlist(num, 10, props.id, 1);
+            getNFTlist(num, 10, props.id, 1, props.userId);
           }
         }}
         onEndReachedThreshold={0.6}
