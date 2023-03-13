@@ -386,9 +386,6 @@ const ChatDetail = ({ route, navigation }) => {
     } else {
       showToast(translate('common.INVALID_LANGUAGE'));
     }
-    {
-      Keyboard.dismiss();
-    }
   };
 
   //==================== On Scroll-to-Top ===========================
