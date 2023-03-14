@@ -15,10 +15,9 @@ const PriceText = props => {
 
   useEffect(() => {
     getPrice()
-  }, [props.price]);
+  }, [props.price, selectedCurrency]);
 
   const getPrice = () => {
-    console.log('selectedCurrency.currency_name', selectedCurrency?.currency_name)
     if (selectedCurrency?.currency_id === 1) {
       setPrice(props.price)
     } else {
@@ -27,7 +26,6 @@ const PriceText = props => {
           .then(price => {
             setPrice(price)
           }).catch(err => {
-            console.log('Error from conversion api', err)
             setPrice('0')
           });
       } else {

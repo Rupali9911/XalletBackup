@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {createStackNavigator} from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
-import {screenWidth} from '../../constants/responsiveFunct';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useSelector } from 'react-redux';
+import { screenWidth } from '../../constants/responsiveFunct';
 import TabComponent from './BottomTabNavigator';
 import PasscodeScreen from '../security/passcode';
 import DetailItemScreen from '../detailScreen';
@@ -36,7 +36,7 @@ import AuthStack from './AuthStack';
 const Stack = createStackNavigator();
 
 const RootStackScreen = props => {
-  const {passcode, userData} = useSelector(state => state.UserReducer);
+  const { passcode, userData } = useSelector(state => state.UserReducer);
 
   let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
 
@@ -59,29 +59,19 @@ const RootStackScreen = props => {
                 duration: 1000,
               },
             },
-            gestureResponseDistance: {horizontal: (screenWidth * 70) / 100},
+            gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
           }}>
           <Stack.Screen name="Home" component={TabComponent} />
-          <Stack.Screen
-            name="PasscodeScreen"
-            initialParams={{screen: 'Auth'}}
-            component={PasscodeScreen}
-          />
+          <Stack.Screen name="PasscodeScreen" initialParams={{ screen: 'Auth' }} component={PasscodeScreen} />
           <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-          <Stack.Screen
-            name="CertificateDetail"
-            component={CertificateDetailScreen}
-          />
+          <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
           <Stack.Screen name="Pay" component={PayScreen} />
           <Stack.Screen name="MakeBid" component={MakeBidScreen} />
           <Stack.Screen name="EditProfile" component={EditProfileScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="tokenDetail" component={TokenDetail} />
           <Stack.Screen name="receive" component={Receive} />
-          <Stack.Screen
-            name="transactionsDetail"
-            component={transactionsDetail}
-          />
+          <Stack.Screen name="transactionsDetail" component={transactionsDetail} />
           <Stack.Screen name="send" component={Send} />
           <Stack.Screen name="scanToConnect" component={ScanToConnect} />
           <Stack.Screen name="Create" component={CreateNFTScreen} />

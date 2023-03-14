@@ -380,9 +380,6 @@ export const convertCurrency = (amount, symbol, convert) => {
         })
             .then(res => {
                 console.log('Response of conversion api', res)
-                console.log('Response of conversion api', res?.data[0]?.amount)
-                console.log('Response of conversion api', res?.data[0]?.quote[convert]?.price)
-                //   setPrice(res?.data[0]?.quote[selectedCurrency.currency_name]?.price)
                 resolve(res?.data[0]?.quote[convert]?.price)
             })
             .catch(err => {
