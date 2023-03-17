@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {createStackNavigator} from '@react-navigation/stack';
-import {useSelector} from 'react-redux';
-import {screenWidth} from '../../constants/responsiveFunct';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useSelector } from 'react-redux';
+import { screenWidth } from '../../constants/responsiveFunct';
 import TabComponent from './BottomTabNavigator';
 import PasscodeScreen from '../security/passcode';
 import DetailItemScreen from '../detailScreen';
@@ -32,11 +32,12 @@ import CollectionDetail from '../collectionDetail';
 import ChatDetail from '../AiChat/ChatDetail';
 import WebView from '../../components/WebView';
 import AuthStack from './AuthStack';
+import NotificationScreen from '../notification';
 
 const Stack = createStackNavigator();
 
 const RootStackScreen = props => {
-  const {passcode, userData} = useSelector(state => state.UserReducer);
+  const { passcode, userData } = useSelector(state => state.UserReducer);
 
   let initialRoute = passcode ? 'PasscodeScreen' : 'Home';
 
@@ -59,12 +60,12 @@ const RootStackScreen = props => {
                 duration: 1000,
               },
             },
-            gestureResponseDistance: {horizontal: (screenWidth * 70) / 100},
+            gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
           }}>
           <Stack.Screen name="Home" component={TabComponent} />
           <Stack.Screen
             name="PasscodeScreen"
-            initialParams={{screen: 'Auth'}}
+            initialParams={{ screen: 'Auth' }}
             component={PasscodeScreen}
           />
           <Stack.Screen name="DetailItem" component={DetailItemScreen} />
@@ -100,6 +101,7 @@ const RootStackScreen = props => {
           {/* <Stack.Screen name="AiChat" component={AiChat} /> */}
           <Stack.Screen name="ChatDetail" component={ChatDetail} />
           <Stack.Screen name="WebView" component={WebView} />
+          <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">

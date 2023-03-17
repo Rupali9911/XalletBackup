@@ -242,11 +242,8 @@ function Setting({ route, navigation }) {
           />
           <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
-            onPress={() =>
-              modalAlert(
-                translate('wallet.common.alert'),
-                translate('common.comingSoon'),
-              )
+            onPress={() => navigation.navigate('NotificationScreen')
+
             }
             label={translate('wallet.common.notifications')}
           />
