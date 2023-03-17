@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import {useFocusEffect} from '@react-navigation/native';
-import React, {useEffect, useMemo, useRef, useState} from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   AppState,
@@ -14,7 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {FAB} from 'react-native-paper';
+import { FAB } from 'react-native-paper';
 import {
   checkNotifications,
   openSettings,
@@ -22,33 +22,34 @@ import {
 } from 'react-native-permissions';
 import PushNotification from 'react-native-push-notification';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import {useDispatch, useSelector} from 'react-redux';
-import {NEW_BASE_URL} from '../../common/constants';
-import {ImagekitType} from '../../common/ImageConstant';
+import { useDispatch, useSelector } from 'react-redux';
+import { NEW_BASE_URL } from '../../common/constants';
+import { ImagekitType } from '../../common/ImageConstant';
 import {
   heightPercentageToDP as hp,
   widthPercentageToDP as wp,
 } from '../../common/responsiveFunction';
-import {AppHeader, C_Image} from '../../components';
+import { AppHeader, C_Image } from '../../components';
 import AppModal from '../../components/appModal';
 import NotificationActionModal from '../../components/notificationActionModal';
 import SuccessModalContent from '../../components/successModal';
 import TabViewScreen from '../../components/TabView/TabViewScreen';
-import {SORT_FILTER_OPTONS} from '../../constants';
+import { SORT_FILTER_OPTONS } from '../../constants';
 import Colors from '../../constants/Colors';
 import ImageSrc from '../../constants/Images';
 import sendRequest from '../../helpers/AxiosApiRequest';
-import {colors} from '../../res';
-import {newNFTData, newNftListReset} from '../../store/actions/newNFTActions';
-import {getAllArtist} from '../../store/actions/nftTrendList';
-import {setNetworkData} from '../../store/reducer/networkReducer';
+import { colors } from '../../res';
+import { newNFTData, newNftListReset } from '../../store/actions/newNFTActions';
+import { getAllArtist } from '../../store/actions/nftTrendList';
+import { setNetworkData } from '../../store/reducer/networkReducer';
 import {
   updateCreateState,
   updatePassStatus,
+  updateNotificationStatus
 } from '../../store/reducer/userReducer';
-import {updateNetworkType} from '../../store/reducer/walletReducer';
-import {modalAlert} from '../../common/function';
-import {translate} from '../../walletUtils';
+import { updateNetworkType } from '../../store/reducer/walletReducer';
+import { modalAlert } from '../../common/function';
+import { translate } from '../../walletUtils';
 import AllNFT from './allNFT';
 import ArtNFT from './artNFT';
 import Collection from './collection';
@@ -60,24 +61,24 @@ import MovieNFT from './movieNFT';
 import MusicNFT from './musicNFT';
 import styles from './styles';
 import Trending from './trending';
-import {Easing} from 'react-native-reanimated';
+import { Easing } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
-import {CATEGORY_VALUE} from '../../constants';
+import { CATEGORY_VALUE } from '../../constants';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   const artistRef = useRef(null);
 
   // =============== Getting data from reducer ========================
   const isNonCrypto = useSelector(
     state => state.UserReducer?.userData?.isNonCrypto,
   );
-  const {passcodeAsyncStatus} = useSelector(state => state.UserReducer);
-  const {artistList, artistLoading, artistTotalCount} = useSelector(
+  const { passcodeAsyncStatus } = useSelector(state => state.UserReducer);
+  const { artistList, artistLoading, artistTotalCount } = useSelector(
     state => state.ListReducer,
   );
-  const {showSuccess} = useSelector(state => state.UserReducer);
+  const { showSuccess } = useSelector(state => state.UserReducer);
   const modalState = Platform.OS === 'android' ? false : showSuccess;
-  const {requestAppId} = useSelector(state => state.WalletReducer);
+  const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
 
   //================== Components State Defination ===================
@@ -96,8 +97,12 @@ const HomeScreen = ({navigation}) => {
 
   let artistLimit = 12;
 
-  const [routes] = useState([
-    {key: 'launch', title: translate('common.launchPad'), category: ''},
+  const [tabs] = useState([
+    {
+      key: 'launch',
+      title: translate('common.launchPad'),
+      category: ''
+    },
     {
       key: 'collect',
       title: translate('wallet.common.collection'),
@@ -123,7 +128,11 @@ const HomeScreen = ({navigation}) => {
       title: translate('common.image'),
       category: CATEGORY_VALUE.image,
     },
-    {key: 'gif', title: translate('common.gif'), category: CATEGORY_VALUE.gif},
+    {
+      key: 'gif',
+      title: translate('common.gif'),
+      category: CATEGORY_VALUE.gif
+    },
     {
       key: 'movie',
       title: translate('common.video'),
@@ -141,9 +150,12 @@ const HomeScreen = ({navigation}) => {
     },
   ]);
 
-  const onFilterStateChange = ({open}) => setOpenFilter(open);
+  const [routes, setRoutes] = useState(tabs);
+
+  const onFilterStateChange = ({ open }) => setOpenFilter(open);
 
   //===================== UseEffect Function =========================
+
   useFocusEffect(
     React.useCallback(() => {
       return () => setOpenFilter(false);
@@ -166,6 +178,13 @@ const HomeScreen = ({navigation}) => {
         }
       } else {
         dispatch(updateNetworkType(res[3] ? res[3] : res[2]));
+      }
+
+      const foundIdx = res.findIndex(el => el.id === 4)
+      if (foundIdx) {
+        let elem = res[foundIdx]
+        res.splice(foundIdx, 1)
+        res.unshift(elem)
       }
       dispatch(setNetworkData(res));
     }
@@ -196,7 +215,7 @@ const HomeScreen = ({navigation}) => {
     });
     const appStateEvent = AppState.addEventListener('change', appStateChange);
     if (requestAppId) {
-      navigation.navigate('Connect', {appId: requestAppId});
+      navigation.navigate('Connect', { appId: requestAppId });
     }
 
     return () => {
@@ -243,18 +262,21 @@ const HomeScreen = ({navigation}) => {
         setSuccessVisible(false);
         setModalVisible(false);
         dispatch(updatePassStatus(false));
-        navigation.navigate('PasscodeScreen', {screen: 'active'});
+        navigation.navigate('PasscodeScreen', { screen: 'active' });
       }
     }
   };
 
   const checkPermissions = async () => {
-    PushNotification.checkPermissions(async ({alert}) => {
+    PushNotification.checkPermissions(async ({ alert }) => {
+      console.log('CHECK PERMISSION', alert)
       if (!alert) {
         setNotificationVisible(true);
       } else {
         setModalVisible(false);
       }
+      //Call setToken api here
+      dispatch(updateNotificationStatus(true))
     });
   };
 
@@ -274,12 +296,12 @@ const HomeScreen = ({navigation}) => {
             <View style={styles.headerMenuContainer}>
               <TouchableOpacity
                 onPress={() => onClickButton()}
-                hitSlop={{top: 5, bottom: 5, left: 5}}>
+                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.scanIcon} style={styles.headerMenu} />
               </TouchableOpacity>
               <TouchableOpacity
                 onPress={() => onClickButton(isNonCrypto === 0 ? 'Create' : '')}
-                hitSlop={{top: 5, bottom: 5, left: 5}}>
+                hitSlop={{ top: 5, bottom: 5, left: 5 }}>
                 <Image source={ImageSrc.addIcon} style={styles.headerMenu} />
               </TouchableOpacity>
             </View>
@@ -300,7 +322,7 @@ const HomeScreen = ({navigation}) => {
   };
 
   // ===================== Render Artist List ===================================
-  const renderArtistItem = ({item, index}) => {
+  const renderArtistItem = ({ item, index }) => {
     return (
       <TouchableOpacity
         activeOpacity={1}
@@ -317,7 +339,7 @@ const HomeScreen = ({navigation}) => {
           <C_Image
             uri={item?.mediaUrl}
             size={ImagekitType.PROFILE}
-            imageStyle={{width: '100%', height: '100%'}}
+            imageStyle={{ width: '100%', height: '100%' }}
           />
           <Text numberOfLines={1} style={styles.userText}>
             {item?.name}
@@ -489,7 +511,7 @@ const HomeScreen = ({navigation}) => {
     }
   }, [tabIndex]);
 
-  const renderScene = ({route}) => {
+  const renderScene = ({ route }) => {
     switch (route.key) {
       case 'launch':
         return <LaunchPad />;
@@ -544,16 +566,16 @@ const HomeScreen = ({navigation}) => {
             onDonePress={() => {
               setModalVisible(false);
               Platform.OS === 'ios'
-                ? checkNotifications().then(({status, settings}) => {
-                    if (status == 'denied') {
-                      requestNotifications(['alert', 'sound']).then(
-                        ({status, settings}) => {},
-                      );
-                    }
-                    if (status == 'blocked') {
-                      Linking.openSettings();
-                    }
-                  })
+                ? checkNotifications().then(({ status, settings }) => {
+                  if (status == 'denied') {
+                    requestNotifications(['alert', 'sound']).then(
+                      ({ status, settings }) => { },
+                    );
+                  }
+                  if (status == 'blocked') {
+                    Linking.openSettings();
+                  }
+                })
                 : openSettings();
             }}
           />
@@ -722,12 +744,12 @@ const HomeScreen = ({navigation}) => {
           openFilter
             ? 'close'
             : props => (
-                <FontAwesome5
-                  name={'sort-amount-down'}
-                  color={props.color}
-                  size={props.size}
-                />
-              )
+              <FontAwesome5
+                name={'sort-amount-down'}
+                color={props.color}
+                size={props.size}
+              />
+            )
         }
         fabStyle={styles.fabLabelStyle1}
         actions={filtersAction}

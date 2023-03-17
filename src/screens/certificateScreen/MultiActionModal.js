@@ -18,7 +18,7 @@ const MultiActionModal = props => {
     closeModal(true);
     setTimeout(() => {
       navigation.navigate('recoveryPhrase', { wallet });
-    }, 500);
+    }, 0.01);
   };
 
   return (

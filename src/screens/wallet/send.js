@@ -301,7 +301,7 @@ const SendScreen = React.memo(props => {
   const [gasFee, setGasFee] = useState(0);
   const [successModalVisible, setSuccessModalVisible] = useState(false);
   const [isMaxButtonPress, setIsMaxButtonPress] = useState(false)
-  const [currency, setCurrency] = useState(0.00)
+  const [currency, setCurrency] = useState(0)
   const [alertMessage, setAlertMessage] = useState({
     isAddressInvalid: false,
     isPaymentFielDisable: false,
@@ -323,10 +323,10 @@ const SendScreen = React.memo(props => {
           setCurrency(price)
         }).catch(err => {
           console.log('Error from conversion api', err)
-          setCurrency('0.00')
+          setCurrency('0')
         });
     } else {
-      setCurrency('0.00')
+      setCurrency('0')
     }
   }, []);
 
@@ -715,7 +715,7 @@ const SendScreen = React.memo(props => {
                 thousandSeparator={true}
                 renderText={formattedValue => (
                   <TextView style={styles.balanceText}>
-                    {`(${selectedCurrency.currency_sign}${formattedValue})`}
+                   {`(${selectedCurrency ? selectedCurrency?.currency_sign : '$'}${formattedValue})`}
                   </TextView>
                 )}
               />

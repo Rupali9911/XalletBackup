@@ -1,33 +1,41 @@
 {
   "project_info": {
-    "project_number": "81393168969",
-    "project_id": "xanalia-8dda5",
-    "storage_bucket": "xanalia-8dda5.appspot.com"
+    "project_number": "923989244646",
+    "project_id": "genesis-2a9ae",
+    "storage_bucket": "genesis-2a9ae.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:81393168969:android:c44d0292e3ae4bc4c54598",
+        "mobilesdk_app_id": "1:923989244646:android:e9243410b93753e855d927",
         "android_client_info": {
           "package_name": "com.xallet.app"
         }
       },
       "oauth_client": [
         {
-          "client_id": "81393168969-odeflu413uj6nlup7a8jmku6faoqouue.apps.googleusercontent.com",
+          "client_id": "923989244646-e1168v5fi9qa45jj4s438i9pumv767ud.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.xallet.app",
+            "certificate_hash": "7e4bf0aeedd7e7f8778cf052b6f29d6efae4bc5d"
+          }
+        },
+        {
+          "client_id": "923989244646-hk2l9srvvj71fqpvm9rip6q5v8eh0ga4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBKE98DGbZLWzE1t1dw7_Qf6_EJwgkt8So"
+          "current_key": "AIzaSyAZud_jSLOOog9sUPVEOWiYxw1NY1wEE9A"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "81393168969-odeflu413uj6nlup7a8jmku6faoqouue.apps.googleusercontent.com",
+              "client_id": "923989244646-hk2l9srvvj71fqpvm9rip6q5v8eh0ga4.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

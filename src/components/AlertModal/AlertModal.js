@@ -1,10 +1,10 @@
 import React from 'react';
-import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
+import { Text, View, StyleSheet, TouchableOpacity } from 'react-native';
 import Modal from 'react-native-modal';
-import {COLORS, SIZE} from 'src/constants';
+import { COLORS, SIZE } from 'src/constants';
 import Colors from '../../constants/Colors';
-import {useDispatch, useSelector} from 'react-redux';
-import {alertAction} from '../../store/actions/alertAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { alertAction } from '../../store/actions/alertAction';
 
 const AlertPopup = () => {
   const dispatch = useDispatch();
@@ -13,10 +13,10 @@ const AlertPopup = () => {
     <View>
       <Modal
         isVisible={state?.status}
-        onBackdropPress={() => dispatch(alertAction({status: false}))}
-        onBackButtonPress={() => dispatch(alertAction({status: false}))}
+        onBackdropPress={() => dispatch(alertAction({ status: false }))}
+        onBackButtonPress={() => dispatch(alertAction({ status: false }))}
         useNativeDriver={true}
-        hideModalContentWhileAnimating>
+        hideModalContentWhileAnimating={true}>
         <View style={styles.modalView}>
           <Text style={styles.title}>{state?.title}</Text>
           <Text style={styles.description}>{state?.description}</Text>
@@ -25,7 +25,7 @@ const AlertPopup = () => {
             onPress={() => {
               state.onPress
                 ? state.onPress()
-                : dispatch(alertAction({status: false}));
+                : dispatch(alertAction({ status: false }));
             }}>
             <Text style={styles.okButtonTitle}>{state?.text}</Text>
           </TouchableOpacity>
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 8,
     borderWidth: 1,
-    height: SIZE(190),
+    maxHeight: SIZE(190)
   },
   title: {
     alignSelf: 'center',
@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: SIZE(20),
     height: SIZE(40),
     backgroundColor: Colors.BLUE2,
-    marginTop: SIZE(25),
+    marginVertical: SIZE(25),
     borderRadius: 4,
     justifyContent: 'center',
   },
