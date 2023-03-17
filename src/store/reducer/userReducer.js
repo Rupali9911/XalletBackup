@@ -1,7 +1,7 @@
 import EncryptedStorage from 'react-native-encrypted-storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import {UserErrorMessage} from '../../constants';
+import { UserErrorMessage } from '../../constants';
 import RNFetchBlob from 'rn-fetch-blob';
 import {
   CONNECT_MODAL_STATE,
@@ -32,15 +32,16 @@ import {
   MAGIC_LOADING_END,
   SET_PROFILE_PULL_TO_REFRESH,
 } from '../types';
-import {getSig} from '../../screens/wallet/functions';
-import {BASE_URL, NEW_BASE_URL, API_GATEWAY_URL} from '../../common/constants';
-import {translate} from '../../walletUtils';
-import {modalAlert} from '../../common/function';
-import {setConnectedApps} from './walletReducer';
-import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
-import {reject} from 'lodash';
-import {resolve} from 'path-browserify';
-import {Alert} from 'react-native';
+import { getSig } from '../../screens/wallet/functions';
+import { BASE_URL, NEW_BASE_URL, API_GATEWAY_URL } from '../../common/constants';
+import { translate } from '../../walletUtils';
+import { modalAlert } from '../../common/function';
+import { setConnectedApps } from './walletReducer';
+import sendRequest, { getAccessToken } from '../../helpers/AxiosApiRequest';
+import { reject } from 'lodash';
+import { resolve } from 'path-browserify';
+import { Alert } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 
 const initialState = {
   loading: false,
@@ -149,12 +150,12 @@ export default UserReducer = (state = initialState, action) => {
       let _data = action.payload;
       return {
         ...state,
-        userData: {..._data},
+        userData: { ..._data },
       };
     case SET_OTHER_USER_PROFILE_DATA:
       return {
         ...state,
-        otherUserProfileData: {...action.payload},
+        otherUserProfileData: { ...action.payload },
       };
 
     case UPDATE_BACKUP:
@@ -344,7 +345,7 @@ export const endLoader = () => dispatch =>
 
 export const loadFromAsync = asyncData => (dispatch, getState) => {
   if (asyncData && asyncData.userData) {
-    const {userData, BackedUp, apps} = asyncData;
+    const { userData, BackedUp, apps } = asyncData;
     dispatch(
       setUserData({
         data: userData,
@@ -413,16 +414,16 @@ export const loadProfileFromAsync = id => dispatch =>
 
 export const setUserAuthData =
   (data, isCreate = false) =>
-  dispatch =>
-    new Promise(async (resolve, reject) => {
-      dispatch(startLoading());
-      AsyncStorage.setItem('@WALLET', JSON.stringify(data));
-      dispatch(setUserData({data, isCreate}));
-    });
+    dispatch =>
+      new Promise(async (resolve, reject) => {
+        dispatch(startLoading());
+        AsyncStorage.setItem('@WALLET', JSON.stringify(data));
+        dispatch(setUserData({ data, isCreate }));
+      });
 
 export const updateCreateState = () => dispatch =>
   new Promise((resolve, reject) => {
-    dispatch({type: UPDATE_CREATE});
+    dispatch({ type: UPDATE_CREATE });
     resolve();
   });
 
@@ -513,7 +514,7 @@ export const signOut = () => {
 export const updateProfileImage = formData => async (dispatch, getState) => {
   dispatch(startLoading());
 
-  const {data} = getState().UserReducer;
+  const { data } = getState().UserReducer;
   // axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`;
   // axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
   const headers = {
@@ -521,7 +522,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
     Authorization: `Bearer ${data.token}`,
   };
   await axios
-    .post(`${BASE_URL}/user/update-profile-image`, formData, {headers: headers})
+    .post(`${BASE_URL}/user/update-profile-image`, formData, { headers: headers })
     .then(res => {
       dispatch(updateUserData(res.data.data));
     })
@@ -531,7 +532,7 @@ export const updateProfileImage = formData => async (dispatch, getState) => {
         modalAlert(
           translate('wallet.common.alert'),
           translate('common.sessionexpired'),
-          () => {},
+          () => { },
         );
         dispatch(signOut());
       }
@@ -566,43 +567,43 @@ export const getUserData = (id, profile = false) => {
 
 export const updateProfile =
   (props, id, isOtherUser = false) =>
-  async dispatch => {
-    dispatch(startLoading());
-    sendRequest({
-      url: `${NEW_BASE_URL}/users/update-profile`,
-      method: 'PUT',
-      data: props,
-    })
-      .then(res => {
-        if (UserErrorMessage.hasOwnProperty(res.messageCode)) {
-          let key = UserErrorMessage[res.messageCode].key;
-          dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
-        } else {
-          dispatch(getUserData(id, isOtherUser));
-          dispatch(
-            setToastMsg({
-              error: false,
-              msg: translate('common.USER_SUCCESSFUL_UPDATE'),
-            }),
-          );
-        }
-        dispatch(endLoading());
+    async dispatch => {
+      dispatch(startLoading());
+      sendRequest({
+        url: `${NEW_BASE_URL}/users/update-profile`,
+        method: 'PUT',
+        data: props,
       })
-      .catch(error => {
-        dispatch(endLoading());
-        let key = UserErrorMessage[error.data.messageCode].key;
-        dispatch(setToastMsg({error: true, msg: translate(`common.${key}`)}));
-      });
-  };
+        .then(res => {
+          if (UserErrorMessage.hasOwnProperty(res.messageCode)) {
+            let key = UserErrorMessage[res.messageCode].key;
+            dispatch(setToastMsg({ error: true, msg: translate(`common.${key}`) }));
+          } else {
+            dispatch(getUserData(id, isOtherUser));
+            dispatch(
+              setToastMsg({
+                error: false,
+                msg: translate('common.USER_SUCCESSFUL_UPDATE'),
+              }),
+            );
+          }
+          dispatch(endLoading());
+        })
+        .catch(error => {
+          dispatch(endLoading());
+          let key = UserErrorMessage[error.data.messageCode].key;
+          dispatch(setToastMsg({ error: true, msg: translate(`common.${key}`) }));
+        });
+    };
 
 export const verifyEmail =
   (email, selectedLanguageItem) => async (dispatch, getState) => {
-    const {userData} = getState().UserReducer;
+    const { userData } = getState().UserReducer;
     const id = userData.userWallet.address;
     sendRequest({
       url: `${NEW_BASE_URL}/users/verify-email`,
       method: 'POST',
-      data: {account: email, locale: selectedLanguageItem},
+      data: { account: email, locale: selectedLanguageItem },
     }).then(() => {
       dispatch(getUserData(id));
     });
@@ -613,7 +614,7 @@ export const removeBanner = (banner, id) => async dispatch => {
   sendRequest({
     url: `${NEW_BASE_URL}/users/`,
     method: 'PUT',
-    data: {banner: banner},
+    data: { banner: banner },
   })
     .then(res => {
       // dispatch(getUserData(id, true));
@@ -689,3 +690,30 @@ export const updateBanner = (address, userId, file) => async dispatch => {
     }
   });
 };
+
+export const updateNotificationStatus = (status) => async dispatch => {
+  console.log('updateNotificationStatus on')
+  AsyncStorage.getItem('@NOTIFICATION_TOKEN').then(device_token => {
+    let req_data = {
+      device_id: DeviceInfo.getUniqueId(),
+      device_token: device_token,
+      status: status,
+    };
+    console.log('Request param for create-mobile-device api', req_data)
+  
+    sendRequest({
+      url: `${NEW_BASE_URL}/users/create-mobile-device`,
+      method: 'POST',
+      data: req_data,
+    })
+      .then(res => {
+        console.log('response from create-mobile-device api', res)
+        resolve();
+      })
+      .catch(e => {
+        console.log('Error from create-mobile-device api', e)
+        reject(e);
+      });
+
+  });  
+}
