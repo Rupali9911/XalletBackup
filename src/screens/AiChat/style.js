@@ -166,6 +166,12 @@ const styles = StyleSheet.create({
     color: Colors.black,
     fontSize: 14,
   },
+  hyperLinkText: {
+    color: '#3c7bde',
+    textTransform: 'lowercase',
+    textDecorationLine: 'underline',
+    fontStyle: 'italic',
+  },
   chatHeaderContainer: {
     flexDirection: 'row',
     backgroundColor: Colors.white,

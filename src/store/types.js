@@ -279,6 +279,7 @@ export const CHAT_BOT_HISTORY_PAGE_CHANGE = 'CHAT_BOT_HISTORY_PAGE_CHANGE';
 export const CHAT_BOT_HISTORY_NEXT_PAGE = 'CHAT_BOT_HISTORY_NEXT_PAGE';
 
 export const CHAT_REMAIN_COUNT = 'CHAT_REMAIN_COUNT';
+export const ANIMATED_CHAT_LOADING = 'ANIMATED_CHAT_LOADING';
 
 //================= Buy NFT Reducer =========================
 export const BUY_NFT_START = 'BUY_NFT_START';

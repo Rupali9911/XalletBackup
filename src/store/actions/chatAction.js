@@ -36,6 +36,7 @@ import {
 
   //=============Reamin Count==============
   CHAT_REMAIN_COUNT,
+  ANIMATED_CHAT_LOADING,
   GET_AI_BG_IMAGE_START,
   GET_AI_BG_IMAGE_SUCCESS,
   GET_AI_BG_IMAGE_FAIL,
@@ -195,6 +196,12 @@ export const aiMessageUpdate = data => ({
 export const remainWordCountData = count => ({
   type: CHAT_REMAIN_COUNT,
   payload: count,
+});
+
+//===================Set Animated Loading============================
+export const animatedChatLoading = data => ({
+  type: ANIMATED_CHAT_LOADING,
+  payload: data,
 });
 
 //=====================Chat=====================

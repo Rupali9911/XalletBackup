@@ -36,6 +36,7 @@ import {
 
   //===========Remain Count==============
   CHAT_REMAIN_COUNT,
+  ANIMATED_CHAT_LOADING,
   GET_AI_BG_IMAGE_START,
   GET_AI_BG_IMAGE_SUCCESS,
   GET_AI_BG_IMAGE_FAIL,
@@ -90,6 +91,7 @@ const initialState = {
 
   //======================== Remain Words ======================
   remainCount: '',
+  isAnimatedLoading: false,
 
   //======================== AI Data ======================
   aiBgImageData: null,
@@ -225,6 +227,10 @@ export default function chatReducer(state = initialState, action) {
     //======================== Remain Words====================
     case CHAT_REMAIN_COUNT:
       return {...state, remainCount: action.payload};
+
+    //========================Animated Load====================
+    case ANIMATED_CHAT_LOADING:
+      return {...state, isAnimatedLoading: action.payload};
 
     //======================== AI Bg Image ====================
     case GET_AI_BG_IMAGE_START:
