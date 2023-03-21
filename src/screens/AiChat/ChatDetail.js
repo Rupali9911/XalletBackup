@@ -244,9 +244,13 @@ const ChatDetail = ({route, navigation}) => {
                   }}
                   linkStyle={styles.hyperLinkText}>
                   {Platform.OS === 'ios' ? (
-                    <TextInput value={item?.message} editable={false} multiline={true}/>
+                    <TextInput
+                      value={item?.message}
+                      editable={false}
+                      multiline={true}
+                    />
                   ) : (
-                    <Text selectable={true} selectionColor={'red'}>{item?.message}</Text>
+                    <Text selectable={true} key={Math.random()}>{item?.message}</Text>
                   )}
                 </HyperLink>
               </View>
@@ -277,9 +281,13 @@ const ChatDetail = ({route, navigation}) => {
                   }}
                   linkStyle={styles.hyperLinkText}>
                   {Platform.OS === 'ios' ? (
-                    <TextInput value={item?.message} editable={false} multiline={true} />
+                    <TextInput
+                      value={item?.message}
+                      editable={false}
+                      multiline={true}
+                    />
                   ) : (
-                    <Text selectable={true} selectionColor={'red'}>{item?.message}</Text>
+                    <Text selectable={true} key={Math.random()}>{item?.message}</Text>
                   )}
                 </HyperLink>
               </View>
@@ -351,7 +359,6 @@ const ChatDetail = ({route, navigation}) => {
     const msgLanguage = checkEngJpLang(msg);
 
     if (msgLanguage === 'en' || msgLanguage === 'ja') {
-      dispatch(animatedChatLoading(true));
       let timeConversion = moment(time).format('h:mm A');
       if (msg && msg != '') {
         let sendObj = {
@@ -415,8 +422,9 @@ const ChatDetail = ({route, navigation}) => {
 
   //==================== On Scroll-to-Top ===========================
   const handleFlatListEndReached = () => {
+
     let num = chatHistoryPage + 1;
-    if (isHistoryNextPage) {
+    if (isHistoryNextPage && reducerTabTitle != 'Animated') {
       dispatch(chatHistoryLoading());
       getHistoryData(num);
       dispatch(ChatHistoryPageChange(num));
@@ -469,9 +477,9 @@ const ChatDetail = ({route, navigation}) => {
                 {(reducerTabTitle === 'Animated'
                   ? isAnimatedLoading
                   : isChatLoading) && (
-                    <Text style={styles.typingMessage}>
-                      {translate('common.typing')}
-                    </Text>
+                  <Text style={styles.typingMessage}>
+                    {translate('common.typing')}
+                  </Text>
                 )}
               </View>
               {reducerTabTitle != 'Animated' && remainCount > 0 && (
@@ -487,7 +495,7 @@ const ChatDetail = ({route, navigation}) => {
     );
   };
 
-  const memoizedValue = useMemo(() => renderItem, []);
+  const memoizedValue = useMemo(() => renderItem, [chatBotData]);
 
   //=====================(Main return Function)=============================
   return (
@@ -552,10 +560,11 @@ const ChatDetail = ({route, navigation}) => {
               }}
               showsVerticalScrollIndicator={false}
               inverted={true}
-              onScrollEndDrag={handleFlatListEndReached}
+              
+              onEndReached={handleFlatListEndReached}
+              onEndReachedThreshold={1}
               ListFooterComponent={renderHeader}
               removeClippedSubview={true}
-              extraData={chatBotData}
             />
           </View>
 

@@ -70,7 +70,7 @@ const ChatNftsList = ({tabTitle}) => {
       dispatch(ownedNftListReset());
       getDataCollection(1);
       dispatch(ownedNftPageChange(1));
-    } else {
+    } else if(tabTitle === 'Other'){
       dispatch(otherNftLoadStart());
       dispatch(otherNftListReset());
       getDataCollection(1);
@@ -180,7 +180,7 @@ const ChatNftsList = ({tabTitle}) => {
     );
   };
 
-  const memoizedValue = useMemo(() => renderItem, [nftCollectionList]);
+  const memoizedValue = useMemo(() => renderItem, [tabTitle === 'Animated' ? INFT : nftCollectionList]);
 
   //=====================(Main return Function)=============================
   return (

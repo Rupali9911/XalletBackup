@@ -216,7 +216,11 @@ export const getAiChat =
         : name?.split(' ')[1]
       : name;
 
-    dispatch(chatLoadingStart(true));
+    {
+      reducerTabTitle === 'Animated'
+        ? dispatch(animatedChatLoading(true))
+        : dispatch(chatLoadingStart(true));
+    }
     return new Promise((resolve, reject) => {
       let url =
         reducerTabTitle === 'Animated'
@@ -229,13 +233,17 @@ export const getAiChat =
         locale,
         text,
         tokenId,
-      } 
-      let requestParams = reducerTabTitle === 'Animated' ? {...commonParam, is_owned: true, }: {...commonParam, 
-        collectionAddress,
-        nftId: nftId.toString(),
-        is_owned: reducerTabTitle === 'Owned' ? true : false
       };
-      
+      let requestParams =
+        reducerTabTitle === 'Animated'
+          ? {...commonParam, is_owned: true}
+          : {
+              ...commonParam,
+              collectionAddress,
+              nftId: nftId.toString(),
+              is_owned: reducerTabTitle === 'Owned' ? true : false,
+            };
+
       sendRequest({
         url,
         method: 'POST',
@@ -257,6 +265,7 @@ export const getAiChat =
           }
         })
         .catch(err => {
+          {reducerTabTitle === 'Animated' && dispatch(animatedChatLoading(false))}
           dispatch(chatLoadFail(err));
           reject(err);
         });
