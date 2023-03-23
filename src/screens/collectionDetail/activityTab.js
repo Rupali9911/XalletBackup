@@ -139,7 +139,7 @@ const ActivityTab = props => {
         dispatch(activityNftListStart(tabTitle));
         dispatch(activityNftListReset());
         if (filterTableValue.length > 0) {
-          setValues(filterTableValue);
+         // setValues(filterTableValue);
           getNFTlist(1, filterTableValue);
         } else {
           getNFTlist(1, []);
