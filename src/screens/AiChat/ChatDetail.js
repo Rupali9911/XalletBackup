@@ -269,7 +269,7 @@ const ChatDetail = ({route, navigation}) => {
     );
   };
 
-//==================== Show Chatting time here=========================
+  //==================== Show Chatting time here=========================
   const renderBubbleTime = item => {
     return (
       <View style={[styles.timeView]}>
@@ -352,6 +352,20 @@ const ChatDetail = ({route, navigation}) => {
     });
   };
 
+  const ChatBotApiCall = (message, msgLanguage) => {
+    return dispatch(
+      getAiChat(
+        userData?.userWallet?.address,
+        chatDetailData?.bot_name,
+        chatDetailData?.collectionAddress,
+        msgLanguage,
+        chatDetailData?.nftId,
+        message,
+        chatDetailData?.tokenId,
+      ),
+    );
+  };
+
   const getVoiceCallback = receiverData => {
     dispatch(animatedChatLoading(false));
     setChatResponseMsg(receiverData?.message);
@@ -376,43 +390,30 @@ const ChatDetail = ({route, navigation}) => {
               : userData?.userWallet?.address.substring(0, 6),
         };
         setChatBotData(chatBotData => [sendObj, ...chatBotData]);
-        dispatch(
-          getAiChat(
-            userData?.userWallet?.address,
-            chatDetailData?.bot_name,
-            chatDetailData?.collectionAddress,
-            msgLanguage,
-            chatDetailData?.nftId,
-            msg,
-            chatDetailData?.tokenId,
-          ),
-        )
+        
+        ChatBotApiCall(msg, msgLanguage)
           .then(response => {
             if (response?.messageCode || response?.description) {
               showToast();
             } else {
               let receiveObj = {
-                message: response?.data?.response,
+                message: response?.response
+                  ? response?.response
+                  : response?.message,
                 type: 'receiver',
                 time: timeConversion,
                 receiverImage: chatDetailData?.nftImage,
                 name: chatDetailData?.bot_name,
-                question: response?.data?.question,
+                question: response?.question,
               };
-              console.log(
-                'reducerTabTitle and message',
-                reducerTabTitle,
-                response?.data?.response,
-              );
               if (reducerTabTitle === 'Animated') {
                 AIAudio(
                   receiveObj,
-                  response?.data?.response,
                   msgLanguage,
                   getVoiceCallback,
                 );
               } else {
-                setChatResponseMsg(response?.data?.response);
+                setChatResponseMsg(response?.response);
                 setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
               }
             }
@@ -426,7 +427,6 @@ const ChatDetail = ({route, navigation}) => {
 
   //==================== On Scroll-to-Top ===========================
   const handleFlatListEndReached = () => {
-
     let num = chatHistoryPage + 1;
     if (isHistoryNextPage && reducerTabTitle != 'Animated') {
       dispatch(chatHistoryLoading());

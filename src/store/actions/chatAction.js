@@ -44,9 +44,11 @@ import {
   CHAT_AI_DATA_UPDATE,
 } from '../types';
 import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
+import {NEW_BASE_URL} from '../../common/constants';
 
 //=====================Xana Chat Base Url=====================
-const xana_base_url = `https://prod-backend.xanalia.com/xana-genesis-chat`;
+// const xana_base_url = `https://prod-backend.xanalia.com/xana-genesis-chat`;
+const xana_base_url = `${NEW_BASE_URL}/xana-genesis-chat`;
 
 //=====================Chat=====================
 export const chatLoadingStart = data => ({
@@ -251,21 +253,45 @@ export const getAiChat =
       })
         .then(res => {
           dispatch(chatLoadingStart(false));
-          if (reducerTabTitle != 'Animated') {
-            res?.data
-              ? (dispatch(chatLoadingSuccess(res)),
-                dispatch(
-                  remainWordCountData(res?.remainWordLimit?.userWordLimit),
-                ),
-                resolve(res))
-              : (dispatch(chatLoadingSuccess(res)), resolve(res));
+          dispatch(chatLoadingSuccess(res));
+
+          if (reducerTabTitle === 'Animated') {
+            if (res?.data) {
+              resolve(res?.data);
+            }
           } else {
-            dispatch(chatLoadingSuccess(res));
+            if (res?.data || res?.remainWordLimit) {
+              dispatch(
+                remainWordCountData(res?.remainWordLimit?.userWordLimit),
+              );
+              resolve(res?.data);
+            }
+          }
+          if (
+            res?.message ===
+            'Our AI server is overloaded, please try again later!'
+          ) {
             resolve(res);
           }
+
+          // if (reducerTabTitle != 'Animated') {
+          //   res?.data
+          //     ? (dispatch(chatLoadingSuccess(res)),
+          //       dispatch(
+          //         remainWordCountData(res?.remainWordLimit?.userWordLimit),
+          //       ),
+          //       resolve(res))
+          //     : (dispatch(chatLoadingSuccess(res)), resolve(res));
+          // } else {
+          //   dispatch(chatLoadingSuccess(res));
+          //   resolve(res);
+          // }
         })
         .catch(err => {
-          {reducerTabTitle === 'Animated' && dispatch(animatedChatLoading(false))}
+          {
+            reducerTabTitle === 'Animated' &&
+              dispatch(animatedChatLoading(false));
+          }
           dispatch(chatLoadFail(err));
           reject(err);
         });
