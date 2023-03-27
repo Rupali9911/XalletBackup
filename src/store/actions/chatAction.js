@@ -204,7 +204,7 @@ export const animatedChatLoading = data => ({
   payload: data,
 });
 
-//=====================Chat=====================
+//=============================Chat===============================
 export const getAiChat =
   (address, name, collectionAddress, locale, nftId, text, tokenId) =>
   (dispatch, getState) => {

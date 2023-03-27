@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     maxWidth: ownerTittle ? '72%' : '80%',
   }),
-  statusText: {
+  chatingTime: {
     color: '#888',
     fontSize: 10,
     fontWeight: '500',
@@ -60,12 +60,12 @@ const styles = StyleSheet.create({
   icon: {
     ...CommonStyles.imageStyles(5),
   },
-  timeFormat: {
+  timeView: {
     marginHorizontal: '2.5%',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  textContainer: {
+  chatView: {
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 10,
@@ -80,11 +80,11 @@ const styles = StyleSheet.create({
   keyboardShift: {
     flex: 1,
   },
-  rightBubbleContainer: {
-    alignItems: 'flex-end',
-    justifyContent: 'flex-end',
+  bubbleContainer: type => ({
+    alignItems: type === 'sender' ? 'flex-end' : 'flex-start',
+    justifyContent: type === 'sender' ? 'flex-end' : 'flex-start',
     flexDirection: 'row',
-  },
+  }),
   leftBubbleContainer: {
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-  msgHolderName: {
+  chatAuthorName: {
     fontWeight: '700',
     color: '#46446e',
     marginBottom: 5,
