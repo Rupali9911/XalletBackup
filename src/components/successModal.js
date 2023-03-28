@@ -1,17 +1,17 @@
 import React from 'react';
-import {Image, StyleSheet, View} from 'react-native';
-import {IconButton} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import { Image, StyleSheet, View } from 'react-native';
+import { IconButton } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import Colors from '../constants/Colors';
 import ImagesSrc from '../constants/Images';
-import {hp, RF, wp} from '../constants/responsiveFunct';
+import { hp, RF, wp } from '../constants/responsiveFunct';
 import CommonStyles from '../constants/styles';
-import {translate} from '../walletUtils';
+import { translate } from '../walletUtils';
 import AppButton from './appButton';
 import TextView from './appText';
 
 const SuccessModalContent = props => {
-  const {isCreate, userData} = useSelector(state => state.UserReducer);
+  const { isCreate, userData } = useSelector(state => state.UserReducer);
   return (
     <View style={styles.container}>
       <IconButton
@@ -47,8 +47,8 @@ const SuccessModalContent = props => {
             {props.sucessMsg
               ? props.sucessMsg
               : userData?.isNonCrypto
-              ? translate('wallet.common.loginSuccess')
-              : translate('wallet.common.walletImported')}
+                ? translate('wallet.common.loginSuccess')
+                : translate('wallet.common.walletImported')}
           </TextView>
         </>
       )}

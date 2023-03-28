@@ -57,7 +57,7 @@ const { ChatDefaultProfile, ChangeBackground } = SVGS;
 const ChatDetail = ({ route, navigation }) => {
   // const {nftDetail, nftImage, bot_name, collectionAddress, nftId, tokenId} =
   //   route.params;
-  const {chatDetailData} = route.params;
+  const { chatDetailData } = route.params;
 
   //================== Components State Declaration ===================
   const [chatBotData, setChatBotData] = useState([]);
@@ -80,10 +80,10 @@ const ChatDetail = ({ route, navigation }) => {
     aiBgImageLoading,
     updateMesaage,
   } = useSelector(state => state.chatReducer);
-  const {userData} = useSelector(state => state.UserReducer);
+  const { userData } = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
-  const {reducerTabTitle} = useSelector(state => state.chatReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
+  const { reducerTabTitle } = useSelector(state => state.chatReducer);
 
   const isOwnedTab = reducerTabTitle === 'Owned' ? true : false;
 
@@ -235,9 +235,9 @@ const ChatDetail = ({ route, navigation }) => {
   };
 
   //======================== Show Bubbles =============================
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
-      <View style={{marginVertical: 8}}>
+      <View style={{ marginVertical: 8 }}>
         {item?.type == 'sender' ? (
           <View style={styles.rightBubbleContainer}>
             <View style={styles.talkBubble(false)}>
@@ -246,14 +246,14 @@ const ChatDetail = ({ route, navigation }) => {
                 <Text style={styles.bubbleText}>{item?.message}</Text>
               </View>
             </View>
-            <View style={[styles.timeFormat, {marginRight: 10}]}>
+            <View style={[styles.timeFormat, { marginRight: 10 }]}>
               {renderImage()}
               <Text style={styles.statusText}>{item?.time}</Text>
             </View>
           </View>
         ) : (
           <View style={styles.leftBubbleContainer}>
-            <View style={[styles.timeFormat, {marginLeft: 10}]}>
+            <View style={[styles.timeFormat, { marginLeft: 10 }]}>
               <C_Image
                 imageType={'profile'}
                 uri={item?.receiverImage}
@@ -381,7 +381,7 @@ const ChatDetail = ({ route, navigation }) => {
               }
             }
           })
-          .catch(err => {});
+          .catch(err => { });
       }
     } else {
       showToast(translate('common.INVALID_LANGUAGE'));
@@ -411,7 +411,7 @@ const ChatDetail = ({ route, navigation }) => {
     return (
       <ImageBackground
         key={bannerImage}
-        source={{uri: aiBgImageData?.background_image + '?' + Date.now()}}
+        source={{ uri: aiBgImageData?.background_image + '?' + Date.now() }}
         style={styles.bannerImgContainer}>
         <C_Image
           uri={
@@ -477,15 +477,15 @@ const ChatDetail = ({ route, navigation }) => {
         extraHeight={editMessage?.message ? hp(9) : hp(4)}
         keyboardShouldPersistTaps={'always'}
         keyboardOpeningTime={0}>
-        <View style={{flex: 0.4}}>
+        <View style={{ flex: 0.4 }}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>{chatDetailData?.bot_name}</Text>
-            <View style={[styles.separator, {width: '80%'}]} />
+            <View style={[styles.separator, { width: '80%' }]} />
             {!chatBotData?.response ? (
               <View>
                 <Text
-                  style={[styles.nftName, {marginVertical: 3}]}
+                  style={[styles.nftName, { marginVertical: 3 }]}
                   numberOfLines={2}>
                   {chatLoadSuccess?.data?.response}
                 </Text>
@@ -519,7 +519,7 @@ const ChatDetail = ({ route, navigation }) => {
           </View>
         </View>
 
-        <View style={{flex: 0.6}}>
+        <View style={{ flex: 0.6 }}>
           <ListHeader />
           <View style={styles.chatContainer}>
             <FlatList
@@ -549,7 +549,7 @@ const ChatDetail = ({ route, navigation }) => {
               } else {
                 sendMessage(message, new Date());
                 chatBotData.length > 0 &&
-                  flatList.current.scrollToIndex({animated: true, index: 0});
+                  flatList.current.scrollToIndex({ animated: true, index: 0 });
               }
             }}
           />

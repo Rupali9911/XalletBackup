@@ -45,6 +45,7 @@ import { setNetworkData } from '../../store/reducer/networkReducer';
 import {
   updateCreateState,
   updatePassStatus,
+  updateNotificationStatus
 } from '../../store/reducer/userReducer';
 import { updateNetworkType } from '../../store/reducer/walletReducer';
 import { modalAlert } from '../../common/function';
@@ -63,12 +64,11 @@ import Trending from './trending';
 import { Easing } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { CATEGORY_VALUE } from '../../constants';
+// import {INFT} from '../../constants/GenesisAnimated';
+
 
 const HomeScreen = ({ navigation }) => {
   const artistRef = useRef(null);
-
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-
 
   // =============== Getting data from reducer ========================
   const isNonCrypto = useSelector(
@@ -157,9 +157,6 @@ const HomeScreen = ({ navigation }) => {
   const onFilterStateChange = ({ open }) => setOpenFilter(open);
 
   //===================== UseEffect Function =========================
-  useEffect(() => {
-    setRoutes(tabs)
-  }, [selectedLanguageItem]);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -183,6 +180,13 @@ const HomeScreen = ({ navigation }) => {
         }
       } else {
         dispatch(updateNetworkType(res[3] ? res[3] : res[2]));
+      }
+
+      const foundIdx = res.findIndex(el => el.id === 4)
+      if (foundIdx) {
+        let elem = res[foundIdx]
+        res.splice(foundIdx, 1)
+        res.unshift(elem)
       }
       dispatch(setNetworkData(res));
     }
@@ -267,11 +271,14 @@ const HomeScreen = ({ navigation }) => {
 
   const checkPermissions = async () => {
     PushNotification.checkPermissions(async ({ alert }) => {
+      console.log('CHECK PERMISSION', alert)
       if (!alert) {
         setNotificationVisible(true);
       } else {
         setModalVisible(false);
       }
+      //Call setToken api here
+      dispatch(updateNotificationStatus(true))
     });
   };
 
@@ -366,6 +373,7 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.artistLoader}>
             <ActivityIndicator size="small" color={colors.themeR} />
           </View>
+
         ) : (
           <Carousel
             ref={artistRef}

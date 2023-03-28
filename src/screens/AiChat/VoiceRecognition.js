@@ -1,20 +1,20 @@
-import React, {useEffect, useState} from 'react';
-import {PermissionsAndroid, Platform, TouchableOpacity} from 'react-native';
-import {SVGS} from '../../constants';
+import React, { useEffect, useState } from 'react';
+import { PermissionsAndroid, Platform, TouchableOpacity } from 'react-native';
+import { SVGS } from '../../constants';
 import styles from './style';
 import Voice from '@react-native-voice/voice';
-import {useSelector} from 'react-redux';
-import {translate} from '../../walletUtils';
-import {confirmationAlert} from '../../common/function';
+import { useSelector } from 'react-redux';
+import { translate } from '../../walletUtils';
+import { confirmationAlert } from '../../common/function';
 import {
   openSettings,
   PERMISSIONS,
   RESULTS,
   requestMultiple,
 } from 'react-native-permissions';
-const {Mic, RedMic} = SVGS;
+const { Mic, RedMic } = SVGS;
 
-const VoiceRecognition = ({setAudioToTextFunc}) => {
+const VoiceRecognition = ({ setAudioToTextFunc }) => {
   //====================Make Usestate===================
   const [micOn, setMic] = useState(false);
   const [error, setError] = useState('');
@@ -22,7 +22,7 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
   const results = React.useRef('');
 
   //=====================Reducer Call===================
-  const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
+  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
 
   //=====================UseEffect Call=================
   useEffect(() => {
@@ -122,12 +122,12 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
     const requestPermission =
       Platform.OS === 'android'
         ? await PermissionsAndroid.request(
-            PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
-          )
+          PermissionsAndroid.PERMISSIONS.RECORD_AUDIO,
+        )
         : await requestMultiple([
-            PERMISSIONS.IOS.MICROPHONE,
-            PERMISSIONS.IOS.SPEECH_RECOGNITION,
-          ]);
+          PERMISSIONS.IOS.MICROPHONE,
+          PERMISSIONS.IOS.SPEECH_RECOGNITION,
+        ]);
 
     const GrantedResult =
       Platform.OS === 'android'
@@ -137,8 +137,8 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
     const isPermissionGranted =
       Platform.OS === 'ios'
         ? requestPermission[PERMISSIONS.IOS.MICROPHONE] === GrantedResult &&
-          requestPermission[PERMISSIONS.IOS.SPEECH_RECOGNITION] ===
-            GrantedResult
+        requestPermission[PERMISSIONS.IOS.SPEECH_RECOGNITION] ===
+        GrantedResult
         : requestPermission === GrantedResult;
 
     if (isPermissionGranted) {

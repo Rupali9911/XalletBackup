@@ -1,6 +1,6 @@
-import {translate} from '../walletUtils';
-import {Alert} from 'react-native';
-import {alertAction} from '../store/actions/alertAction';
+import { translate } from '../walletUtils';
+import { Alert } from 'react-native';
+import { alertAction } from '../store/actions/alertAction';
 import store from '../store/index';
 
 const confirmationAlert = (
@@ -45,4 +45,4 @@ const getFileType = uri => {
   return type;
 };
 
-export {confirmationAlert, modalAlert, twitterLink, instagramLink,getFileType};
+export { confirmationAlert, modalAlert, twitterLink, instagramLink, getFileType };

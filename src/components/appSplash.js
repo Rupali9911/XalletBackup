@@ -1,8 +1,8 @@
 import React from 'react';
-import {View, Image} from 'react-native';
+import { View, Image } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDispatch} from 'react-redux';
-import {loadFromAsync} from '../store/reducer/userReducer';
+import { useDispatch } from 'react-redux';
+import { loadFromAsync } from '../store/reducer/userReducer';
 import {
   getAllLanguages,
   setAppLanguage,
@@ -10,14 +10,14 @@ import {
 import {
   setAppCurrency,
 } from '../store/reducer/currencyReducer';
-import {languageArray, regionLanguage, translate} from '../walletUtils';
+import { languageArray, regionLanguage, translate } from '../walletUtils';
 import * as RNLocalize from 'react-native-localize';
-import {getAccessToken} from '../helpers/AxiosApiRequest';
+import { getAccessToken } from '../helpers/AxiosApiRequest';
 
 const appSplash = () => {
   const dispatch = useDispatch();
 
-  const appCurrency =  {
+  const appCurrency = {
     currency_id: 1,
     currency_display: translate("common.USD"),
     currency_name: 'USD',
@@ -66,14 +66,16 @@ const appSplash = () => {
         dispatch(setAppCurrency(appCurrency));
         dispatch(loadFromAsync());
       }
-    } catch (error) {}
+    } catch (error) { }
   };
 
   return (
-    <View style={{flex: 1, backgroundColor: 'white', alignItems: 'center'}}>
+    <View
+    // style={{ flex: 1, backgroundColor: 'white', alignItems: 'center' }}
+    >
       <Image
         source={require('../../assets/images/splash.png')}
-        style={{width: '100%', height: '100%', resizeMode: 'contain'}}
+      // style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
       />
     </View>
   );
