@@ -276,7 +276,7 @@ const HomeScreen = ({ navigation }) => {
         setModalVisible(false);
       }
       //Call setToken api here
-      dispatch(updateNotificationStatus(true))
+      // dispatch(updateNotificationStatus(true))
     });
   };
 
