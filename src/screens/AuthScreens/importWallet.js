@@ -1,7 +1,6 @@
 import Clipboard from '@react-native-clipboard/clipboard';
-import { useKeyboard } from '@react-native-community/hooks';
-import axios from 'axios';
-import React, { useRef, useState } from 'react';
+import {useKeyboard} from '@react-native-community/hooks';
+import React, {useRef, useState} from 'react';
 import {
   FlatList,
   Platform,
@@ -12,8 +11,8 @@ import {
   View,
 } from 'react-native';
 import Toast from 'react-native-toast-message';
-import { useDispatch, useSelector } from 'react-redux';
-import { SIGN_MESSAGE } from '../../common/constants';
+import {useDispatch, useSelector} from 'react-redux';
+import {SIGN_MESSAGE} from '../../common/constants';
 import AppBackground from '../../components/appBackground';
 import AppButton from '../../components/appButton';
 import AppHeader from '../../components/appHeader';
@@ -23,9 +22,9 @@ import HintText from '../../components/hintText';
 import KeyboardAwareScrollView from '../../components/keyboardAwareScrollView';
 import SelectButtongroup from '../../components/selectButtonGroup';
 import Colors from '../../constants/Colors';
-import { hp, RF, wp } from '../../constants/responsiveFunct';
+import {hp, RF, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
-import { colors } from '../../res';
+import {colors} from '../../res';
 import {
   endLoader,
   loginExternalWallet,
@@ -34,28 +33,29 @@ import {
   startLoader,
 } from '../../store/reducer/userReducer';
 import {modalAlert} from '../../common/function';
-import { translate } from '../../walletUtils';
+import {translate} from '../../walletUtils';
 //================= =================
 import '@ethersproject/shims';
-import { hdkey } from 'ethereumjs-wallet';
-import { ethers, utils } from 'ethers';
+import {hdkey} from 'ethereumjs-wallet';
+import {ethers, utils} from 'ethers';
 import bip39 from 'react-native-bip39';
 import 'react-native-get-random-values';
+import sendRequest from '../../helpers/AxiosApiRequest';
 const Web3 = require('web3');
 //================= =================
 
 const toastConfig = {
-  my_custom_type: ({ text1, props, ...rest }) => (
+  my_custom_type: ({text1, props, ...rest}) => (
     <View style={styles.toastView}>
       <Text style={styles.toastTxt}>{text1}</Text>
     </View>
   ),
 };
 
-const ImportWallet = ({ route, navigation }) => {
+const ImportWallet = ({route, navigation}) => {
   const dispatch = useDispatch();
   const keyboard = useKeyboard();
-  const { loading } = useSelector(state => state.UserReducer);
+  const {loading} = useSelector(state => state.UserReducer);
   const [wallet, setWallet] = useState(null);
   const [phrase, setPhrase] = useState('');
   const [pvtKey, setPvtKey] = useState('');
@@ -207,8 +207,15 @@ const ImportWallet = ({ route, navigation }) => {
   };
   const getSuggestions = async val => {
     setTimeout(async () => {
-      const response = await axios.get(`https://api.datamuse.com/sug?s=${val}`);
-      setSuggestions(response.data);
+      const url = `https://api.datamuse.com/sug?s=${val}`;
+      sendRequest({
+        url,
+        method: 'GET',
+      })
+        .then(response => {
+          setSuggestions(response);
+        })
+        .catch(err => {});
     }, 100);
   };
   const setPhraseText = val => {
@@ -230,7 +237,7 @@ const ImportWallet = ({ route, navigation }) => {
     setShowSuggestions(false);
   };
 
-  const handleFlatListRenderItem = ({ item, index }) => (
+  const handleFlatListRenderItem = ({item, index}) => (
     <TouchableOpacity
       style={styles.suggestionContainer}
       onPress={() => setPhraseText(item.word)}>
@@ -269,7 +276,7 @@ const ImportWallet = ({ route, navigation }) => {
               </TextView>
             </View>
             <View>
-              <View style={{ flexDirection: 'row' }}>
+              <View style={{flexDirection: 'row'}}>
                 <SelectButtongroup
                   buttons={[
                     translate('common.recoveryPhrase'),
@@ -341,21 +348,21 @@ const ImportWallet = ({ route, navigation }) => {
                     paddingHorizontal: wp('3%'),
                     paddingVertical: hp('1%'),
                   }}>
-                  <Text style={{ color: Colors.themeColor }}>
+                  <Text style={{color: Colors.themeColor}}>
                     {translate('wallet.common.paste')}
                   </Text>
                 </TouchableOpacity>
               </View>
               {(phraseAlert || !phraseWarning) && inputType === 0 && (
-                <View style={{ alignSelf: 'center', marginTop: hp('1%') }}>
-                  <Text style={{ color: 'red' }}>
+                <View style={{alignSelf: 'center', marginTop: hp('1%')}}>
+                  <Text style={{color: 'red'}}>
                     {translate('wallet.common.error.invalidPhrase')}
                   </Text>
                 </View>
               )}
-              {(privateKeyAlert && inputType === 1) && (
-                <View style={{ alignSelf: 'center', marginTop: hp('1%') }}>
-                  <Text style={{ color: 'red' }}>
+              {privateKeyAlert && inputType === 1 && (
+                <View style={{alignSelf: 'center', marginTop: hp('1%')}}>
+                  <Text style={{color: 'red'}}>
                     {translate('wallet.common.error.invalidPrivateKey')}
                   </Text>
                 </View>
@@ -377,7 +384,7 @@ const ImportWallet = ({ route, navigation }) => {
                   />
                 </View>
               )}
-              <HintText style={{ bottom: hp('2%') }}>
+              <HintText style={{bottom: hp('2%')}}>
                 {inputType == 0
                   ? translate('wallet.common.recoveryPhraseInfo')
                   : translate('common.PASTE_PRIVATE_KEY')}
@@ -387,7 +394,14 @@ const ImportWallet = ({ route, navigation }) => {
           <View style={styles.bottomView}>
             <AppButton
               label={translate('wallet.common.next')}
-              view={inputType !== 1 ? (!phrase || ((phraseValidation(phrase).length === 12 && phraseWarning) ? false : true)) : !pvtKey}
+              view={
+                inputType !== 1
+                  ? !phrase ||
+                    (phraseValidation(phrase).length === 12 && phraseWarning
+                      ? false
+                      : true)
+                  : !pvtKey
+              }
               containerStyle={CommonStyles.button}
               labelStyle={CommonStyles.buttonLabel}
               onPress={() => {
@@ -410,7 +424,7 @@ const WordView = props => {
   return (
     <View style={styles.word}>
       <TextView style={styles.wordTxt}>
-        <Text style={{ color: Colors.townTxt }}>{props.index} </Text>
+        <Text style={{color: Colors.townTxt}}>{props.index} </Text>
         {props.word}
       </TextView>
     </View>
