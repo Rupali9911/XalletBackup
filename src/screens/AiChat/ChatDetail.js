@@ -259,7 +259,7 @@ const ChatDetail = ({route, navigation}) => {
                 multiline={true}
               />
             ) : (
-              <Text selectable={true} key={Math.random()}>
+              <Text selectable={true}>
                 {item?.message}
               </Text>
             )}
