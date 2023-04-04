@@ -560,11 +560,11 @@ const ChatDetail = ({route, navigation}) => {
               }}
               showsVerticalScrollIndicator={false}
               inverted={true}
-              
               onEndReached={handleFlatListEndReached}
               onEndReachedThreshold={1}
               ListFooterComponent={renderHeader}
-              removeClippedSubview={true}
+              removeClippedSubviews={false}
+              pointerEvents={'box-none'}
             />
           </View>
 
