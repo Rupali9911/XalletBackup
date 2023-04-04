@@ -7,14 +7,14 @@ import {
 } from '../../common/constants';
 var RNFS = require('react-native-fs');
 
-const AIAudio = async (chatData, message, language, getVoiceCallback) => {
-  console.log('message', message);
+const AIAudio = async (chatData, language, getVoiceCallback) => {
+  console.log('message', chatData?.message);
   var audioUrl;
 
   if (language === 'ja') {
     try {
       const res = await sendRequest({
-        url: GET_JPAUDIO_FROM_TEXT + message,
+        url: GET_JPAUDIO_FROM_TEXT + chatData?.message,
         method: 'GET',
       });
       if (res) {
@@ -36,7 +36,7 @@ const AIAudio = async (chatData, message, language, getVoiceCallback) => {
     }
   } else if (language === 'en') {
     console.log('For English language');
-    audioUrl = GET_ENAUDIO_FROM_TEXT + message;
+    audioUrl = GET_ENAUDIO_FROM_TEXT + chatData?.message;
     console.log('audioUrl', audioUrl);
     getVoiceCallback(chatData);
   }

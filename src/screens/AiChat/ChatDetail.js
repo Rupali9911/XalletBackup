@@ -159,7 +159,7 @@ const ChatDetail = ({route, navigation}) => {
               type: 'sender',
               time: timeConversion,
               senderImage: userData?.avatar,
-              senderName:
+              name:
                 userData?.userName != ''
                   ? userData?.userName
                   : userData?.userWallet?.address.substring(0, 6),
@@ -171,7 +171,7 @@ const ChatDetail = ({route, navigation}) => {
               type: 'receiver',
               time: timeConversion,
               receiverImage: chatDetailData?.nftImage,
-              receiverName: chatDetailData?.bot_name,
+              name: chatDetailData?.bot_name,
             };
             history.push(receiver, sender);
           });
@@ -182,22 +182,33 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   //====================== Chat Sender Image =========================
-  const renderImage = useCallback(() => {
-    if (userData.avatar) {
+  const renderImage = useCallback(item => {
+    if (item?.type === 'receiver') {
       return (
         <C_Image
           imageType={'profile'}
-          uri={userData.avatar}
+          uri={item?.receiverImage}
           size={ImagekitType.AVATAR}
           imageStyle={styles.bubbleImage}
         />
       );
     } else {
-      return (
-        <View style={styles.bubbleImage}>
-          <ChatDefaultProfile width={SIZE(40)} height={SIZE(40)} />
-        </View>
-      );
+      if (userData.avatar) {
+        return (
+          <C_Image
+            imageType={'profile'}
+            uri={userData.avatar}
+            size={ImagekitType.AVATAR}
+            imageStyle={styles.bubbleImage}
+          />
+        );
+      } else {
+        return (
+          <View style={styles.bubbleImage}>
+            <ChatDefaultProfile width={SIZE(40)} height={SIZE(40)} />
+          </View>
+        );
+      }
     }
   }, []);
 
@@ -229,69 +240,62 @@ const ChatDetail = ({route, navigation}) => {
     );
   };
 
-  //======================== Show Bubbles =============================
+  //==========================Messages Show Here=============================
+  const renderBubbleMessages = item => {
+    return (
+      <View
+        style={styles.talkBubble(item?.type === 'sender' ? false : isOwnedTab)}>
+        <View style={styles.chatView}>
+          <Text style={styles.chatAuthorName}>{item?.name}</Text>
+          <HyperLink
+            onPress={(url, text) => {
+              Linking.openURL(url);
+            }}
+            linkStyle={styles.hyperLinkText}>
+            {Platform.OS === 'ios' ? (
+              <TextInput
+                value={item?.message}
+                editable={false}
+                multiline={true}
+              />
+            ) : (
+              <Text selectable={true} key={Math.random()}>
+                {item?.message}
+              </Text>
+            )}
+          </HyperLink>
+        </View>
+      </View>
+    );
+  };
+
+  //==================== Show Chatting time here=========================
+  const renderBubbleTime = item => {
+    return (
+      <View style={[styles.timeView]}>
+        {renderImage(item)}
+        <Text style={styles.chatingTime}>{item?.time}</Text>
+      </View>
+    );
+  };
+
+  //======================== Flatlist Render Tim ( Show Bubbles )=============================
   const renderItem = ({item, index}) => {
     return (
-      <View style={{marginVertical: 8}}>
-        {item?.type == 'sender' ? (
-          <View style={styles.rightBubbleContainer}>
-            <View style={styles.talkBubble(false)}>
-              <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}>{item?.senderName}</Text>
-                <HyperLink
-                  onPress={(url, text) => {
-                    Linking.openURL(url);
-                  }}
-                  linkStyle={styles.hyperLinkText}>
-                  {Platform.OS === 'ios' ? (
-                    <TextInput
-                      value={item?.message}
-                      editable={false}
-                      multiline={true}
-                    />
-                  ) : (
-                    <Text selectable={true} key={Math.random()}>{item?.message}</Text>
-                  )}
-                </HyperLink>
-              </View>
-            </View>
-            <View style={[styles.timeFormat, {marginRight: 10}]}>
-              {renderImage()}
-              <Text style={styles.statusText}>{item?.time}</Text>
-            </View>
+      <View style={{marginVertical: SIZE(8)}}>
+        {item?.type === 'sender' ? (
+          <View
+            style={styles.bubbleContainer(item?.type)}
+            pointerEvents={'box-none'}>
+            {renderBubbleMessages(item)}
+            {renderBubbleTime(item)}
           </View>
         ) : (
-          <View style={styles.leftBubbleContainer}>
-            <View style={[styles.timeFormat, {marginLeft: 10}]}>
-              <C_Image
-                imageType={'profile'}
-                uri={item?.receiverImage}
-                size={ImagekitType.AVATAR}
-                imageStyle={styles.bubbleImage}
-              />
-              <Text style={styles.statusText}>{item?.time}</Text>
-            </View>
-
-            <View style={styles.talkBubble(isOwnedTab)}>
-              <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}>{item?.receiverName}</Text>
-                <HyperLink
-                  onPress={(url, text) => {
-                    Linking.openURL(url);
-                  }}
-                  linkStyle={styles.hyperLinkText}>
-                  {Platform.OS === 'ios' ? (
-                    <TextInput
-                      value={item?.message}
-                      editable={false}
-                      multiline={true}
-                    />
-                  ) : (
-                    <Text selectable={true} key={Math.random()}>{item?.message}</Text>
-                  )}
-                </HyperLink>
-              </View>
-            </View>
+          <View
+            style={styles.bubbleContainer(item?.type)}
+            pointerEvents={'box-none'}>
+            {renderBubbleTime(item)}
+            {renderBubbleMessages(item)}
 
             {isOwnedTab && renderEdit(item)}
           </View>
@@ -348,6 +352,20 @@ const ChatDetail = ({route, navigation}) => {
     });
   };
 
+  const ChatBotApiCall = (message, msgLanguage) => {
+    return dispatch(
+      getAiChat(
+        userData?.userWallet?.address,
+        chatDetailData?.bot_name,
+        chatDetailData?.collectionAddress,
+        msgLanguage,
+        chatDetailData?.nftId,
+        message,
+        chatDetailData?.tokenId,
+      ),
+    );
+  };
+
   const getVoiceCallback = receiverData => {
     dispatch(animatedChatLoading(false));
     setChatResponseMsg(receiverData?.message);
@@ -366,49 +384,36 @@ const ChatDetail = ({route, navigation}) => {
           type: 'sender',
           time: timeConversion,
           senderImage: userData?.avatar,
-          senderName:
+          name:
             userData.userName != ''
               ? userData.userName
               : userData?.userWallet?.address.substring(0, 6),
         };
         setChatBotData(chatBotData => [sendObj, ...chatBotData]);
-        dispatch(
-          getAiChat(
-            userData?.userWallet?.address,
-            chatDetailData?.bot_name,
-            chatDetailData?.collectionAddress,
-            msgLanguage,
-            chatDetailData?.nftId,
-            msg,
-            chatDetailData?.tokenId,
-          ),
-        )
+        
+        ChatBotApiCall(msg, msgLanguage)
           .then(response => {
             if (response?.messageCode || response?.description) {
               showToast();
             } else {
               let receiveObj = {
-                message: response?.data?.response,
+                message: response?.response
+                  ? response?.response
+                  : response?.message,
                 type: 'receiver',
                 time: timeConversion,
                 receiverImage: chatDetailData?.nftImage,
-                receiverName: chatDetailData?.bot_name,
-                question: response?.data?.question,
+                name: chatDetailData?.bot_name,
+                question: response?.question,
               };
-              console.log(
-                'reducerTabTitle and message',
-                reducerTabTitle,
-                response?.data?.response,
-              );
               if (reducerTabTitle === 'Animated') {
                 AIAudio(
                   receiveObj,
-                  response?.data?.response,
                   msgLanguage,
                   getVoiceCallback,
                 );
               } else {
-                setChatResponseMsg(response?.data?.response);
+                setChatResponseMsg(response?.response);
                 setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
               }
             }
@@ -422,7 +427,6 @@ const ChatDetail = ({route, navigation}) => {
 
   //==================== On Scroll-to-Top ===========================
   const handleFlatListEndReached = () => {
-
     let num = chatHistoryPage + 1;
     if (isHistoryNextPage && reducerTabTitle != 'Animated') {
       dispatch(chatHistoryLoading());

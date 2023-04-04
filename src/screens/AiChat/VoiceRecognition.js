@@ -17,9 +17,6 @@ const {Mic, RedMic} = SVGS;
 const VoiceRecognition = ({setAudioToTextFunc}) => {
   //====================Make Usestate===================
   const [micOn, setMic] = useState(false);
-  const [error, setError] = useState('');
-  const [audioResult, setAudioResult] = useState([]);
-  const results = React.useRef('');
 
   //=====================Reducer Call===================
   const {selectedLanguageItem} = useSelector(state => state.LanguageReducer);
@@ -36,45 +33,41 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
 
   //=================Clear States=======================
   const _clearState = () => {
-    setError('');
-    setAudioResult([]);
+    setAudioToTextFunc([]);
   };
 
   //======================GetError=======================
   const onSpeechError = e => {
     console.log('onSpeechError: ', e);
-    setError(JSON.stringify(e.error));
-    destroyRecognizer();
+    setMic(false);
+  };
+
+  //===========================Get Result========================
+  const onSpeechResults = e => {
+    console.log('onSpeechResults: ', e);
+    setAudioToTextFunc(e.value);
   };
 
   //=======================On Speech End====================
   const onSpeechEnd = e => {
-    console.log('onSpeechEnd: ', e);
-    // setTimeout(() => {
-    //   setMic(false);
-    //   stopRecognizing();
-    // }, 5000);
+    console.log('onSpeechEnd: ', e, micOn);
+    setMic(false);
+    stopRecognizing();
   };
 
-  //=======================Get Result====================
-  const onSpeechResults = e => {
-    console.log('onSpeechResults: ', e);
-    setAudioResult(e.value);
-    results.current = e.value;
-  };
-
-  //=====================Start Speech Recognizing===============
+  //=====================Start Speech Recognizing==================
   const startRecognizing = async () => {
     console.log('called START');
     try {
       _clearState();
+
       await Voice.start(selectedLanguageItem?.language_name);
     } catch (e) {
       console.error(e);
     }
   };
 
-  //======================Stop Recongnition================
+  //==========================Stop Recongnition=====================
   const stopRecognizing = async () => {
     console.log('called STOP');
     try {
@@ -82,17 +75,6 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
     } catch (e) {
       console.error(e);
     }
-  };
-
-  //========================Destroy Recognition======================
-  const destroyRecognizer = async () => {
-    //Destroys the current SpeechRecognizer instance
-    try {
-      await Voice.destroy();
-    } catch (e) {
-      console.error(e);
-    }
-    _clearState();
   };
 
   const customMicrophoneAlert = () => {
@@ -146,12 +128,10 @@ const VoiceRecognition = ({setAudioToTextFunc}) => {
         setTimeout(() => {
           if (micOn) {
             stopRecognizing();
-            setAudioToTextFunc(audioResult);
           } else {
-            // console.log('Else Mic Check')
             startRecognizing();
-            setAudioToTextFunc([]);
           }
+
           setMic(!micOn);
         }, 500);
       } catch (err) {
