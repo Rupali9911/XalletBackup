@@ -19,9 +19,23 @@ const styles = StyleSheet.create({
         paddingVertical: hp('1.5%'),
         paddingHorizontal: wp("5%"),
     },
-    section2: {
-        backgroundColor: Colors.white,
-        marginTop: hp('5%')
+
+
+    itemCont: {
+        flexDirection: "row",
+        paddingVertical: hp('1%'),
+        alignItems: "center",
+    },
+
+    label: {
+        fontSize: RF(2.5),
+        textAlign: "center",
+        marginTop: hp('15%')
+    },
+    listSubLabel: {
+        fontFamily: fonts.ARIAL,
+        fontSize: RF(1.4),
+        color: Colors.blackShadeOne,
     },
 
 })

@@ -31,8 +31,7 @@ import {
   MAGIC_LOADING_START,
   MAGIC_LOADING_END,
   SET_PROFILE_PULL_TO_REFRESH,
-  UPDATE_USER_DATA,
-  SET_DISABLE
+
 } from '../types';
 import { getSig } from '../../screens/wallet/functions';
 import { BASE_URL, NEW_BASE_URL, API_GATEWAY_URL } from '../../common/constants';
@@ -218,16 +217,8 @@ export default UserReducer = (state = initialState, action) => {
         ...state,
         profilePullToRefresh: !state.profilePullToRefresh,
       });
-    case UPDATE_USER_DATA:
-      return {
-        ...state,
-        userData: action.payload
-      }
-    case SET_DISABLE:
-      return {
-        ...state,
-        disable: action.payload
-      }
+
+
     default:
       return state;
   }
@@ -342,10 +333,6 @@ export const setProfilePullToRefresh = () => ({
   type: SET_PROFILE_PULL_TO_REFRESH,
 });
 
-export const setDisable = (disable) => ({
-  type: SET_DISABLE,
-  payload: disable,
-});
 export const startLoader = () => dispatch =>
   new Promise((resolve, reject) => {
     dispatch(startLoading());
@@ -709,28 +696,59 @@ export const updateBanner = (address, userId, file) => async dispatch => {
 };
 
 export const updateNotificationStatus = (status) => async dispatch => {
-  console.log('updateNotificationStatus on')
-  AsyncStorage.getItem('@NOTIFICATION_TOKEN').then(device_token => {
+  const userDataKeys = await AsyncStorage.multiGet(['@USERDATA', '@NOTIFICATION_TOKEN'])
+  let userData = JSON.parse(userDataKeys[0][1]);
+  const deviceToken = userDataKeys[1][1]
+  if (deviceToken) {
     let req_data = {
       device_id: DeviceInfo.getUniqueId(),
-      device_token: device_token,
+      device_token: deviceToken,
       status: status,
     };
-    console.log('Request param for create-mobile-device api', req_data)
-
+    console.log('Request param for create-mobile-device api', req_data);
     sendRequest({
       url: `${NEW_BASE_URL}/users/create-mobile-device`,
       method: 'POST',
       data: req_data,
     })
       .then(res => {
-        console.log('response from create-mobile-device api', res)
-        resolve();
+        console.log('response from create-mobile-device api', res);
+        userData.push_notification = status;
+        console.log('push_notification Key: ', userData.push_notification)
+        AsyncStorage.setItem('@USERDATA', JSON.stringify(userData))
+          .then(() => {
+            dispatch(updateUserData(userData));
+          })
+          .catch(error => {
+            console.error('Error saving userData to userReducer:', error);
+          });
       })
       .catch(e => {
-        console.log('Error from create-mobile-device api', e)
-        reject(e);
+        console.log('Error from create-mobile-device api', e);
       });
+  } else {
+    alert('Device Token is not available');
+  }
+};
 
-  });
+
+
+
+
+export const initiateLogout = () => async dispatch => {
+  console.log('LogoutConfirm')
+  let req_data = {
+    device_id: DeviceInfo.getUniqueId(),
+  };
+  sendRequest({
+    url: `${NEW_BASE_URL}/users/logout-device`,
+    method: 'POST',
+    data: req_data,
+  })
+    .then(res => {
+      console.log('response from create-mobile-device api', res);
+    })
+    .catch(e => {
+      console.log('Error from create-mobile-device api', e);
+    });
 }

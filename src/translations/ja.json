@@ -1140,7 +1140,9 @@
       "microphonePermissionHeader": "本機能を使用するには、マイクへのアクセスが必要です",
       "microphonePermissionDescription": "「設定」をタップし、マイクを有効にしてください",
       "speechPermissionHeader": "本機能を使用するには、音声認識へのアクセスが必要です",
-      "speechPermissionDescription": "「設定」をタップし、音声認識を有効にしてください"
+      "speechPermissionDescription": "「設定」をタップし、音声認識を有効にしてください",
+      "notificationPermissionHeader": "この機能には通知許可アクセスが必要です",
+      "notificationPermissionDescription": "アクセスを有効にするには、[設定] をタップして通知を有効にします"
     },
     "backendmessage": {
       "error": {},

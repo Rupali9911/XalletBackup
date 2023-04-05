@@ -1137,7 +1137,9 @@
       "microphonePermissionHeader": "This feature requires microphone access",
       "microphonePermissionDescription": "To enable access, tap Settings and enable the microphone",
       "speechPermissionHeader": "This feature requires speech recognition access",
-      "speechPermissionDescription": "To enable access, tap Settings and enable speech recognition"
+      "speechPermissionDescription": "To enable access, tap Settings and enable speech recognition",
+      "notificationPermissionHeader": "This feature requires notification permission access",
+      "notificationPermissionDescription": "To enable access, tap Settings and enable notifications"
     },
     "backendmessage": {
       "error": {},

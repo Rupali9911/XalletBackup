@@ -71,11 +71,11 @@ const appSplash = () => {
 
   return (
     <View
-    // style={{ flex: 1, backgroundColor: 'white', alignItems: 'center' }}
+      style={{ flex: 1, backgroundColor: 'white', alignItems: 'center' }}
     >
       <Image
         source={require('../../assets/images/splash.png')}
-      // style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
+        style={{ width: '100%', height: '100%', resizeMode: 'contain' }}
       />
     </View>
   );

@@ -1141,7 +1141,9 @@
       "microphonePermissionHeader": "此功能需要使用麥克風",
       "microphonePermissionDescription": "要啟用訪問權限，請點擊設置並啟用麥克風",
       "speechPermissionHeader": "此功能需要語音識別訪問權限",
-      "speechPermissionDescription": "要啟用訪問權限，請點擊設置並啟用語音識別"
+      "speechPermissionDescription": "要啟用訪問權限，請點擊設置並啟用語音識別",
+      "notificationPermissionHeader": "此功能需要通知權限訪問",
+      "notificationPermissionDescription": "要啟用訪問權限，請點擊設置並啟用通知"
     },
     "backendmessage": {
       "error": {},

@@ -1140,7 +1140,9 @@
       "microphonePermissionHeader": "此功能需要使用麦克风",
       "microphonePermissionDescription": "要启用访问权限，请点击设置并启用麦克风",
       "speechPermissionHeader": "此功能需要语音识别访问权限",
-      "speechPermissionDescription": "要启用访问权限，请点击设置并启用语音识别"
+      "speechPermissionDescription": "要启用访问权限，请点击设置并启用语音识别",
+      "notificationPermissionHeader": "此功能需要通知权限访问",
+      "notificationPermissionDescription": "要启用访问权限，请点击设置并启用通知"
     },
     "backendmessage": {
       "error": {},
