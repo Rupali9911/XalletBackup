@@ -5,6 +5,7 @@ import { Ultraman } from './ultraman';
 import { Deemo } from './Deemo';
 import { Corporate } from './Corporate';
 import { Penpenz } from './Penpenz';
+import { breakingDown } from './breakingDown';
 
 export const getCollectionData = key => {
   switch (key) {
@@ -28,6 +29,9 @@ export const getCollectionData = key => {
       
     case 'XANA:PENPENZ x CryptoNinja':
       return Penpenz;
+
+    case 'XANA x BreakingDown':
+      return breakingDown;
 
     default:
       return [];

@@ -36,6 +36,7 @@ import {
 
   //=============Reamin Count==============
   CHAT_REMAIN_COUNT,
+  ANIMATED_CHAT_LOADING,
   GET_AI_BG_IMAGE_START,
   GET_AI_BG_IMAGE_SUCCESS,
   GET_AI_BG_IMAGE_FAIL,
@@ -43,9 +44,11 @@ import {
   CHAT_AI_DATA_UPDATE,
 } from '../types';
 import sendRequest, {getAccessToken} from '../../helpers/AxiosApiRequest';
+import {NEW_BASE_URL} from '../../common/constants';
 
 //=====================Xana Chat Base Url=====================
-const xana_base_url = `https://prod-backend.xanalia.com/xana-genesis-chat`;
+// const xana_base_url = `https://prod-backend.xanalia.com/xana-genesis-chat`;
+const xana_base_url = `${NEW_BASE_URL}/xana-genesis-chat`;
 
 //=====================Chat=====================
 export const chatLoadingStart = data => ({
@@ -197,7 +200,13 @@ export const remainWordCountData = count => ({
   payload: count,
 });
 
-//=====================Chat=====================
+//===================Set Animated Loading============================
+export const animatedChatLoading = data => ({
+  type: ANIMATED_CHAT_LOADING,
+  payload: data,
+});
+
+//=============================Chat===============================
 export const getAiChat =
   (address, name, collectionAddress, locale, nftId, text, tokenId) =>
   (dispatch, getState) => {
@@ -209,7 +218,11 @@ export const getAiChat =
         : name?.split(' ')[1]
       : name;
 
-    dispatch(chatLoadingStart(true));
+    {
+      reducerTabTitle === 'Animated'
+        ? dispatch(animatedChatLoading(true))
+        : dispatch(chatLoadingStart(true));
+    }
     return new Promise((resolve, reject) => {
       let url =
         reducerTabTitle === 'Animated'
@@ -222,13 +235,17 @@ export const getAiChat =
         locale,
         text,
         tokenId,
-      } 
-      let requestParams = reducerTabTitle === 'Animated' ? {...commonParam, is_owned: true, }: {...commonParam, 
-        collectionAddress,
-        nftId: nftId.toString(),
-        is_owned: reducerTabTitle === 'Owned' ? true : false
       };
-      
+      let requestParams =
+        reducerTabTitle === 'Animated'
+          ? {...commonParam, is_owned: true}
+          : {
+              ...commonParam,
+              collectionAddress,
+              nftId: nftId.toString(),
+              is_owned: reducerTabTitle === 'Owned' ? true : false,
+            };
+
       sendRequest({
         url,
         method: 'POST',
@@ -236,20 +253,45 @@ export const getAiChat =
       })
         .then(res => {
           dispatch(chatLoadingStart(false));
-          if (reducerTabTitle != 'Animated') {
-            res?.data
-              ? (dispatch(chatLoadingSuccess(res)),
-                dispatch(
-                  remainWordCountData(res?.remainWordLimit?.userWordLimit),
-                ),
-                resolve(res))
-              : (dispatch(chatLoadingSuccess(res)), resolve(res));
+          dispatch(chatLoadingSuccess(res));
+
+          if (reducerTabTitle === 'Animated') {
+            if (res?.data) {
+              resolve(res?.data);
+            }
           } else {
-            dispatch(chatLoadingSuccess(res));
+            if (res?.data || res?.remainWordLimit) {
+              dispatch(
+                remainWordCountData(res?.remainWordLimit?.userWordLimit),
+              );
+              resolve(res?.data);
+            }
+          }
+          if (
+            res?.message ===
+            'Our AI server is overloaded, please try again later!'
+          ) {
             resolve(res);
           }
+
+          // if (reducerTabTitle != 'Animated') {
+          //   res?.data
+          //     ? (dispatch(chatLoadingSuccess(res)),
+          //       dispatch(
+          //         remainWordCountData(res?.remainWordLimit?.userWordLimit),
+          //       ),
+          //       resolve(res))
+          //     : (dispatch(chatLoadingSuccess(res)), resolve(res));
+          // } else {
+          //   dispatch(chatLoadingSuccess(res));
+          //   resolve(res);
+          // }
         })
         .catch(err => {
+          {
+            reducerTabTitle === 'Animated' &&
+              dispatch(animatedChatLoading(false));
+          }
           dispatch(chatLoadFail(err));
           reject(err);
         });

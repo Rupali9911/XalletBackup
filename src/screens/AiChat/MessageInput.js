@@ -40,6 +40,9 @@ const MessageInput = props => {
   const onSendPress = () => {
     props.onPress(message);
     setMessage('');
+    setTimeout(() => {
+      Keyboard.dismiss();
+    }, 1000);
   };
 
   const onCancelPress = () => {

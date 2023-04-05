@@ -527,13 +527,13 @@ function Profile({navigation, connector, route}) {
           name={translate('wallet.common.profileCreated')}
           label={translate('wallet.common.profileCreated')}
           key={'profileCreated'}>
-          <NFTCreated id={id} isFocused={isFocused} />
+          <NFTCreated id={id} isFocused={isFocused} userId={userData?.id} />
         </Tabs.Tab>
         <Tabs.Tab
           name={translate('wallet.common.owned')}
           label={translate('wallet.common.owned')}
           key={'nftOwned'}>
-          <NFTOwned id={id} isFocused={isFocused} />
+          <NFTOwned id={id} isFocused={isFocused}  userId={userData?.id}/>
         </Tabs.Tab>
       </Tabs.Container>
     </AppBackground>

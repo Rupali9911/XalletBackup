@@ -58,13 +58,34 @@ axiosInstance.interceptors.response.use(
   async err => {
     const {response, config} = err;
     try {
-      if (response?.status === 401) {
+      if (response?.status === 401 || response?.status === 403) {
         const rest = await APIRefreshToken();
+        console.log('response from APIRefreshToken', rest)
         if (!rest || !rest.newToken) {
           return Promise.reject(response);
         }
         await setAccesToken(rest.newToken);
-        config.headers['Authorization'] = 'Bearer ' + rest.newToken;
+        if(response?.request?._headers?.x-amz-tagging){
+          let xtag = response?.request?._headers?.x-amz-tagging
+          console.log('xtag', xtag)
+      
+      
+      
+          let params = new URLSearchParams(xtag)
+        
+        console.log(params.toString())
+        params.delete('token')
+        params.append('token', rest.newToken)
+        console.log(params.toString())
+
+
+
+        config.headers['x-amz-tagging'] = rest.newToken
+          config.headers['Authorization'] = rest.newToken
+        }else{
+          config.headers['Authorization'] = 'Bearer ' + rest.newToken;
+        }
+        
         return axiosInstance(config);
       } else if (response?.status === 403) {
       } else if (response?.status === 455) {
