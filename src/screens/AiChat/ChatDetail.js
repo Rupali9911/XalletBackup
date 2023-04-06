@@ -52,15 +52,8 @@ const {ThreeDotsVerticalIcon} = SVGS;
 
 const {ChatDefaultProfile, ChangeBackground} = SVGS;
 
-<<<<<<< HEAD
-const ChatDetail = ({ route, navigation }) => {
-  // const {nftDetail, nftImage, bot_name, collectionAddress, nftId, tokenId} =
-  //   route.params;
-  const { chatDetailData } = route.params;
-=======
 const ChatDetail = ({route, navigation}) => {
   const {chatDetailData} = route.params;
->>>>>>> 904f039fbea6fd54709a250f0fce81b079f76643
 
   //================== Components State Declaration ===================
   const [chatBotData, setChatBotData] = useState([]);
@@ -86,12 +79,7 @@ const ChatDetail = ({route, navigation}) => {
   } = useSelector(state => state.chatReducer);
   const { userData } = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
-<<<<<<< HEAD
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
-  const { reducerTabTitle } = useSelector(state => state.chatReducer);
-=======
   const {reducerTabTitle} = useSelector(state => state.chatReducer);
->>>>>>> 904f039fbea6fd54709a250f0fce81b079f76643
 
   const isOwnedTab = reducerTabTitle === 'Owned' ? true : false;
 
@@ -252,43 +240,6 @@ const ChatDetail = ({route, navigation}) => {
     );
   };
 
-<<<<<<< HEAD
-  //======================== Show Bubbles =============================
-  const renderItem = ({ item, index }) => {
-    return (
-      <View style={{ marginVertical: 8 }}>
-        {item?.type == 'sender' ? (
-          <View style={styles.rightBubbleContainer}>
-            <View style={styles.talkBubble(false)}>
-              <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}>{item?.senderName}</Text>
-                <Text style={styles.bubbleText}>{item?.message}</Text>
-              </View>
-            </View>
-            <View style={[styles.timeFormat, { marginRight: 10 }]}>
-              {renderImage()}
-              <Text style={styles.statusText}>{item?.time}</Text>
-            </View>
-          </View>
-        ) : (
-          <View style={styles.leftBubbleContainer}>
-            <View style={[styles.timeFormat, { marginLeft: 10 }]}>
-              <C_Image
-                imageType={'profile'}
-                uri={item?.receiverImage}
-                size={ImagekitType.AVATAR}
-                imageStyle={styles.bubbleImage}
-              />
-              <Text style={styles.statusText}>{item?.time}</Text>
-            </View>
-
-            <View style={styles.talkBubble(isOwnedTab)}>
-              <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}>{item?.receiverName}</Text>
-                <Text style={styles.bubbleText}>{item?.message}</Text>
-              </View>
-            </View>
-=======
   //==========================Messages Show Here=============================
   const renderBubbleMessages = item => {
     return (
@@ -345,7 +296,6 @@ const ChatDetail = ({route, navigation}) => {
             pointerEvents={'box-none'}>
             {renderBubbleTime(item)}
             {renderBubbleMessages(item)}
->>>>>>> 904f039fbea6fd54709a250f0fce81b079f76643
 
             {isOwnedTab && renderEdit(item)}
           </View>
@@ -567,18 +517,6 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>{chatDetailData?.bot_name}</Text>
-<<<<<<< HEAD
-            <View style={[styles.separator, { width: '80%' }]} />
-            {!chatBotData?.response ? (
-              <View>
-                <Text
-                  style={[styles.nftName, { marginVertical: 3 }]}
-                  numberOfLines={2}>
-                  {chatLoadSuccess?.data?.response}
-                </Text>
-              </View>
-            ) : null}
-=======
             <View style={[styles.separator, {width: '80%'}]} />
 
             <Text
@@ -586,7 +524,6 @@ const ChatDetail = ({route, navigation}) => {
               numberOfLines={2}>
               {chatResponseMsg}
             </Text>
->>>>>>> 904f039fbea6fd54709a250f0fce81b079f76643
           </View>
 
           {renderBGImg()}

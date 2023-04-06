@@ -67,7 +67,8 @@ function NotificationScreen() {
                                 isOn={toggle}
                                 onToggle={isOn => {
                                     console.log('ToggleSwitch value', isOn)
-                                    checkPermissions(isOn)
+                                    setToggle(isOn)
+                                   // checkPermissions(isOn)
                                 }}
                             />
                         }
