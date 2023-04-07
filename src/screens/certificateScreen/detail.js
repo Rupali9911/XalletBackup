@@ -1,7 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Portal } from '@gorhom/portal';
-import { useIsFocused } from '@react-navigation/native';
-import { isInteger } from 'lodash';
+import React, {useEffect, useMemo, useRef, useState} from 'react';
+import {Portal} from '@gorhom/portal';
+import {useIsFocused} from '@react-navigation/native';
+import {isInteger} from 'lodash';
 import moment from 'moment';
 import {
   BackHandler,
@@ -14,21 +14,21 @@ import {
   TextInput,
   TouchableOpacity,
   View,
-  ActivityIndicator
+  ActivityIndicator,
 } from 'react-native';
 import CountDown from 'react-native-countdown-component';
 import DatePicker from 'react-native-date-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import Modal from 'react-native-modal';
 import PopupMenu from '../../components/PopupMenu';
-import { useDispatch, useSelector } from 'react-redux';
-import { IMAGES, SIZE, SVGS } from 'src/constants';
+import {useDispatch, useSelector} from 'react-redux';
+import {IMAGES, SIZE, SVGS} from 'src/constants';
 import detailsImg from '../../../assets/images/details.png';
-import { NEW_BASE_URL } from '../../common/constants';
+import {NEW_BASE_URL} from '../../common/constants';
 import Fee from '../../common/fee';
-import { twitterLink,instagramLink } from '../../common/function';
-import { ImagekitType } from '../../common/ImageConstant';
-import { AppHeader, C_Image, GroupButton } from '../../components';
+import {twitterLink, instagramLink} from '../../common/function';
+import {ImagekitType} from '../../common/ImageConstant';
+import {AppHeader, C_Image, GroupButton} from '../../components';
 import AppBackground from '../../components/appBackground';
 import AppModal from '../../components/appModal';
 import TextView from '../../components/appText';
@@ -53,9 +53,9 @@ import {
   SORT_TRADING_HISTORY,
 } from '../../constants';
 import Colors from '../../constants/Colors';
-import { getDateString, getExpirationDate } from '../../constants/date';
+import {getDateString, getExpirationDate} from '../../constants/date';
 import Images from '../../constants/Images';
-import { hp, wp } from '../../constants/responsiveFunct';
+import {hp, wp} from '../../constants/responsiveFunct';
 import CommonStyles from '../../constants/styles';
 import {
   getEventByValue,
@@ -64,23 +64,23 @@ import {
 } from '../../constants/tradingHistory';
 import sendRequest from '../../helpers/AxiosApiRequest';
 import useValidate from '../../hooks/useValidate';
-import { buyNFTApi } from '../../store/actions/detailsNFTAction';
-import { setPaymentObject } from '../../store/reducer/paymentReducer';
-import { numberWithCommas } from '../../utils';
-import { modalAlert } from '../../common/function';
+import {buyNFTApi} from '../../store/actions/detailsNFTAction';
+import {setPaymentObject} from '../../store/reducer/paymentReducer';
+import {numberWithCommas} from '../../utils';
+import {modalAlert} from '../../common/function';
 
-import { collectionClick } from '../../utils/detailHelperFunctions';
-import { getTokenNameFromId } from '../../utils/nft';
-import { getDefaultToken, getERC20Tokens } from '../../utils/token';
-import { translate, environment } from '../../walletUtils';
-import { toFixCustom } from '../createNFTScreen/helperFunction';
-import { handleLike } from '../../utils/handleLikeFunction';
+import {collectionClick} from '../../utils/detailHelperFunctions';
+import {getTokenNameFromId} from '../../utils/nft';
+import {getDefaultToken, getERC20Tokens} from '../../utils/token';
+import {translate, environment} from '../../walletUtils';
+import {toFixCustom} from '../createNFTScreen/helperFunction';
+import {handleLike} from '../../utils/handleLikeFunction';
 import {
   handleTransactionError,
   sendCustomTransaction,
 } from '../wallet/functions/transactionFunctions';
 import styles from './styles';
-import { validatePrice } from './supportiveFunctions';
+import {validatePrice} from './supportiveFunctions';
 import TradingHistory from './TradingHistory';
 import BidHistory from './BidHistory';
 import OfferList from './OfferList';
@@ -97,20 +97,20 @@ const {
   VerficationIcon,
 } = SVGS;
 
-const DetailScreen = ({ navigation, route }) => {
+const DetailScreen = ({navigation, route}) => {
   const dispatch = useDispatch();
   const isFocused = useIsFocused();
   const scrollRef = useRef(null);
-  const { validateNumber } = useValidate();
+  const {validateNumber} = useValidate();
 
   // =============== Props Destructuring ========================
-  const { item, setNftItem, networkName, collectionAddress, nftTokenId } =
+  const {item, setNftItem, networkName, collectionAddress, nftTokenId} =
     route.params;
   // =============== Getting data from reducer ========================
-  const { paymentObject } = useSelector(state => state.PaymentReducer);
-  const { userData } = useSelector(state => state.UserReducer);
-  const { networks } = useSelector(state => state.NetworkReducer);
-  const { buyNFTRes, isBuyLoading } = useSelector(
+  const {paymentObject} = useSelector(state => state.PaymentReducer);
+  const {userData} = useSelector(state => state.UserReducer);
+  const {networks} = useSelector(state => state.NetworkReducer);
+  const {buyNFTRes, isBuyLoading} = useSelector(
     state => state.detailsNFTReducer,
   );
 
@@ -159,8 +159,8 @@ const DetailScreen = ({ navigation, route }) => {
     TradingHistory: false,
     BidHistory: false,
     OfferList: false,
-    MoreCollection: false
-  })
+    MoreCollection: false,
+  });
   const [handleDate, setHandleDate] = useState({
     open: false,
     for: '',
@@ -206,8 +206,8 @@ const DetailScreen = ({ navigation, route }) => {
   const thumbnailUrl = detailNFT?.thumbnailUrl
     ? detailNFT.thumbnailUrl
     : categoryType === CATEGORY_VALUE.music
-      ? item?.mediaUrl
-      : item?.thumbnailUrl;
+    ? item?.mediaUrl
+    : item?.thumbnailUrl;
   const nftId = detailNFT?.nftId ? detailNFT.nftId : item?.nftId;
   const network = detailNFT?.network ? detailNFT.network : item?.network;
   const userId = userData?.id;
@@ -216,88 +216,88 @@ const DetailScreen = ({ navigation, route }) => {
   const saleId = detailNFT?.saleData?.fixPrice?.id;
   const price = detailNFT?.saleData?.fixPrice?.price;
 
-  const hitSlop = { top: 5, bottom: 5, left: 5, right: 5 };
+  const hitSlop = {top: 5, bottom: 5, left: 5, right: 5};
 
   let ownerName = ownerDataN?.name?.trim()
     ? ownerDataN.name
     : ownerDataN?.address?.includes('0x')
-      ? ownerDataN.address.substring(0, 6)
-      : '---';
+    ? ownerDataN.address.substring(0, 6)
+    : '---';
 
   let creatorName = artistDetail?.name?.trim()
     ? artistDetail.name
     : artistDetail?.address?.includes('0x')
-      ? artistDetail.address.substring(0, 6)
-      : '---';
+    ? artistDetail.address.substring(0, 6)
+    : '---';
 
   let collectionName = collectCreat?.name
     ? collectCreat.name
     : collectCreat?.address?.includes('0x')
-      ? collectCreat.address.substring(0, 6)
-      : '---';
+    ? collectCreat.address.substring(0, 6)
+    : '---';
 
   const TRADING_HISTORY_DROPDOWN_OPTIONS = [
-        {
-            label: translate('common.minted'),
-            value: 15,
-        },
-        {
-            label: translate('common.sales'),
-            value: 0,
-        },
-        {
-            label: translate('common.OnAuction'),
-            value: 19,
-        },
-        {
-            label: translate('common.cancelListingFixed'),
-            value: 2,
-        },
-        {
-            label: translate('common.soldFixed'),
-            value: 3,
-        },
-        {
-            label: translate('common.bidPlaced'),
-            value: 20,
-        },
-        {
-            label: translate('common.bidAccepted'),
-            value: 25,
-        },
-        {
-            label: translate('common.cancelListingAuction'),
-            value: 22,
-        },
-        {
-            label: translate('common.bidReclaimed'),
-            value: 24,
-        },
-        {  
-            label: translate('common.offerMade'),
-            value: 1,
-        },
-        {
-            label: translate('common.offerAccepted'),
-            value: 4,
-        },
-        {
-            label: translate('common.offerCanceled'),
-            value: 9,
-        },
-        {
-            label: translate('common.offerReclaimed'),
-            value: 10,
-        },
-        {
-            label: translate('common.NFTReclaimed'),
-            value: 26,
-        },
-        {
-            label: translate('common.cancelAuction'),
-            value: 18,
-        },
-    ]
+    {
+      label: translate('common.minted'),
+      value: 15,
+    },
+    {
+      label: translate('common.sales'),
+      value: 0,
+    },
+    {
+      label: translate('common.OnAuction'),
+      value: 19,
+    },
+    {
+      label: translate('common.cancelListingFixed'),
+      value: 2,
+    },
+    {
+      label: translate('common.soldFixed'),
+      value: 3,
+    },
+    {
+      label: translate('common.bidPlaced'),
+      value: 20,
+    },
+    {
+      label: translate('common.bidAccepted'),
+      value: 25,
+    },
+    {
+      label: translate('common.cancelListingAuction'),
+      value: 22,
+    },
+    {
+      label: translate('common.bidReclaimed'),
+      value: 24,
+    },
+    {
+      label: translate('common.offerMade'),
+      value: 1,
+    },
+    {
+      label: translate('common.offerAccepted'),
+      value: 4,
+    },
+    {
+      label: translate('common.offerCanceled'),
+      value: 9,
+    },
+    {
+      label: translate('common.offerReclaimed'),
+      value: 10,
+    },
+    {
+      label: translate('common.NFTReclaimed'),
+      value: 26,
+    },
+    {
+      label: translate('common.cancelAuction'),
+      value: 18,
+    },
+  ];
 
   //===================== UseEffect Function =========================
   useEffect(() => {
@@ -319,6 +319,7 @@ const DetailScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (isFocused && networkName && collectionAddress && nftTokenId) {
+      console.log(' If Called here !! ');
       getNFTDetails();
     }
   }, [isFocused, networkName, collectionAddress, nftTokenId]);
@@ -422,7 +423,7 @@ const DetailScreen = ({ navigation, route }) => {
           setLike(Number(json?.isLike));
 
           setArtistData(json?.creator);
-          setOwnerDataN(json?.owner);
+          setOwnerDataN(json?.owner[0]);
           setOwnerAddress(json?.owner?.address);
           setcollectCreat(json?.collection);
 
@@ -449,19 +450,19 @@ const DetailScreen = ({ navigation, route }) => {
     let payload =
       history === 'bid'
         ? {
-          url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
-          method: 'GET',
-        }
+            url: `${NEW_BASE_URL}/sale-nft/bid-history?page=${page}&limit=${limit}&nftId=${nftId}&sort=${bidSort}`,
+            method: 'GET',
+          }
         : {
-          url: `${NEW_BASE_URL}/sale-nft/trading-history`,
-          method: 'POST',
-          data: {
-            page: 1,
-            limit: 30,
-            nftId: nftId,
-            sort,
-          },
-        };
+            url: `${NEW_BASE_URL}/sale-nft/trading-history`,
+            method: 'POST',
+            data: {
+              page: 1,
+              limit: 30,
+              nftId: nftId,
+              sort,
+            },
+          };
     sendRequest(payload)
       .then(res => {
         if (res?.items?.length > 0) {
@@ -511,7 +512,7 @@ const DetailScreen = ({ navigation, route }) => {
         }
         setFilterTableList(TRADING_HISTORY_DROPDOWN_OPTIONS);
       })
-      .catch(err => { });
+      .catch(err => {});
   };
 
   //===================== Get More collection data API Call Functions =========================
@@ -537,7 +538,7 @@ const DetailScreen = ({ navigation, route }) => {
           setMoreData(res?.list);
         }
       })
-      .catch(err => { });
+      .catch(err => {});
   };
 
   //===================== Offer List History API Call Functions =========================
@@ -567,7 +568,7 @@ const DetailScreen = ({ navigation, route }) => {
           setOfferList(tempList);
         }
       })
-      .catch(err => { });
+      .catch(err => {});
   };
 
   //====================== Render App Header Function =========================
@@ -580,8 +581,8 @@ const DetailScreen = ({ navigation, route }) => {
         }}
         title={translate('wallet.common.detail')}
         showRightComponent={
-          <View style={{ paddingRight: 10 }}>
-           <PopupMenu
+          <View style={{paddingRight: 10}}>
+            <PopupMenu
               items={[
                 {label: `${translate('common.reportNft')}`},
                 {label: `${translate('common.blockUser')}`},
@@ -591,12 +592,12 @@ const DetailScreen = ({ navigation, route }) => {
                 modalAlert(
                   translate('common.Confirm'),
                   value === 1
-                    ? translate('common.userBlocked') 
+                    ? translate('common.userBlocked')
                     : translate('common.nftReported'),
                 );
               }}
               children={<ThreeDotsVerticalIcon />}
-               />
+            />
           </View>
         }
       />
@@ -612,12 +613,9 @@ const DetailScreen = ({ navigation, route }) => {
           setImgModal(true);
         }}>
         {categoryType === CATEGORY_VALUE.movie ? (
-          <CustomVideoPlayer
-            mediaUrl={mediaUrl}
-            thumbnailUrl={thumbnailUrl}
-          />
+          <CustomVideoPlayer mediaUrl={mediaUrl} thumbnailUrl={thumbnailUrl} />
         ) : categoryType === CATEGORY_VALUE.music ? (
-          <View style={{ ...styles.modalImage }}>
+          <View style={{...styles.modalImage}}>
             <C_Image
               size={ImagekitType.FULLIMAGE}
               uri={thumbnailUrl}
@@ -710,10 +708,10 @@ const DetailScreen = ({ navigation, route }) => {
       key === 'creator' && artistDetail?.avatar
         ? artistDetail?.avatar
         : key === 'collection' && collectCreat?.avatar
-          ? collectCreat?.avatar
-          : key === 'owner' && ownerDataN?.avatar
-            ? ownerDataN.avatar
-            : null;
+        ? collectCreat?.avatar
+        : key === 'owner' && ownerDataN?.avatar
+        ? ownerDataN.avatar
+        : null;
     let imageStyle = fromNFT ? styles.creatorImage : styles.iconsImage;
     let imageView = fromNFT ? SIZE(40) : SIZE(30);
     return (
@@ -723,7 +721,7 @@ const DetailScreen = ({ navigation, route }) => {
             uri={uri}
             size={ImagekitType.AVATAR}
             imageStyle={imageStyle}
-            style={{ width: imageView }}
+            style={{width: imageView}}
           />
         ) : (
           <Image style={imageStyle} source={IMAGES.DEFAULTUSER} />
@@ -734,8 +732,8 @@ const DetailScreen = ({ navigation, route }) => {
               {key === 'creator'
                 ? translate('common.creator')
                 : key === 'collection'
-                  ? translate('wallet.common.collection')
-                  : key === 'owner' && translate('common.owner')}
+                ? translate('wallet.common.collection')
+                : key === 'owner' && translate('common.owner')}
             </Text>
           )}
           {key !== 'collection' ? (
@@ -812,7 +810,7 @@ const DetailScreen = ({ navigation, route }) => {
     ) {
       label =
         detailNFT?.saleData?.auction?.highestPrice ===
-          detailNFT?.saleData?.auction?.startPrice
+        detailNFT?.saleData?.auction?.startPrice
           ? translate('common.minimumBid')
           : translate('common.highestBid');
       tokenIcon = detailNFT?.saleData?.auction?.tokenIcon;
@@ -827,14 +825,14 @@ const DetailScreen = ({ navigation, route }) => {
     }
 
     return (
-      <View style={{ paddingHorizontal: SIZE(12), paddingBottom: SIZE(5) }}>
+      <View style={{paddingHorizontal: SIZE(12), paddingBottom: SIZE(5)}}>
         {label && <Text style={styles.labelText}>{label}</Text>}
         <View style={styles.priceView}>
           <C_Image
             uri={tokenIcon}
             size={ImagekitType.AVATAR}
             imageStyle={styles.tokenIcon}
-            style={{ width: SIZE(33) }}
+            style={{width: SIZE(33)}}
           />
           {!load && (
             <Text style={styles.price}>
@@ -1068,7 +1066,7 @@ const DetailScreen = ({ navigation, route }) => {
       !editPriceData.price ||
       Number(editPriceData.price) === 0 ||
       Number(editPriceData.price) ===
-      Number(detailNFT?.saleData?.fixPrice?.price)
+        Number(detailNFT?.saleData?.fixPrice?.price)
     ) {
       return false;
     }
@@ -1250,7 +1248,7 @@ const DetailScreen = ({ navigation, route }) => {
 
             <Text style={styles.priceText}>{translate('common.price')}</Text>
 
-            <View style={{ marginVertical: SIZE(35), marginTop: SIZE(15) }}>
+            <View style={{marginVertical: SIZE(35), marginTop: SIZE(15)}}>
               <View style={styles.inputWrapperView1}>
                 <TextInput
                   value={editedPrice ? editedPrice : maxPrice.toString()}
@@ -1280,7 +1278,7 @@ const DetailScreen = ({ navigation, route }) => {
                 rightText={translate('common.topUp')}
                 rightDisabled={false}
                 rightLoading={false}
-                onRightPress={() => { }}
+                onRightPress={() => {}}
                 rightStyle={styles.rightGroupButton}
                 rightTextStyle={styles.rightGroupButtonText}
               />
@@ -1320,7 +1318,6 @@ const DetailScreen = ({ navigation, route }) => {
         method: 'POST',
         data,
       });
-
 
       const approveAllData = resPutOnsale?.approveAllData;
       const signData = resPutOnsale?.dataReturn?.signData;
@@ -1371,7 +1368,6 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           )
             .then(res => {
-
               // modalAlert('',translate('common.tansactionSuccessFull'));
               // setLoading(false);
               getNFTDetails(true);
@@ -1421,7 +1417,6 @@ const DetailScreen = ({ navigation, route }) => {
         data,
       });
 
-
       // const resPutOnAuction = await nftServices.putOnAuction(dataCreateAuction);
       // const approveAllData = resPutOnAuction?.approveAllData
       const signData = resPutOnAuction?.signData;
@@ -1467,7 +1462,6 @@ const DetailScreen = ({ navigation, route }) => {
     if (!isValidate()) {
       // toast.error(t('INVALID_DATA'))
     } else {
-
       if (sellData.saleType === saleType.FIXEDPRICE) {
         // handlePutOnSaleAuth();
         handlePutOnsale();
@@ -1491,7 +1485,7 @@ const DetailScreen = ({ navigation, route }) => {
       isSuccess = false;
     }
     if (sellData.saleType === saleType.TIMEAUTION) {
-      const { closeTime, startTime, startPrice } = sellData;
+      const {closeTime, startTime, startPrice} = sellData;
 
       if (!startTime || startTime < Date.now()) {
         error.startTime = 'ERROR_INVALID_OPEN_TIME_AUTION1';
@@ -1578,14 +1572,14 @@ const DetailScreen = ({ navigation, route }) => {
               />
             </View>
 
-            <Text style={[styles.saleTypeText, { textTransform: 'capitalize' }]}>
+            <Text style={[styles.saleTypeText, {textTransform: 'capitalize'}]}>
               {sellData.saleType === saleType.FIXEDPRICE
                 ? translate('common.fixedPrice')
                 : 'Time Auction'}
             </Text>
 
             {sellData.saleType === saleType.FIXEDPRICE ? (
-              <View style={{ paddingHorizontal: SIZE(8) }}>
+              <View style={{paddingHorizontal: SIZE(8)}}>
                 <View style={styles.sellInputFieldView}>
                   <TextInput
                     value={sellData.fixedPrice}
@@ -1599,7 +1593,7 @@ const DetailScreen = ({ navigation, route }) => {
                     }}
                     style={styles.sellInputField}
                   />
-                  <View style={{ zIndex: 1 }}>
+                  <View style={{zIndex: 1}}>
                     <DropDownPicker
                       open={open}
                       value={value}
@@ -1611,7 +1605,7 @@ const DetailScreen = ({ navigation, route }) => {
                       dropDownContainerStyle={styles.sellDropDownContainer}
                       style={styles.sellTokenPicker}
                       placeholder={'Select Here'}
-                      selectedItemLabelStyle={{ backgroundColor: Colors.BLACK2 }}
+                      selectedItemLabelStyle={{backgroundColor: Colors.BLACK2}}
                     />
                   </View>
                 </View>
@@ -1638,9 +1632,9 @@ const DetailScreen = ({ navigation, route }) => {
                 /> */}
               </View>
             ) : (
-              <View style={{ paddingHorizontal: SIZE(8) }}>
+              <View style={{paddingHorizontal: SIZE(8)}}>
                 <View style={styles.opneTimeView}>
-                  <View style={{ flex: 1 / 2 }}>
+                  <View style={{flex: 1 / 2}}>
                     <Text style={styles.openTimeText}>
                       {translate('wallet.common.openTime')}
                     </Text>
@@ -1666,7 +1660,7 @@ const DetailScreen = ({ navigation, route }) => {
                     )}
                   </View>
 
-                  <View style={{ flex: 1 / 2, marginLeft: SIZE(10) }}>
+                  <View style={{flex: 1 / 2, marginLeft: SIZE(10)}}>
                     <Text style={styles.openTimeText}>
                       {translate('wallet.common.closeTime')}
                     </Text>
@@ -1708,7 +1702,7 @@ const DetailScreen = ({ navigation, route }) => {
                     }}
                     value={sellData.startPrice}
                   />
-                  <View style={{ zIndex: 1 }}>
+                  <View style={{zIndex: 1}}>
                     <DropDownPicker
                       open={open}
                       value={value}
@@ -1720,7 +1714,7 @@ const DetailScreen = ({ navigation, route }) => {
                       // dropDownContainerStyle={styles.sellDropDownContainer}
                       style={styles.sellTokenPicker}
                       placeholder={'Select Here'}
-                      selectedItemLabelStyle={{ backgroundColor: Colors.BLACK2 }}
+                      selectedItemLabelStyle={{backgroundColor: Colors.BLACK2}}
                     />
                   </View>
                 </View>
@@ -1734,7 +1728,7 @@ const DetailScreen = ({ navigation, route }) => {
             )}
             <Fee
               royaltyFee={detailNFT?.royalty}
-              style={{ paddingHorizontal: SIZE(8) }}
+              style={{paddingHorizontal: SIZE(8)}}
             />
 
             <View style={styles.sellGroupBButtonView}>
@@ -1812,7 +1806,6 @@ const DetailScreen = ({ navigation, route }) => {
             network?.networkName,
           );
 
-
           if (txnResult) {
             noncePlus = 1;
             // toast.success(t('APPROVE_TOKEN_SUCCESS'));
@@ -1860,7 +1853,7 @@ const DetailScreen = ({ navigation, route }) => {
   };
 
   const isOfferValidate = () => {
-    const error = { ...offerData.error };
+    const error = {...offerData.error};
     let isSuccess = true;
     if (offerData.expried < Date.now()) {
       error.expried = 'TIME_EXPIRED_OFFER_ERROR';
@@ -1919,7 +1912,6 @@ const DetailScreen = ({ navigation, route }) => {
         data,
       })
         .then(buyNFTRes => {
-
           setIsChecking(false);
           if (buyNFTRes.messageCode) {
             setErrorMessage(buyNFTRes.messageCode);
@@ -1933,7 +1925,7 @@ const DetailScreen = ({ navigation, route }) => {
             }, 500);
           }
         })
-        .catch(error => { });
+        .catch(error => {});
 
       // if (buyNFTRes.messageCode) {
       //   setIsChecking(false);
@@ -2011,7 +2003,7 @@ const DetailScreen = ({ navigation, route }) => {
       //     }
       //   }
       // }
-    } catch (error) { }
+    } catch (error) {}
   };
 
   const ModalBody = () => {
@@ -2059,7 +2051,7 @@ const DetailScreen = ({ navigation, route }) => {
                       keyboardType="numeric"
                       style={styles.curancyInput}
                       onChangeText={value => {
-                        const error = { ...offerData.error };
+                        const error = {...offerData.error};
                         error.totalPrice = '';
 
                         if (validateNumber(value).status) {
@@ -2079,7 +2071,7 @@ const DetailScreen = ({ navigation, route }) => {
                   )}
                 </View>
 
-                <View style={[styles.currencyView, { zIndex: 1 }]}>
+                <View style={[styles.currencyView, {zIndex: 1}]}>
                   {modalVisible ? (
                     <DropDownPicker
                       open={open}
@@ -2139,15 +2131,15 @@ const DetailScreen = ({ navigation, route }) => {
                   <Text style={styles.priceInPercent}>
                     {modalVisible
                       ? `${toFixCustom(
-                        ((Number(offerData?.totalPrice) || 0) *
-                          Number(detailNFT?.royalty)) /
-                        100,
-                      )} ${offerData?.receiveToken} (${Number(
-                        detailNFT?.royalty,
-                      )}%)`
+                          ((Number(offerData?.totalPrice) || 0) *
+                            Number(detailNFT?.royalty)) /
+                            100,
+                        )} ${offerData?.receiveToken} (${Number(
+                          detailNFT?.royalty,
+                        )}%)`
                       : `${toFixCustom(
-                        (price * Number(detailNFT.royalty)) / 100,
-                      )} ${tokenName} (${Number(detailNFT.royalty)}%)`}
+                          (price * Number(detailNFT.royalty)) / 100,
+                        )} ${tokenName} (${Number(detailNFT.royalty)}%)`}
                   </Text>
                 </View>
 
@@ -2156,12 +2148,12 @@ const DetailScreen = ({ navigation, route }) => {
                   <Text style={styles.priceInPercent}>
                     {modalVisible
                       ? `${toFixCustom(
-                        ((Number(offerData?.totalPrice) || 0) * SERVICE_FEE) /
-                        100,
-                      )} ${offerData?.receiveToken} (${SERVICE_FEE}%)`
+                          ((Number(offerData?.totalPrice) || 0) * SERVICE_FEE) /
+                            100,
+                        )} ${offerData?.receiveToken} (${SERVICE_FEE}%)`
                       : `${toFixCustom(
-                        Number((price * SERVICE_FEE) / 100),
-                      )} ${tokenName} (${SERVICE_FEE}%)`}
+                          Number((price * SERVICE_FEE) / 100),
+                        )} ${tokenName} (${SERVICE_FEE}%)`}
                   </Text>
                 </View>
               </>
@@ -2186,8 +2178,9 @@ const DetailScreen = ({ navigation, route }) => {
               <Text>{translate('common.youWillPay')}</Text>
               <Text style={styles.nftPrice}>
                 {modalVisible
-                  ? `${toFixCustom(offerData?.totalPrice) || 0} ${offerData?.receiveToken
-                  }`
+                  ? `${toFixCustom(offerData?.totalPrice) || 0} ${
+                      offerData?.receiveToken
+                    }`
                   : `${toFixCustom(price)} ${tokenName}`}
               </Text>
             </View>
@@ -2212,7 +2205,7 @@ const DetailScreen = ({ navigation, route }) => {
             </View>
 
             {(errorMessage || offerData.error.totalPrice) !== '' && (
-              <View style={{ marginTop: 10 }}>
+              <View style={{marginTop: 10}}>
                 <Text style={styles.errorText}>
                   {errorMessage || offerData.error.totalPrice}
                 </Text>
@@ -2254,7 +2247,7 @@ const DetailScreen = ({ navigation, route }) => {
                 rightText={translate('common.topUp')}
                 rightDisabled={false}
                 rightLoading={false}
-                onRightPress={() => { }}
+                onRightPress={() => {}}
                 rightStyle={styles.rightGroupButton}
                 rightTextStyle={styles.rightGroupButtonText}
               />
@@ -2287,7 +2280,6 @@ const DetailScreen = ({ navigation, route }) => {
         method: 'POST',
         params: data,
       });
-
 
       if (cancelSellRes) {
         const signData = cancelSellRes.dataReturn?.signData;
@@ -2418,7 +2410,7 @@ const DetailScreen = ({ navigation, route }) => {
     );
   };
 
-  const BidInfo = ({ status }) => {
+  const BidInfo = ({status}) => {
     const [isWaiting, setIsWaiting] = useState(false);
     const auction = detailNFT?.saleData?.auction;
     const startTime = auction?.startTime;
@@ -2451,7 +2443,7 @@ const DetailScreen = ({ navigation, route }) => {
             digitTxtStyle={styles.countDownText}
             separatorStyle={styles.countDownText}
             timeToShow={['D', 'H', 'M', 'S']}
-            timeLabels={{ d: null, h: null, m: null, s: null }}
+            timeLabels={{d: null, h: null, m: null, s: null}}
             showSeparator
           />
         </View>
@@ -2499,10 +2491,10 @@ const DetailScreen = ({ navigation, route }) => {
     };
 
     return (
-      <View style={{ paddingTop: 5, paddingBottom: 10 }}>
+      <View style={{paddingTop: 5, paddingBottom: 10}}>
         {renderCoundown()}
         {auction?.highestBidder ? (
-          <Text style={{ paddingTop: SIZE(10) }}>
+          <Text style={{paddingTop: SIZE(10)}}>
             {translate('common.highhestBidder')}:{' '}
             {auction?.highestBidder.slice(0, 7) + '...'}
           </Text>
@@ -2566,7 +2558,7 @@ const DetailScreen = ({ navigation, route }) => {
               leftText={translate('common.auctionEnd')}
               leftDisabled={true}
               leftLoading={false}
-              onLeftPress={() => { }}
+              onLeftPress={() => {}}
               rightHide
             />
           </View>
@@ -2677,38 +2669,38 @@ const DetailScreen = ({ navigation, route }) => {
           tradingTableData: tradingTableData,
           filterTableValue: filterTableValue,
           filterTableList: filterTableList,
-          role: detailNFT?.creator?.role
+          role: detailNFT?.creator?.role,
         }}
         setFilterTableValue={setFilterTableValue}
         setFilterTableList={setFilterTableList}
         isDropDownOpen={(v, t) => toggleDropDown(v, t)}
       />
-    )
-  }
+    );
+  };
 
   const renderBidHistory = () => {
     return (
       <BidHistory
         bidHistory={{
           sellDetails: sellDetails,
-          role: detailNFT?.creator?.role
+          role: detailNFT?.creator?.role,
         }}
         isDropDownOpen={(v, t) => toggleDropDown(v, t)}
       />
-    )
-  }
+    );
+  };
 
   const renderOfferList = () => {
     return (
       <OfferList
         offerHistory={{
           offerList: offerList,
-          role: detailNFT?.creator?.role
+          role: detailNFT?.creator?.role,
         }}
         isDropDownOpen={(v, t) => toggleDropDown(v, t)}
       />
-    )
-  }
+    );
+  };
 
   const showContractAddress = address => {
     return address?.substring(0, 6);
@@ -2731,14 +2723,38 @@ const DetailScreen = ({ navigation, route }) => {
   };
   const toggleDropDown = (v, t) => {
     if (v && t === translate('common.tradingHistory'))
-      setDropDownOpen({ ...isDropDownOpen, TradingHistory: true, BidHistory: false, MoreCollection: false, OfferList: false })
+      setDropDownOpen({
+        ...isDropDownOpen,
+        TradingHistory: true,
+        BidHistory: false,
+        MoreCollection: false,
+        OfferList: false,
+      });
     if (v && t === translate('wallet.common.bidHistory'))
-      setDropDownOpen({ ...isDropDownOpen, BidHistory: true, TradingHistory: false, MoreCollection: false, OfferList: false })
+      setDropDownOpen({
+        ...isDropDownOpen,
+        BidHistory: true,
+        TradingHistory: false,
+        MoreCollection: false,
+        OfferList: false,
+      });
     if (v && t === translate('wallet.common.collectionHint'))
-      setDropDownOpen({ ...isDropDownOpen, MoreCollection: true, BidHistory: false, TradingHistory: false, OfferList: false })
+      setDropDownOpen({
+        ...isDropDownOpen,
+        MoreCollection: true,
+        BidHistory: false,
+        TradingHistory: false,
+        OfferList: false,
+      });
     if (v && t === translate('common.offers'))
-      setDropDownOpen({ ...isDropDownOpen, OfferList: true, MoreCollection: false, BidHistory: false, TradingHistory: false })
-  }
+      setDropDownOpen({
+        ...isDropDownOpen,
+        OfferList: true,
+        MoreCollection: false,
+        BidHistory: false,
+        TradingHistory: false,
+      });
+  };
 
   //===================== Render Creator NFTDetailDropdown Function =======================
   const renderCreatorNFTDetailDropdown = () => {
@@ -2749,7 +2765,7 @@ const DetailScreen = ({ navigation, route }) => {
         </TouchableOpacity>
 
         {detailNFT?.creator?.description ? (
-          <TextView style={[styles.rowText, { marginTop: SIZE(10) }]}>
+          <TextView style={[styles.rowText, {marginTop: SIZE(10)}]}>
             {detailNFT?.creator?.description}
           </TextView>
         ) : null}
@@ -2764,26 +2780,19 @@ const DetailScreen = ({ navigation, route }) => {
     return (
       <View style={styles.socialLinksWrap}>
         {detailNFT?.creator?.twitterLink ? (
-          <View
-            style={styles.socialView}
-          >
+          <View style={styles.socialView}>
             <TouchableOpacity
               hitSlop={hitSlop}
-              onPress={() => Linking.openURL(twitterFullLink)}
-            >
-             <TwitterIcon />
+              onPress={() => Linking.openURL(twitterFullLink)}>
+              <TwitterIcon />
             </TouchableOpacity>
           </View>
         ) : null}
         {detailNFT?.creator?.instagramLink ? (
-          <View 
-           style={styles.socialView}
-          >
+          <View style={styles.socialView}>
             <TouchableOpacity
               hitSlop={hitSlop}
-              onPress={() =>
-                Linking.openURL(instagramFullLink)}
-            >
+              onPress={() => Linking.openURL(instagramFullLink)}>
               <InstaIcon />
             </TouchableOpacity>
           </View>
@@ -2791,7 +2800,7 @@ const DetailScreen = ({ navigation, route }) => {
       </View>
     );
   };
-  
+
   //===================== Render Detail NFTDetailDropdown Function =======================
   const renderDetailNFTDetailDropdown = () => {
     return (
@@ -2825,8 +2834,8 @@ const DetailScreen = ({ navigation, route }) => {
             key === ''
               ? styles.rowText
               : key === 'blockChainType'
-                ? [styles.rowText]
-                : [styles.rowTextcontractaddress, { color: Colors.themeColor }]
+              ? [styles.rowText]
+              : [styles.rowTextcontractaddress, {color: Colors.themeColor}]
           }
           ellipsizeMode="middle"
           numberOfLines={1}>
@@ -2842,7 +2851,7 @@ const DetailScreen = ({ navigation, route }) => {
       <NFTDetailDropdown
         title={translate('wallet.common.collectionHint')}
         icon={detailsImg}
-        containerStyles={{ width: wp(100) }}
+        containerStyles={{width: wp(100)}}
         containerChildStyles={styles.containerChildStyles}
         isDropDownOpen={(v, t) => toggleDropDown(v, t)}>
         {moreData.length !== 0 ? (
@@ -2858,7 +2867,7 @@ const DetailScreen = ({ navigation, route }) => {
               leftText={translate('common.viewAllCollection')}
               style={styles.viewAllBtn}
               leftStyle={styles.viewAllBtnInner}
-              leftTextStyle={{ color: Colors.BLUE4 }}
+              leftTextStyle={{color: Colors.BLUE4}}
               onLeftPress={() =>
                 navigation.push('CollectionDetail', {
                   networkName: detailNFT?.network?.networkName,
@@ -2869,18 +2878,18 @@ const DetailScreen = ({ navigation, route }) => {
               rightHide
             />
           </>
-        ) : isDropDownOpen.MoreCollection && moreData.length === 0 ?
+        ) : isDropDownOpen.MoreCollection && moreData.length === 0 ? (
           <ActivityIndicator size="large" color={Colors.themeColor} />
-          : (
-            <View style={styles.sorryMessageCont}>
-              <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
-            </View>
-          )}
+        ) : (
+          <View style={styles.sorryMessageCont}>
+            <Text style={styles.sorryMessage}>{translate('common.noNFT')}</Text>
+          </View>
+        )}
       </NFTDetailDropdown>
     );
   };
 
-  const renderItem = ({ item }) => {
+  const renderItem = ({item}) => {
     return (
       <NFTItem
         item={item}
@@ -3067,8 +3076,8 @@ const DetailScreen = ({ navigation, route }) => {
                 handleDate.for === 'open'
                   ? sellData.startTime
                   : handleDate.for === 'close'
-                    ? sellData.closeTime
-                    : offerData.expried
+                  ? sellData.closeTime
+                  : offerData.expried
               }
               onConfirm={handleConfirmDate}
               onCancel={() => {
