@@ -85,7 +85,6 @@ const MessageInput = props => {
           onChangeText={text => setMessage(text)}
           style={styles.input(props?.message)}
           placeholderTextColor={colors.BLACK7}
-          selectionColor={colors.BLACK7}
           onFocus={props.onFocus}
         />
         {!props.message ? (
