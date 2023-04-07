@@ -208,7 +208,16 @@ export const animatedChatLoading = data => ({
 
 //=============================Chat===============================
 export const getAiChat =
-  (address, name, collectionAddress, locale, nftId, text, tokenId) =>
+  (
+    address,
+    name,
+    collectionAddress,
+    locale,
+    nftId,
+    text,
+    tokenId,
+    isFreeModal,
+  ) =>
   (dispatch, getState) => {
     const {reducerTabTitle} = getState().chatReducer;
 
@@ -225,7 +234,7 @@ export const getAiChat =
     }
     return new Promise((resolve, reject) => {
       let url =
-        reducerTabTitle === 'Animated'
+        reducerTabTitle === 'Animated' && isFreeModal
           ? `${xana_base_url}/chat-bot-test`
           : `${xana_base_url}/chat-bot-ai`;
 
@@ -237,7 +246,7 @@ export const getAiChat =
         tokenId,
       };
       let requestParams =
-        reducerTabTitle === 'Animated'
+        reducerTabTitle === 'Animated' && isFreeModal
           ? {...commonParam, is_owned: true}
           : {
               ...commonParam,

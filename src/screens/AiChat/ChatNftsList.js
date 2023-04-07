@@ -1,12 +1,11 @@
-import {View, Text, TouchableOpacity, FlatList} from 'react-native';
-import {C_Image, Loader} from '../../components';
+import {View, Text, FlatList, ScrollView} from 'react-native';
+import {Loader} from '../../components';
 import Colors from '../../constants/Colors';
 import React, {useEffect, useCallback, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 import {useNavigation} from '@react-navigation/native';
 import {
   getNftCollections,
-  setTabTitle,
   ownedNftLoadStart,
   otherNftLoadStart,
   ownedNftListReset,
@@ -17,8 +16,13 @@ import {
 import {translate} from '../../walletUtils';
 import styles from './style';
 import {ActivityIndicator} from 'react-native-paper';
-import {ImagekitType} from '../../common/ImageConstant';
-import {INFT} from '../../constants/GenesisAnimated';
+import {
+  INFT,
+  INFTUserOwnedStaging,
+  INFTUserOwnedProduction,
+} from '../../constants/GenesisAnimated';
+import ListItem from './ListItem';
+import {networkType} from '../../common/networkType';
 
 const ChatNftsList = ({tabTitle}) => {
   // =============== Getting data from States =========================
@@ -70,7 +74,7 @@ const ChatNftsList = ({tabTitle}) => {
       dispatch(ownedNftListReset());
       getDataCollection(1);
       dispatch(ownedNftPageChange(1));
-    } else if(tabTitle === 'Other'){
+    } else if (tabTitle === 'Other') {
       dispatch(otherNftLoadStart());
       dispatch(otherNftListReset());
       getDataCollection(1);
@@ -133,66 +137,36 @@ const ChatNftsList = ({tabTitle}) => {
 
   // ========================== Reender Item of Flatlist ==========================================
   const renderItem = ({item, index}) => {
-    const getImg = tabTitle === 'Animated' ? item?.image : item?.smallImage;
-    const renderImg = getImg.includes('.png')
-      ? getImg.replace('.png', '-thumb.png')
-      : getImg;
-
-    const renderName =
-      tabTitle === 'Animated'
-        ? item?.displayName
-          ? item?.displayName
-          : item?.nftName
-        : item?.name.slice(item?.name.lastIndexOf('#'));
-
-    const renderNavigationData = {
-      listItems: item,
-      nftImage: renderImg,
-      bot_name: renderName,
-      collectionAddress:
-        tabTitle === 'Animated'
-          ? item?.collectionAddress
-          : item?.collection?.address,
-      nftId: tabTitle === 'Animated' ? item?.nftId : item?.id,
-      tokenId: tabTitle === 'Animated' ? item?.token_id : item?.tokenId,
-    };
-
-    return (
-      <TouchableOpacity
-        onPress={() => {
-          dispatch(setTabTitle(tabTitle));
-          navigation.navigate('ChatDetail', {
-            chatDetailData: renderNavigationData,
-          });
-        }}>
-        <View style={styles.nftItemContainer}>
-          <View>
-            <C_Image
-              imageType={'profile'}
-              size={ImagekitType.AVATAR}
-              uri={renderImg}
-              imageStyle={styles.cImageContainer}
-            />
-          </View>
-          <Text style={styles.nftTextShow}>{renderName}</Text>
-        </View>
-      </TouchableOpacity>
-    );
+    return <ListItem item={item} tabTitle={tabTitle} INFT={false} />;
   };
 
-  const memoizedValue = useMemo(() => renderItem, [tabTitle === 'Animated' ? INFT : nftCollectionList]);
+  const memoizedValue = useMemo(
+    () => renderItem,
+    [tabTitle === 'Animated' ? INFT : nftCollectionList],
+  );
 
   //=====================(Main return Function)=============================
   return (
     <View style={styles.mainListContainer}>
       {tabTitle === 'Animated' ? (
         <View style={styles.nftListContainer}>
-          <FlatList
+          <ScrollView>
+            {INFT.map((item, index) => {
+              return <ListItem item={item} tabTitle={tabTitle} INFT={true} />;
+            })}
+            {(networkType === 'mainnet'
+              ? INFTUserOwnedProduction
+              : INFTUserOwnedStaging
+            ).map((item, index) => {
+              return <ListItem item={item} tabTitle={tabTitle} INFT={false} />;
+            })}
+            {/* <FlatList
             showsVerticalScrollIndicator={true}
-            data={INFT}
+            data={networkType ===  'mainnet' ? INFT.concat(INFTUserOwnedProduction) : INFT.concat(INFTUserOwnedStaging)}
             keyExtractor={keyExtractor}
             renderItem={memoizedValue}
-          />
+          /> */}
+          </ScrollView>
         </View>
       ) : isNftLoading && nftPageChange == 1 ? (
         <View style={styles.centerViewStyle}>

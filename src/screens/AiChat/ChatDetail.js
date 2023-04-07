@@ -362,6 +362,7 @@ const ChatDetail = ({route, navigation}) => {
         chatDetailData?.nftId,
         message,
         chatDetailData?.tokenId,
+        chatDetailData?.isFreeModal
       ),
     );
   };
@@ -406,7 +407,7 @@ const ChatDetail = ({route, navigation}) => {
                 name: chatDetailData?.bot_name,
                 question: response?.question,
               };
-              if (reducerTabTitle === 'Animated') {
+              if (reducerTabTitle === 'Animated' && chatDetailData.listItems?.iNFT && chatDetailData?.listItems?.voiceAllowed) {
                 AIAudio(
                   receiveObj,
                   msgLanguage,
