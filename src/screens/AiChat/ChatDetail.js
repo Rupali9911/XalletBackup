@@ -77,7 +77,7 @@ const ChatDetail = ({route, navigation}) => {
     updateMesaage,
     isAnimatedLoading,
   } = useSelector(state => state.chatReducer);
-  const {userData} = useSelector(state => state.UserReducer);
+  const { userData } = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
   const {reducerTabTitle} = useSelector(state => state.chatReducer);
 
@@ -259,7 +259,7 @@ const ChatDetail = ({route, navigation}) => {
                 multiline={true}
               />
             ) : (
-              <Text selectable={true} key={Math.random()}>
+              <Text selectable={true}>
                 {item?.message}
               </Text>
             )}
@@ -419,7 +419,7 @@ const ChatDetail = ({route, navigation}) => {
               }
             }
           })
-          .catch(err => {});
+          .catch(err => { });
       }
     } else {
       showToast(translate('common.INVALID_LANGUAGE'));
@@ -446,7 +446,7 @@ const ChatDetail = ({route, navigation}) => {
     return (
       <ImageBackground
         key={bannerImage}
-        source={{uri: aiBgImageData?.background_image + '?' + Date.now()}}
+        source={{ uri: aiBgImageData?.background_image + '?' + Date.now() }}
         style={styles.bannerImgContainer}>
         <C_Image
           uri={
@@ -514,7 +514,7 @@ const ChatDetail = ({route, navigation}) => {
         extraHeight={editMessage?.message ? hp(9) : hp(4)}
         keyboardShouldPersistTaps={'always'}
         keyboardOpeningTime={0}>
-        <View style={{flex: 0.4}}>
+        <View style={{ flex: 0.4 }}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>{chatDetailData?.bot_name}</Text>
@@ -553,7 +553,7 @@ const ChatDetail = ({route, navigation}) => {
           </View>
         </View>
 
-        <View style={{flex: 0.6}}>
+        <View style={{ flex: 0.6 }}>
           <ListHeader />
           <View style={styles.chatContainer}>
             <FlatList
@@ -568,7 +568,8 @@ const ChatDetail = ({route, navigation}) => {
               onEndReached={handleFlatListEndReached}
               onEndReachedThreshold={1}
               ListFooterComponent={renderHeader}
-              removeClippedSubview={false}
+              removeClippedSubviews={false}
+              pointerEvents={'box-none'}
             />
           </View>
 
@@ -583,7 +584,7 @@ const ChatDetail = ({route, navigation}) => {
               } else {
                 sendMessage(message, new Date());
                 chatBotData.length > 0 &&
-                  flatList.current.scrollToIndex({animated: true, index: 0});
+                  flatList.current.scrollToIndex({ animated: true, index: 0 });
               }
             }}
           />

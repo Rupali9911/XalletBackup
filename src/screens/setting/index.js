@@ -11,7 +11,6 @@ import {
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import EncryptedStorage from 'react-native-encrypted-storage';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { useDispatch, useSelector } from 'react-redux';
 import { confirmationAlert, modalAlert } from '../../common/function';
 import { alertWithSingleBtn } from '../../utils';
@@ -30,6 +29,7 @@ import {
   endMainLoading,
   _logout,
   deleteAccountApi,
+  initiateLogout
 } from '../../store/reducer/userReducer';
 import { languageArray, translate } from '../../walletUtils';
 import { requestDisconnectDApp } from '../AuthScreens/nonCryptoAuth/magic-link';
@@ -38,6 +38,7 @@ import ShowModal from '../certificateScreen/modal';
 import SelectionModal from '../../components/SelectionModal';
 import { getWallet } from '../../helpers/AxiosApiRequest';
 import MultiButtonModal from '../../components/MultiButtonModal';
+import ListItem from '../../components/ListItem';
 
 const optionalConfigObject = {
   title: 'Authentication Required', // Android
@@ -64,38 +65,7 @@ const optionalConfigObject = {
 //     });
 // };
 
-const ListItem = props => {
-  return (
-    <TouchableOpacity
-      disabled={props.disableView}
-      onPress={props.onPress}
-      style={styles.itemCont}>
-      <View style={styles.centerProfileCont}>
-        <Text style={styles.listLabel}>{props.label}</Text>
-        {props.rightText ? (
-          <Text style={styles.listLabel}>{props.rightText}</Text>
-        ) : props.right ? (
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.listLabel}>{props.right}</Text>
-            <EntypoIcon
-              size={RF(2.5)}
-              color={Colors.GREY8}
-              name="chevron-right"
-            />
-          </View>
-        ) : props.rightComponent ? (
-          props.rightComponent
-        ) : props.noArrow ? null : (
-          <EntypoIcon
-            size={RF(2.5)}
-            color={Colors.GREY8}
-            name="chevron-right"
-          />
-        )}
-      </View>
-    </TouchableOpacity>
-  );
-};
+
 
 function Setting({ route, navigation }) {
   const dispatch = useDispatch();
@@ -244,11 +214,8 @@ function Setting({ route, navigation }) {
           />
           <View style={{ ...styles.separator, width: wp('81%') }} />
           <ListItem
-            onPress={() =>
-              modalAlert(
-                translate('wallet.common.alert'),
-                translate('common.comingSoon'),
-              )
+            onPress={() => navigation.navigate('NotificationScreen')
+
             }
             label={translate('wallet.common.notifications')}
           />
@@ -295,6 +262,7 @@ function Setting({ route, navigation }) {
             leftButtonText={translate('common.Cancel')}
             rightButtonText={translate('common.OK')}
             onRightPress={() => {
+              // dispatch(initiateLogout())
               logoutConfirm();
             }}
             onLeftPress={() => {
@@ -350,7 +318,10 @@ function Setting({ route, navigation }) {
         }}
         rightButtonTitle={translate('common.Logout')}
         leftButtonTitle={translate('common.BACKUP_NOW')}
-        onRightPress={logoutConfirm}
+        onRightPress={() => {
+          dispatch(initiateLogout())
+          logoutConfirm();
+        }}
         checkBoxDescription={translate(
           'common.LOGOUT_WITHOUT_PHRASE_CHECKBOX_DESC',
         )}

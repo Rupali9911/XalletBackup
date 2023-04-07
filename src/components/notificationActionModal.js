@@ -26,8 +26,8 @@ const NotificationActionModalContent = props => {
         {props.title}
       </TextView>
       <TextView style={styles.hint}>
-          {props.hint}
-          </TextView>
+        {props.hint}
+      </TextView>
       <AppButton
         label={props.btnText}
         containerStyle={styles.button}

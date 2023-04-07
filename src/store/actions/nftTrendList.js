@@ -1,14 +1,36 @@
 import axios from 'axios';
-import { NEW_BASE_URL } from '../../common/constants';
-import { networkType } from '../../common/networkType';
-import { alertWithSingleBtn } from '../../utils';
-import { translate } from '../../walletUtils';
+import {NEW_BASE_URL} from '../../common/constants';
+import {networkType} from '../../common/networkType';
+import {alertWithSingleBtn} from '../../utils';
+import {translate} from '../../walletUtils';
 import {
-  ALL_ARTIST_SUCCESS, ARTIST_LOADING_END, ARTIST_LOADING_START, GIF_NFT_LIST_SUCCESS, HANDLE_LIKE_DISLIKE, LOAD_NFT_START, MOVIE_NFT_LIST_SUCCESS, MYLIST_LIST_UPDATE,
-  MY_COLLECTION_LIST_UPDATE, NEW_NFT_LIST_UPDATE, NFT_LIST_FAIL, NFT_LIST_RESET, NFT_LIST_SUCCESS, NFT_LIST_UPDATE, PAGE_CHANGE, SET_SORT_ORDER, NFT_DATA_COLLECTION_LIST_UPDATE,
-  AWARDS_LIST_UPDATE, MOVIE_NFT_LOAD_START, HOT_NFT_LOAD_START, GIF_NFT_LOAD_START, GIF_NFT_LOAD_FAIL, NFT_LOAD_FAIL, HOT_NFT_LOAD_FAIL,
+  ALL_ARTIST_SUCCESS,
+  ARTIST_LOADING_END,
+  ARTIST_LOADING_START,
+  GIF_NFT_LIST_SUCCESS,
+  HANDLE_LIKE_DISLIKE,
+  LOAD_NFT_START,
+  MOVIE_NFT_LIST_SUCCESS,
+  MYLIST_LIST_UPDATE,
+  MY_COLLECTION_LIST_UPDATE,
+  NEW_NFT_LIST_UPDATE,
+  NFT_LIST_FAIL,
+  NFT_LIST_RESET,
+  NFT_LIST_SUCCESS,
+  NFT_LIST_UPDATE,
+  PAGE_CHANGE,
+  SET_SORT_ORDER,
+  NFT_DATA_COLLECTION_LIST_UPDATE,
+  AWARDS_LIST_UPDATE,
+  MOVIE_NFT_LOAD_START,
+  HOT_NFT_LOAD_START,
+  GIF_NFT_LOAD_START,
+  GIF_NFT_LOAD_FAIL,
+  NFT_LOAD_FAIL,
+  HOT_NFT_LOAD_FAIL,
 } from '../types';
-import { parseNftObject } from '../../utils/parseNFTObj';
+import {parseNftObject} from '../../utils/parseNFTObj';
+import sendRequest from '../../helpers/AxiosApiRequest';
 
 export const hotNftIsLoadStart = () => ({
   type: HOT_NFT_LOAD_START,
@@ -75,7 +97,7 @@ export const getNFTList = (page, limit, sort) => {
     dispatch(nftLoadStart());
     dispatch(hotNftIsLoadStart());
 
-    const { data, wallet } = getState().UserReducer;
+    const {data, wallet} = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -135,7 +157,7 @@ export const gifNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(gifNftIsLoadStart());
 
-    const { data, wallet } = getState().UserReducer;
+    const {data, wallet} = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -194,7 +216,7 @@ export const movieNFTList = (page, limit, sort) => {
   return (dispatch, getState) => {
     dispatch(movieNftIsLoadStart());
 
-    const { data, wallet } = getState().UserReducer;
+    const {data, wallet} = getState().UserReducer;
     let user = data.user;
 
     let body_data = {
@@ -269,25 +291,27 @@ export const setSortBy = data => ({
   payload: data,
 });
 
-export const getAllArtist =(page,limit)=> {
-  return (dispatch) => {
-    dispatch(artistLoadingStart())
-    const url = `${NEW_BASE_URL}/nfts/nfts-slider?page=${page}&limit=${limit}`
-    fetch(url)
-    .then(response => response.json())
-    .then(data=>{
-      dispatch(getAllArtistSuccess(data))
+export const getAllArtist = (page, limit) => {
+  return dispatch => {
+    dispatch(artistLoadingStart());
+    const url = `${NEW_BASE_URL}/nfts/nfts-slider?page=${page}&limit=${limit}`;
+
+    sendRequest({
+      url,
+      method: 'GET',
     })
-    .catch(() => dispatch(artistLoadingEnd()))
-  }
-}
+      .then(data => {
+        dispatch(getAllArtistSuccess(data));
+      })
+      .catch(() => dispatch(artistLoadingEnd()));
+  };
+};
 
 // export const getAllArtist = () => {
 //   return dispatch => {
 //     let body_data = {
 //       networkType: networkType,
 //     };
-
 
 //     dispatch(artistLoadingStart());
 
@@ -317,19 +341,19 @@ export const getAllArtist =(page,limit)=> {
 
 export const handleLikeDislike = (item, index, screenName) => {
   return (dispatch, getState) => {
-    const { data, wallet } = getState().UserReducer;
+    const {data, wallet} = getState().UserReducer;
     let oldNFTS =
       screenName == 'Hot'
         ? getState().ListReducer.nftList
         : screenName == 'newNFT'
-          ? getState().NewNFTListReducer.newNftList
-          : screenName == 'myNFT'
-            ? getState().MyNFTReducer.myList
-            : screenName == 'myCollection'
-              ? getState().MyCollectionReducer.myCollection
-              : screenName == 'awards'
-                ? getState().AwardsNFTReducer.awardsNftList
-                : getState().NftDataCollectionReducer.nftDataCollectionList;
+        ? getState().NewNFTListReducer.newNftList
+        : screenName == 'myNFT'
+        ? getState().MyNFTReducer.myList
+        : screenName == 'myCollection'
+        ? getState().MyCollectionReducer.myCollection
+        : screenName == 'awards'
+        ? getState().AwardsNFTReducer.awardsNftList
+        : getState().NftDataCollectionReducer.nftDataCollectionList;
 
     var url1 = '';
     var url2 = `${BASE_URL}/xanalia/updateRating`;
@@ -386,14 +410,14 @@ export const handleLikeDislike = (item, index, screenName) => {
           screenName == 'Hot'
             ? dispatch(nftLoadUpdate(nftUpdated))
             : screenName == 'newNFT'
-              ? dispatch(newNftLoadUpdate(nftUpdated))
-              : screenName == 'myNFT'
-                ? dispatch(myNFTUpdate(nftUpdated))
-                : screenName == 'myCollection'
-                  ? dispatch(myCollectionNFTUpdate(nftUpdated))
-                  : screenName == 'awards'
-                    ? dispatch(awardsListUpdate(nftUpdated))
-                    : dispatch(nftDataCollectionUpdate(nftUpdated));
+            ? dispatch(newNftLoadUpdate(nftUpdated))
+            : screenName == 'myNFT'
+            ? dispatch(myNFTUpdate(nftUpdated))
+            : screenName == 'myCollection'
+            ? dispatch(myCollectionNFTUpdate(nftUpdated))
+            : screenName == 'awards'
+            ? dispatch(awardsListUpdate(nftUpdated))
+            : dispatch(nftDataCollectionUpdate(nftUpdated));
         }
       })
       .catch(err => {
@@ -407,7 +431,7 @@ export const handleLikeDislike = (item, index, screenName) => {
 
 export const handleFollow = (followingUserId, isFollowing) => {
   return (dispatch, getState) => {
-    const { data } = getState().UserReducer;
+    const {data} = getState().UserReducer;
 
     let url = isFollowing
       ? `${BASE_URL}/user/unFollow-user`

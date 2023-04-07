@@ -91,6 +91,7 @@ let languageRequests = languages.map(name =>
   fetch(`https://d2xw2jn71az7zi.cloudfront.net/lang/xanalia-app/${name}`),
 );
 
+
 export const getAllLanguages = () => dispatch =>
   Promise.all(languageRequests)
     .then(responses => {

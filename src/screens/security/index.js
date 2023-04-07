@@ -2,67 +2,18 @@ import React, { useEffect, useState } from 'react';
 import {
   SafeAreaView,
   ScrollView,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import EntypoIcon from 'react-native-vector-icons/Entypo';
 import { useSelector } from 'react-redux';
 import ToggleSwitch from 'toggle-switch-react-native';
-import { responsiveFontSize as RF } from '../../common/responsiveFunction';
 import { AppHeader } from '../../components';
 import Colors from '../../constants/Colors';
 import { translate } from '../../walletUtils';
 import styles from './styled';
-import {getWallet} from '../../helpers/AxiosApiRequest';
+import { getWallet } from '../../helpers/AxiosApiRequest';
+import ListItem from '../../components/ListItem';
 
-const ListItem = props => {
-  const { isBackup } = useSelector(state => state.UserReducer);
-  return (
-    <TouchableOpacity
-      disabled={props.disableView}
-      onPress={props.onPress}
-      style={styles.itemCont}>
-      <View style={styles.centerProfileCont}>
-        <View>
-          <Text style={styles.listLabel}>{props.label}</Text>
-          {props.subLabel && (
-            <Text
-              style={[
-                styles.listSubLabel,
-                { color: isBackup ? Colors.badgeGreen : Colors.alert },
-              ]}>
-              {
-                isBackup ? translate('wallet.common.backupSuccess')
-                  : translate('wallet.common.notBackedUp')
-              }
-            </Text>
-          )}
-        </View>
-        {props.rightText ? (
-          <Text style={styles.listLabel}>{props.rightText}</Text>
-        ) : props.right ? (
-          <View style={{ flexDirection: 'row' }}>
-            <Text style={styles.listLabel}>{props.right}</Text>
-            <EntypoIcon
-              size={RF(2.5)}
-              color={Colors.GREY8}
-              name="chevron-right"
-            />
-          </View>
-        ) : props.rightComponent ? (
-          props.rightComponent
-        ) : (
-          <EntypoIcon
-            size={RF(2.5)}
-            color={Colors.GREY8}
-            name="chevron-right"
-          />
-        )}
-      </View>
-    </TouchableOpacity>
-  );
-};
+
 
 
 function SecurityScreen({ navigation }) {
@@ -70,7 +21,7 @@ function SecurityScreen({ navigation }) {
   const [toggle, setToggle] = useState(false);
   const [wallet, setWallet] = useState(null);
 
-  useEffect(async() => {
+  useEffect(async () => {
     let getData = await getWallet();
     setWallet(getData);
   }, []);
@@ -101,7 +52,7 @@ function SecurityScreen({ navigation }) {
               />
             }
           />
-          
+
           {wallet?.mnemonic && (
             <ListItem
               onPress={() => {

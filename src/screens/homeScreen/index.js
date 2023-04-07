@@ -64,6 +64,8 @@ import Trending from './trending';
 import { Easing } from 'react-native-reanimated';
 import Carousel from 'react-native-reanimated-carousel';
 import { CATEGORY_VALUE } from '../../constants';
+// import {INFT} from '../../constants/GenesisAnimated';
+
 
 const HomeScreen = ({ navigation }) => {
   const artistRef = useRef(null);
@@ -80,6 +82,8 @@ const HomeScreen = ({ navigation }) => {
   const modalState = Platform.OS === 'android' ? false : showSuccess;
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
+  const pushNotificationKey = useSelector(state => state.UserReducer?.userData?.push_notification);
+
 
   //================== Components State Defination ===================
   const [modalVisible, setModalVisible] = useState(modalState);
@@ -269,16 +273,19 @@ const HomeScreen = ({ navigation }) => {
 
   const checkPermissions = async () => {
     PushNotification.checkPermissions(async ({ alert }) => {
-      console.log('CHECK PERMISSION', alert)
       if (!alert) {
         setNotificationVisible(true);
       } else {
         setModalVisible(false);
       }
-      //Call setToken api here
-      // dispatch(updateNotificationStatus(true))
+      // if (pushNotificationKey && pushNotificationKey === true) {
+      //   dispatch(updateNotificationStatus(true))
+      // } else {
+      //   dispatch(updateNotificationStatus(false))
+      // }
     });
   };
+
 
   const getNFTlist = React.useCallback((category, sort, pageSize, pageNum) => {
     dispatch(newNftListReset(category));
@@ -371,6 +378,7 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.artistLoader}>
             <ActivityIndicator size="small" color={colors.themeR} />
           </View>
+
         ) : (
           <Carousel
             ref={artistRef}

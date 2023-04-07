@@ -32,6 +32,7 @@ import CollectionDetail from '../collectionDetail';
 import ChatDetail from '../AiChat/ChatDetail';
 import WebView from '../../components/WebView';
 import AuthStack from './AuthStack';
+import NotificationScreen from '../notification';
 
 const Stack = createStackNavigator();
 
@@ -62,16 +63,26 @@ const RootStackScreen = props => {
             gestureResponseDistance: { horizontal: (screenWidth * 70) / 100 },
           }}>
           <Stack.Screen name="Home" component={TabComponent} />
-          <Stack.Screen name="PasscodeScreen" initialParams={{ screen: 'Auth' }} component={PasscodeScreen} />
+          <Stack.Screen
+            name="PasscodeScreen"
+            initialParams={{ screen: 'Auth' }}
+            component={PasscodeScreen}
+          />
           <Stack.Screen name="DetailItem" component={DetailItemScreen} />
-          <Stack.Screen name="CertificateDetail" component={CertificateDetailScreen} />
+          <Stack.Screen
+            name="CertificateDetail"
+            component={CertificateDetailScreen}
+          />
           <Stack.Screen name="Pay" component={PayScreen} />
           <Stack.Screen name="MakeBid" component={MakeBidScreen} />
           <Stack.Screen name="EditProfile" component={EditProfileScreen} />
           <Stack.Screen name="Profile" component={ProfileScreen} />
           <Stack.Screen name="tokenDetail" component={TokenDetail} />
           <Stack.Screen name="receive" component={Receive} />
-          <Stack.Screen name="transactionsDetail" component={transactionsDetail} />
+          <Stack.Screen
+            name="transactionsDetail"
+            component={transactionsDetail}
+          />
           <Stack.Screen name="send" component={Send} />
           <Stack.Screen name="scanToConnect" component={ScanToConnect} />
           <Stack.Screen name="Create" component={CreateNFTScreen} />
@@ -90,6 +101,7 @@ const RootStackScreen = props => {
           {/* <Stack.Screen name="AiChat" component={AiChat} /> */}
           <Stack.Screen name="ChatDetail" component={ChatDetail} />
           <Stack.Screen name="WebView" component={WebView} />
+          <Stack.Screen name="NotificationScreen" component={NotificationScreen} />
         </Stack.Navigator>
       ) : (
         <Stack.Navigator headerMode="none">
