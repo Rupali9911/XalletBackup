@@ -77,7 +77,7 @@ const ChatDetail = ({route, navigation}) => {
     updateMesaage,
     isAnimatedLoading,
   } = useSelector(state => state.chatReducer);
-  const { userData } = useSelector(state => state.UserReducer);
+  const {userData} = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
   const {reducerTabTitle} = useSelector(state => state.chatReducer);
 
@@ -247,23 +247,23 @@ const ChatDetail = ({route, navigation}) => {
         style={styles.talkBubble(item?.type === 'sender' ? false : isOwnedTab)}>
         <View style={styles.chatView}>
           <Text style={styles.chatAuthorName}>{item?.name}</Text>
-          <HyperLink
-            onPress={(url, text) => {
-              Linking.openURL(url);
-            }}
-            linkStyle={styles.hyperLinkText}>
-            {Platform.OS === 'ios' ? (
-              <TextInput
-                value={item?.message}
-                editable={false}
-                multiline={true}
-              />
-            ) : (
-              <Text selectable={true}>
-                {item?.message}
-              </Text>
-            )}
-          </HyperLink>
+          {Platform.OS === 'ios' ? (
+            <TextInput
+              value={item?.message}
+              editable={false}
+              multiline={true}
+              dataDetectorTypes={'all'}
+            />
+          ) : (
+            <HyperLink
+              onPress={(url, text) => {
+                Linking.openURL(url);
+              }}
+              linkStyle={styles.hyperLinkText}
+              linkText={item?.message}>
+              <Text selectable={true}>{item?.message}</Text>
+            </HyperLink>
+          )}
         </View>
       </View>
     );
@@ -362,7 +362,7 @@ const ChatDetail = ({route, navigation}) => {
         chatDetailData?.nftId,
         message,
         chatDetailData?.tokenId,
-        chatDetailData?.isFreeModal
+        chatDetailData?.isFreeModal,
       ),
     );
   };
@@ -391,7 +391,7 @@ const ChatDetail = ({route, navigation}) => {
               : userData?.userWallet?.address.substring(0, 6),
         };
         setChatBotData(chatBotData => [sendObj, ...chatBotData]);
-        
+
         ChatBotApiCall(msg, msgLanguage)
           .then(response => {
             if (response?.messageCode || response?.description) {
@@ -407,19 +407,19 @@ const ChatDetail = ({route, navigation}) => {
                 name: chatDetailData?.bot_name,
                 question: response?.question,
               };
-              if (reducerTabTitle === 'Animated' && chatDetailData.listItems?.iNFT && chatDetailData?.listItems?.voiceAllowed) {
-                AIAudio(
-                  receiveObj,
-                  msgLanguage,
-                  getVoiceCallback,
-                );
+              if (
+                reducerTabTitle === 'Animated' &&
+                chatDetailData.listItems?.iNFT &&
+                chatDetailData?.listItems?.voiceAllowed
+              ) {
+                AIAudio(receiveObj, msgLanguage, getVoiceCallback);
               } else {
                 setChatResponseMsg(response?.response);
                 setChatBotData(chatBotData => [receiveObj, ...chatBotData]);
               }
             }
           })
-          .catch(err => { });
+          .catch(err => {});
       }
     } else {
       showToast(translate('common.INVALID_LANGUAGE'));
@@ -446,7 +446,7 @@ const ChatDetail = ({route, navigation}) => {
     return (
       <ImageBackground
         key={bannerImage}
-        source={{ uri: aiBgImageData?.background_image + '?' + Date.now() }}
+        source={{uri: aiBgImageData?.background_image + '?' + Date.now()}}
         style={styles.bannerImgContainer}>
         <C_Image
           uri={
@@ -514,7 +514,7 @@ const ChatDetail = ({route, navigation}) => {
         extraHeight={editMessage?.message ? hp(9) : hp(4)}
         keyboardShouldPersistTaps={'always'}
         keyboardOpeningTime={0}>
-        <View style={{ flex: 0.4 }}>
+        <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>{chatDetailData?.bot_name}</Text>
@@ -553,7 +553,7 @@ const ChatDetail = ({route, navigation}) => {
           </View>
         </View>
 
-        <View style={{ flex: 0.6 }}>
+        <View style={{flex: 0.6}}>
           <ListHeader />
           <View style={styles.chatContainer}>
             <FlatList
@@ -584,7 +584,7 @@ const ChatDetail = ({route, navigation}) => {
               } else {
                 sendMessage(message, new Date());
                 chatBotData.length > 0 &&
-                  flatList.current.scrollToIndex({ animated: true, index: 0 });
+                  flatList.current.scrollToIndex({animated: true, index: 0});
               }
             }}
           />
