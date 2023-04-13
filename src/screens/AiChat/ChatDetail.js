@@ -524,7 +524,7 @@ const ChatDetail = ({ route, navigation }) => {
               numberOfLines={2}>
               {chatResponseMsg}
             </Text>
-          </View >
+          </View>
 
           {renderBGImg()}
 

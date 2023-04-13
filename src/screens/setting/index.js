@@ -262,7 +262,7 @@ function Setting({ route, navigation }) {
             leftButtonText={translate('common.Cancel')}
             rightButtonText={translate('common.OK')}
             onRightPress={() => {
-              dispatch(initiateLogout())
+              // dispatch(initiateLogout())
               logoutConfirm();
             }}
             onLeftPress={() => {
