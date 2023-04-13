@@ -8,8 +8,8 @@ import {
   Linking,
   TextInput,
 } from 'react-native';
-import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getAiChat,
   chatLoadingSuccess,
@@ -23,22 +23,22 @@ import {
   aiMessageUpdate,
   animatedChatLoading,
 } from '../../store/actions/chatAction';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import styles from './style';
-import {C_Image, Loader} from '../../components';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { C_Image, Loader } from '../../components';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
-import {PLATFORM, SIZE, SVGS} from '../../constants';
+import { PLATFORM, SIZE, SVGS } from '../../constants';
 import moment from 'moment';
 import Toast from 'react-native-toast-message';
-import {Platform} from 'expo-modules-core';
-import {ImagekitType} from '../../common/ImageConstant';
+import { Platform } from 'expo-modules-core';
+import { ImagekitType } from '../../common/ImageConstant';
 import ImagePicker from 'react-native-image-crop-picker';
-import {confirmationAlert} from '../../common/function';
-import {openSettings} from 'react-native-permissions';
+import { confirmationAlert } from '../../common/function';
+import { openSettings } from 'react-native-permissions';
 import BackIcon from 'react-native-vector-icons/MaterialIcons';
-import {colors} from '../../res';
-import {checkEngJpLang} from '../../utils';
+import { colors } from '../../res';
+import { checkEngJpLang } from '../../utils';
 import AIAudio from '../../components/AIAudio';
 import {
   Menu,
@@ -46,21 +46,14 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {hp} from '../../constants/responsiveFunct';
+import { hp } from '../../constants/responsiveFunct';
 import HyperLink from 'react-native-hyperlink';
-const {ThreeDotsVerticalIcon} = SVGS;
+const { ThreeDotsVerticalIcon } = SVGS;
 
-const {ChatDefaultProfile, ChangeBackground} = SVGS;
+const { ChatDefaultProfile, ChangeBackground } = SVGS;
 
-<<<<<<< HEAD
 const ChatDetail = ({ route, navigation }) => {
-  // const {nftDetail, nftImage, bot_name, collectionAddress, nftId, tokenId} =
-  //   route.params;
   const { chatDetailData } = route.params;
-=======
-const ChatDetail = ({route, navigation}) => {
-  const {chatDetailData} = route.params;
->>>>>>> 904f039fbea6fd54709a250f0fce81b079f76643
 
   //================== Components State Declaration ===================
   const [chatBotData, setChatBotData] = useState([]);
@@ -86,12 +79,7 @@ const ChatDetail = ({route, navigation}) => {
   } = useSelector(state => state.chatReducer);
   const { userData } = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
-<<<<<<< HEAD
-  const { selectedLanguageItem } = useSelector(state => state.LanguageReducer);
   const { reducerTabTitle } = useSelector(state => state.chatReducer);
-=======
-  const {reducerTabTitle} = useSelector(state => state.chatReducer);
->>>>>>> 904f039fbea6fd54709a250f0fce81b079f76643
 
   const isOwnedTab = reducerTabTitle === 'Owned' ? true : false;
 
@@ -252,43 +240,6 @@ const ChatDetail = ({route, navigation}) => {
     );
   };
 
-<<<<<<< HEAD
-  //======================== Show Bubbles =============================
-  const renderItem = ({ item, index }) => {
-    return (
-      <View style={{ marginVertical: 8 }}>
-        {item?.type == 'sender' ? (
-          <View style={styles.rightBubbleContainer}>
-            <View style={styles.talkBubble(false)}>
-              <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}>{item?.senderName}</Text>
-                <Text style={styles.bubbleText}>{item?.message}</Text>
-              </View>
-            </View>
-            <View style={[styles.timeFormat, { marginRight: 10 }]}>
-              {renderImage()}
-              <Text style={styles.statusText}>{item?.time}</Text>
-            </View>
-          </View>
-        ) : (
-          <View style={styles.leftBubbleContainer}>
-            <View style={[styles.timeFormat, { marginLeft: 10 }]}>
-              <C_Image
-                imageType={'profile'}
-                uri={item?.receiverImage}
-                size={ImagekitType.AVATAR}
-                imageStyle={styles.bubbleImage}
-              />
-              <Text style={styles.statusText}>{item?.time}</Text>
-            </View>
-
-            <View style={styles.talkBubble(isOwnedTab)}>
-              <View style={styles.textContainer}>
-                <Text style={styles.msgHolderName}>{item?.receiverName}</Text>
-                <Text style={styles.bubbleText}>{item?.message}</Text>
-              </View>
-            </View>
-=======
   //==========================Messages Show Here=============================
   const renderBubbleMessages = item => {
     return (
@@ -329,9 +280,9 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   //======================== Flatlist Render Tim ( Show Bubbles )=============================
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
-      <View style={{marginVertical: SIZE(8)}}>
+      <View style={{ marginVertical: SIZE(8) }}>
         {item?.type === 'sender' ? (
           <View
             style={styles.bubbleContainer(item?.type)}
@@ -345,7 +296,6 @@ const ChatDetail = ({route, navigation}) => {
             pointerEvents={'box-none'}>
             {renderBubbleTime(item)}
             {renderBubbleMessages(item)}
->>>>>>> 904f039fbea6fd54709a250f0fce81b079f76643
 
             {isOwnedTab && renderEdit(item)}
           </View>
@@ -440,7 +390,7 @@ const ChatDetail = ({route, navigation}) => {
               : userData?.userWallet?.address.substring(0, 6),
         };
         setChatBotData(chatBotData => [sendObj, ...chatBotData]);
-        
+
         ChatBotApiCall(msg, msgLanguage)
           .then(response => {
             if (response?.messageCode || response?.description) {
@@ -531,10 +481,10 @@ const ChatDetail = ({route, navigation}) => {
                 {(reducerTabTitle === 'Animated'
                   ? isAnimatedLoading
                   : isChatLoading) && (
-                  <Text style={styles.typingMessage}>
-                    {translate('common.typing')}
-                  </Text>
-                )}
+                    <Text style={styles.typingMessage}>
+                      {translate('common.typing')}
+                    </Text>
+                  )}
               </View>
               {reducerTabTitle != 'Animated' && remainCount > 0 && (
                 <Text style={styles.remainWordText}>
@@ -567,27 +517,14 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>{chatDetailData?.bot_name}</Text>
-<<<<<<< HEAD
             <View style={[styles.separator, { width: '80%' }]} />
-            {!chatBotData?.response ? (
-              <View>
-                <Text
-                  style={[styles.nftName, { marginVertical: 3 }]}
-                  numberOfLines={2}>
-                  {chatLoadSuccess?.data?.response}
-                </Text>
-              </View>
-            ) : null}
-=======
-            <View style={[styles.separator, {width: '80%'}]} />
 
             <Text
-              style={[styles.nftName, {marginVertical: 3}]}
+              style={[styles.nftName, { marginVertical: 3 }]}
               numberOfLines={2}>
               {chatResponseMsg}
             </Text>
->>>>>>> 904f039fbea6fd54709a250f0fce81b079f76643
-          </View>
+          </View >
 
           {renderBGImg()}
 

@@ -45,7 +45,7 @@ function discoverItem({ item }) {
           <Pressable
             onPress={() => avatarpress('creator')}
             _pressed={{ opacity: 60 }}>
-            <HStack>
+            <HStack style={{ alignItems: 'center' }}>
               <C_Image
                 imageType={'profile'}
                 uri={creatorImage}
@@ -75,7 +75,7 @@ function discoverItem({ item }) {
           <Pressable
             onPress={() => avatarpress('owner')}
             _pressed={{ opacity: 60 }}>
-            <HStack>
+            <HStack style={{ alignItems: 'center' }}>
               <C_Image
                 imageType={'profile'}
                 uri={ownerImage}
