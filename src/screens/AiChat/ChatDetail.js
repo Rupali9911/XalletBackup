@@ -9,8 +9,8 @@ import {
   TextInput,
   KeyboardAvoidingView,
 } from 'react-native';
-import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import React, { useCallback, useEffect, useRef, useState, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   getAiChat,
   chatLoadingSuccess,
@@ -24,22 +24,22 @@ import {
   aiMessageUpdate,
   animatedChatLoading,
 } from '../../store/actions/chatAction';
-import {translate} from '../../walletUtils';
+import { translate } from '../../walletUtils';
 import styles from './style';
-import {C_Image, Loader} from '../../components';
-import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import { C_Image, Loader } from '../../components';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import MessageInput from './MessageInput';
-import {PLATFORM, SIZE, SVGS} from '../../constants';
+import { PLATFORM, SIZE, SVGS } from '../../constants';
 import moment from 'moment';
 import Toast from 'react-native-toast-message';
-import {Platform} from 'expo-modules-core';
-import {ImagekitType} from '../../common/ImageConstant';
+import { Platform } from 'expo-modules-core';
+import { ImagekitType } from '../../common/ImageConstant';
 import ImagePicker from 'react-native-image-crop-picker';
-import {confirmationAlert} from '../../common/function';
-import {openSettings} from 'react-native-permissions';
+import { confirmationAlert } from '../../common/function';
+import { openSettings } from 'react-native-permissions';
 import BackIcon from 'react-native-vector-icons/MaterialIcons';
-import {colors} from '../../res';
-import {checkEngJpLang} from '../../utils';
+import { colors } from '../../res';
+import { checkEngJpLang } from '../../utils';
 import AIAudio from '../../components/AIAudio';
 import {
   Menu,
@@ -47,14 +47,14 @@ import {
   MenuOptions,
   MenuTrigger,
 } from 'react-native-popup-menu';
-import {hp} from '../../constants/responsiveFunct';
+import { hp } from '../../constants/responsiveFunct';
 import HyperLink from 'react-native-hyperlink';
-const {ThreeDotsVerticalIcon} = SVGS;
+const { ThreeDotsVerticalIcon } = SVGS;
 
-const {ChatDefaultProfile, ChangeBackground} = SVGS;
+const { ChatDefaultProfile, ChangeBackground } = SVGS;
 
-const ChatDetail = ({route, navigation}) => {
-  const {chatDetailData} = route.params;
+const ChatDetail = ({ route, navigation }) => {
+  const { chatDetailData } = route.params;
 
   //================== Components State Declaration ===================
   const [chatBotData, setChatBotData] = useState([]);
@@ -80,7 +80,7 @@ const ChatDetail = ({route, navigation}) => {
   } = useSelector(state => state.chatReducer);
   const {userData} = useSelector(state => state.UserReducer);
   const userAdd = userData?.userWallet?.address;
-  const {reducerTabTitle} = useSelector(state => state.chatReducer);
+  const { reducerTabTitle } = useSelector(state => state.chatReducer);
 
   const isOwnedTab = reducerTabTitle === 'Owned' ? true : false;
 
@@ -281,9 +281,9 @@ const ChatDetail = ({route, navigation}) => {
   };
 
   //======================== Flatlist Render Tim ( Show Bubbles )=============================
-  const renderItem = ({item, index}) => {
+  const renderItem = ({ item, index }) => {
     return (
-      <View style={{marginVertical: SIZE(8)}}>
+      <View style={{ marginVertical: SIZE(8) }}>
         {item?.type === 'sender' ? (
           <View
             style={styles.bubbleContainer(item?.type)}
@@ -483,10 +483,10 @@ const ChatDetail = ({route, navigation}) => {
                 {(reducerTabTitle === 'Animated'
                   ? isAnimatedLoading
                   : isChatLoading) && (
-                  <Text style={styles.typingMessage}>
-                    {translate('common.typing')}
-                  </Text>
-                )}
+                    <Text style={styles.typingMessage}>
+                      {translate('common.typing')}
+                    </Text>
+                  )}
               </View>
               {reducerTabTitle != 'Animated' && remainCount > 0 && (
                 <Text style={styles.remainWordText}>
@@ -512,10 +512,10 @@ const ChatDetail = ({route, navigation}) => {
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
             <Text style={styles.nftName}>{chatDetailData?.bot_name}</Text>
-            <View style={[styles.separator, {width: '80%'}]} />
+            <View style={[styles.separator, { width: '80%' }]} />
 
             <Text
-              style={[styles.nftName, {marginVertical: 3}]}
+              style={[styles.nftName, { marginVertical: 3 }]}
               numberOfLines={2}>
               {chatResponseMsg}
             </Text>

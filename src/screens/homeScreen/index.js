@@ -278,11 +278,11 @@ const HomeScreen = ({ navigation }) => {
       } else {
         setModalVisible(false);
       }
-      // if (pushNotificationKey && pushNotificationKey === true) {
-      //   dispatch(updateNotificationStatus(true))
-      // } else {
-      //   dispatch(updateNotificationStatus(false))
-      // }
+      if (pushNotificationKey && pushNotificationKey === true) {
+        dispatch(updateNotificationStatus(true))
+      } else {
+        dispatch(updateNotificationStatus(false))
+      }
     });
   };
 
