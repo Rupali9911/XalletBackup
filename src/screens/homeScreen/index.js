@@ -82,7 +82,7 @@ const HomeScreen = ({ navigation }) => {
   const modalState = Platform.OS === 'android' ? false : showSuccess;
   const { requestAppId } = useSelector(state => state.WalletReducer);
   const dispatch = useDispatch();
-  const pushNotificationKey = useSelector(state => state.UserReducer?.userData?.push_notification);
+  // const pushNotificationKey = useSelector(state => state.UserReducer?.userData?.push_notification);
 
 
   //================== Components State Defination ===================
@@ -278,11 +278,11 @@ const HomeScreen = ({ navigation }) => {
       } else {
         setModalVisible(false);
       }
-      if (pushNotificationKey && pushNotificationKey === true) {
-        dispatch(updateNotificationStatus(true))
-      } else {
-        dispatch(updateNotificationStatus(false))
-      }
+      // if (pushNotificationKey && pushNotificationKey === true) {
+      //   dispatch(updateNotificationStatus(true))
+      // } else {
+      //   dispatch(updateNotificationStatus(false))
+      // }
     });
   };
 
