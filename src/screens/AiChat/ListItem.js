@@ -26,7 +26,10 @@ const ListItem = ({item, tabTitle, INFT}) => {
   const ListImage = item => {
     const getImageUrl =
       tabTitle === 'Animated' ? item?.image : item?.smallImage;
-    const mainImg = getImageUrl.includes('.png')
+
+    const mainImg = getImageUrl.includes('xana-genesis-old')
+      ? getImageUrl
+      : getImageUrl.includes('.png') 
       ? getImageUrl.replace('.png', '-thumb.png')
       : getImageUrl;
 

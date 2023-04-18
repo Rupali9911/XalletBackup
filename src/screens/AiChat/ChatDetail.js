@@ -7,6 +7,7 @@ import {
   ImageBackground,
   Linking,
   TextInput,
+  KeyboardAvoidingView,
 } from 'react-native';
 import React, {useCallback, useEffect, useRef, useState, useMemo} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
@@ -394,7 +395,7 @@ const ChatDetail = ({route, navigation}) => {
 
         ChatBotApiCall(msg, msgLanguage)
           .then(response => {
-            if (response?.messageCode || response?.description) {
+            if (response?.description === 'YOU_HAVE_EXCEEDED_WORD_LIMIT') {
               showToast();
             } else {
               let receiveObj = {
@@ -505,15 +506,8 @@ const ChatDetail = ({route, navigation}) => {
   //=====================(Main return Function)=============================
   return (
     <SafeAreaView style={styles.mainContainer}>
-      <KeyboardAwareScrollView
-        contentContainerStyle={{
-          flex: 1,
-        }}
-        scrollEnabled={false}
-        extraScrollHeight={Platform.OS === 'ios' ? SIZE(25) : 0}
-        extraHeight={editMessage?.message ? hp(9) : hp(4)}
-        keyboardShouldPersistTaps={'always'}
-        keyboardOpeningTime={0}>
+      
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : null} style={{flex: 1}}> 
         <View style={{flex: 0.4}}>
           <View style={styles.rcvReplyContainer}>
             <View style={styles.rcvContainerArrow} />
@@ -589,7 +583,7 @@ const ChatDetail = ({route, navigation}) => {
             }}
           />
         </View>
-      </KeyboardAwareScrollView>
+       </KeyboardAvoidingView>
       <Toast
         position="bottom"
         visibilityTime={2000}
