@@ -314,6 +314,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'flex-end',
     marginRight: 15,
+    marginBottom: 2
   },
   cancelButton: {
     backgroundColor: '#ebecf0',
