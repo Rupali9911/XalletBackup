@@ -20,6 +20,7 @@ import {
   INFT,
   INFTUserOwnedStaging,
   INFTUserOwnedProduction,
+  INFTUserOwned
 } from '../../constants/GenesisAnimated';
 import ListItem from './ListItem';
 import {networkType} from '../../common/networkType';
@@ -154,10 +155,7 @@ const ChatNftsList = ({tabTitle}) => {
             {INFT.map((item, index) => {
               return <ListItem item={item} tabTitle={tabTitle} INFT={true} />;
             })}
-            {(networkType === 'mainnet'
-              ? INFTUserOwnedProduction
-              : INFTUserOwnedStaging
-            ).map((item, index) => {
+            {INFTUserOwned.map((item, index) => {
               return <ListItem item={item} tabTitle={tabTitle} INFT={false} />;
             })}
             {/* <FlatList
