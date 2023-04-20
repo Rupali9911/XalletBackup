@@ -138,8 +138,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         // minSdkVersion 24
         multiDexEnabled true
-        versionCode 11
-        versionName "3.02.10"
+        versionCode 15
+        versionName "3.05.05"
         missingDimensionStrategy 'react-native-camera', 'general'
         missingDimensionStrategy 'store', 'play'
         vectorDrawables.useSupportLibrary = true
