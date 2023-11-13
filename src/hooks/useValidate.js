@@ -8,6 +8,7 @@ export const REGEX = {
 
 const useValidate = () => {
     const validateEmail = (value) => {
+        
         if (value === '') {
             return { status: true, message: '' }
         }
